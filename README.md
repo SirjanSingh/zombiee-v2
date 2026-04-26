@@ -4,13 +4,34 @@ emoji: 🧟
 colorFrom: red
 colorTo: gray
 sdk: docker
-dockerfile: Dockerfile.dgx
 app_port: 7860
 pinned: false
 suggested_hardware: a10g-large
 suggested_storage: small
 short_description: 5-agent zombie-survival GRPO training (Qwen 2.5-3B + LoRA)
 ---
+
+<!--
+HF Spaces ALWAYS uses `Dockerfile` at the repo root. There is no
+`dockerfile:` front-matter field, so we keep the training container at
+the root path:
+
+  - `Dockerfile`             = training container. CMD launches GRPO +
+                                a tiny FastAPI status sidecar on port
+                                7860 so the Space framework's health
+                                check passes. This is what HF builds.
+  - `Dockerfile.envserver`   = env-only OpenEnv submission image (the
+                                old root Dockerfile, preserved). Build
+                                manually with
+                                `docker build -f Dockerfile.envserver .`
+                                if you need just the FastAPI env server
+                                on port 7861.
+  - `Dockerfile.dgx`         = byte-identical alias of `Dockerfile`,
+                                kept so existing scripts/docs that
+                                reference it still work.
+  - `Dockerfile.dgx.bak`     = original DGX-validated 30 GB container
+                                (April 2026), preserved for reproducibility.
+-->
 
 # SurviveCity v2 (v2.1 reward-fix revision)
 
