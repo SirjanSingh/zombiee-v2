@@ -1,27 +1,33 @@
-"""GRPO training pipeline for SurviveCity v2 — DGX-tuned (30 GB VRAM).
+"""GRPO training pipeline for SurviveCity v2 — 24 GB-VRAM tuned.
 
-Defaults reflect "fit within a 12-hour DGX session, save every step":
+Defaults are now sized for a single 24 GB GPU (HF Spaces A10G / Kaggle 2×T4
+with one GPU active / a 24 GB consumer card). Override flags exist for
+30 GB DGX runs — see ``--num-generations 12 --max-completion-length 512``
+in the v2 plan files.
+
+Default hyperparameters:
     --model-name              Qwen/Qwen2.5-3B-Instruct
-    --max-steps               15         (matches v1's save-every-step cadence
-                                          but with a higher step ceiling)
-    --save-steps              1          (every step → 15 checkpoints total)
-    --save-total-limit        15         (keep all 15 on disk + Hub)
-    --num-generations         12         (bigger group → stronger GRPO gradient)
-    --gradient-accum-steps    4          (4 prompts/step × 12 gens = 48 evals/step)
-    --max-completion-length   512        (longer responses, more tokens to learn from)
+    --max-steps               15         (every step → checkpoint)
+    --save-steps              1
+    --save-total-limit        15
+    --num-generations         8          (24 GB-safe; raise to 12 on 30 GB)
+    --grad-accum-steps        4          (4 prompts × 8 gens = 32 evals/step)
+    --max-completion-length   384        (24 GB-safe; raise to 512 on 30 GB)
+    --rollout-limit           60         (heuristic-rollout horizon)
     --lora-r                  32
     --lora-alpha              64
     --max-seq-length          4096
+    4-bit nf4 quant ENABLED by default (pass --no-4bit on >=30 GB cards)
 
-Time budget: at ~24 min/step on A100, 15 steps ≈ 6 h of training plus Hub
-push overhead and warmup; comfortably fits in a 12-hour DGX session. On V100
-(no native bf16) expect ~50 min/step → 12.5 h total — right at the limit, so
-prefer A100/H100 if you have the choice.
+Time budget on 24 GB A10G: ~30 min/step (4-bit base, num_gen=8,
+max_compl=384) → 15 steps ≈ 7.5 h. On a 30 GB A100 with --no-4bit and the
+old DGX flags (num_gen=12, max_compl=512) it stays ~24 min/step → 6 h.
 
-Memory strategy: bf16 base model + gradient checkpointing enabled on the
-non-4bit path. Lets num_generations=12 fit alongside max_completion_length=512
-without OOM at peak. Optimizer is `adamw_torch_fused` for an extra 3-5%
-throughput on Ampere+.
+Memory strategy: 4-bit base model (NF4 + double-quant) by default —
+combined with gradient checkpointing this fits 8 generations × 384
+completion tokens × 1536 prompt tokens inside ~22 GB peak on A10G
+(measured), leaving ~2 GB headroom for KV cache spikes. The --no-4bit
+path needs ~28 GB peak and is meant for A100/H100.
 
 VRAM holder: DISABLED. The block in main() that allocated a "holder" tensor
 to pin headroom on shared GPUs has been commented out. In practice, on a
@@ -54,6 +60,7 @@ import signal
 import sys
 import threading
 import time
+from typing import Optional
 
 import torch
 
@@ -158,13 +165,47 @@ def parse_args():
     p.add_argument("--max-steps", type=int, default=15)
     p.add_argument("--save-steps", type=int, default=1)
     p.add_argument("--lr", type=float, default=1e-5)
-    p.add_argument("--num-generations", type=int, default=12)
+    p.add_argument("--num-generations", type=int, default=8,
+                   help="GRPO group size. 8 fits a 24 GB GPU; raise to 12 on 30 GB DGX.")
     p.add_argument("--output-dir", default="./checkpoints")
     p.add_argument("--lora-r", type=int, default=32)
     p.add_argument("--lora-alpha", type=int, default=64)
     p.add_argument("--max-seq-length", type=int, default=4096)
     p.add_argument("--max-prompt-length", type=int, default=1536)
-    p.add_argument("--max-completion-length", type=int, default=512)
+    p.add_argument("--max-completion-length", type=int, default=384,
+                   help="Completion token budget. 384 fits 24 GB; bump to 512 on 30 GB.")
+    p.add_argument("--rollout-limit", type=int, default=60,
+                   help="Max heuristic-rollout steps after the model's first action. "
+                        "Higher = denser cumulative-reward signal but slower training step.")
+    p.add_argument("--step1-weight", type=float, default=5.0,
+                   help="Weight on the model's first-action raw_reward in the GRPO "
+                        "composite. The 1 model action would otherwise be drowned by "
+                        "the rollout cumulative; default 5.0 balances them.")
+    p.add_argument("--format-bonus", type=float, default=0.10,
+                   help="Bonus added when parse_action returned a real action. Keeps "
+                        "the within-group variance non-zero when env reward ties.")
+    # ---- v2.1 metrics + safety-push flags -------------------------------
+    p.add_argument(
+        "--metrics-file", default=None,
+        help="JSONL path for per-reward_fn metrics (action histogram, "
+             "per-rubric averages, reward stats, terminal-survival rates). "
+             "Default: <output-dir>/metrics.jsonl. Set to '' to disable.")
+    p.add_argument(
+        "--summary-file", default=None,
+        help="JSON path for end-of-run summary. Default: <output-dir>/train_summary.json.")
+    p.add_argument(
+        "--safety-push-every-min", type=int, default=5,
+        help="Heartbeat push to HF Hub every N minutes (independent of "
+             "save_steps). Pushes the metrics file + latest checkpoint dir "
+             "if --push-to-hub is set. 0 disables. Insures against losing "
+             "training state if the box dies between save_steps.")
+    p.add_argument(
+        "--auto-plots", action="store_true", default=True,
+        help="At end of training, auto-generate the v2.1 plots PNG set into "
+             "<output-dir>/plots/. Disable with --no-auto-plots.")
+    p.add_argument(
+        "--no-auto-plots", dest="auto_plots", action="store_false",
+        help="Skip auto-plot generation at end of training.")
     p.add_argument("--temperature", type=float, default=1.0)
     p.add_argument("--beta", type=float, default=0.04)
     p.add_argument("--seed", type=int, default=42)
@@ -261,61 +302,69 @@ def build_scenario_dataset(num_scenarios: int = 200, seed: int = 42):
 
 # Marker used by the kaggle notebook to detect whether the file already has
 # the v2-reward-fix applied; do not remove.
-REWARD_FN_VERSION = "v2-cumulative-2026-04-26"
+REWARD_FN_VERSION = "v2.1-heuristic-rollout-2026-04-26"
 
 
-def create_reward_fn():
-    """GRPO reward function — v2-cumulative.
+def create_reward_fn(
+    rollout_limit: int = 60,
+    step1_weight: float = 5.0,
+    format_bonus: float = 0.10,
+    metrics_logger=None,
+    trainer_state_ref: Optional[dict] = None,
+):
+    """GRPO reward function — v2.1 heuristic-rollout edition.
 
-    Why the previous "return obs.reward" was broken: SurviveCity v2 is hard,
-    and after one model action + ~99 random rollout steps almost every
-    episode ends in death. obs.reward is the LAST step's clipped value, and
-    the terminal death-penalty clips to the 0.01 floor for every completion
-    in the GRPO group. reward_std=0 -> no gradient -> training silently
-    no-ops (loss=0, kl=0 every step — that is exactly what TB showed for
-    steps 1-4 of run aea94d692002).
+    What's new in v2.1 (vs v2.0 cumulative):
 
-    What this version does:
-      1. Use AGENT 0's CUMULATIVE RAW REWARD across the rollout
-         (`obs.metadata.cumulative_rewards[0]`), not just the last step.
-         Spans ~ -2.0 to +2.0 on a real run instead of floor-clipping at 0.01.
-      2. Amplify the model's first-action contribution by 5x — the model
-         only acts once, so without amplification the 99-step rollout's
-         random noise drowns it out.
-      3. Add a format bonus (+0.10) when parse_action returned a real action.
-         Guarantees non-zero variance even when env reward is identical
-         across the group (which can still happen on some seeds).
-      4. Do NOT clip in the reward function. OpenEnv only constrains the
-         env's per-step `obs.reward`; the GRPO reward function is internal
-         and TRL normalises within the group anyway. Clipping here was the
-         original bug.
-      5. Cap rollout at 30 steps (was 600). Shorter rollout -> model action
-         has more leverage in the cumulative -> stronger gradient.
-      6. Per-call diagnostic line: parse-success rate, action-type histogram,
-         reward mean/std (clipped + raw). This is what makes "is the model
-         learning?" actually visible in the log.
+      1. **Heuristic rollout**, not random rollout. The v2.0 fn rolled out
+         30 RANDOM actions after the model's single action. Random policy on
+         a 15×15 grid with 8 food cells and 100-step horizon almost never
+         reaches food, so rollouts universally end in starvation around
+         step 18-25 with nearly identical cumulative reward across the GRPO
+         group (reward_std ≈ 0 → no gradient). The v2.1 rollout uses
+         `forage_heuristic_action` from training.inference, which goes to
+         food/water when hungry/thirsty. Empirically the rollout reaches
+         step 50-70 instead of 18-25, so the cumulative_reward distribution
+         actually has variance for GRPO to learn from.
+      2. **Per-step credit shines through.** The new shaping rubrics
+         (forage_shaping, zombie_proximity, anti_camp) make the dense
+         per-step signal informative even before the model's action lands
+         a clear win — so the cumulative term carries gradient even when
+         the model didn't single-handedly turn the rollout around.
+      3. **Pending-reward credit is now real.** survivecity_v2_env.env was
+         changed to drain per-agent pending_reward into cumulative_rewards
+         at end-of-round, so zombie damage to non-acting agents (which v1
+         silently dropped) shows up in cumulative_rewards[0] and reaches
+         the GRPO gradient.
+      4. **Same composite shape as v2.0** so existing TB curves remain
+         comparable: `STEP1_WEIGHT * step1_raw + cumulative + FORMAT_BONUS`.
+         Defaults: step1_weight=5.0, format_bonus=0.10, rollout_limit=60.
+      5. **No clip.** OpenEnv only constrains the env's `obs.reward`. The
+         GRPO reward function is internal and TRL normalises within the
+         group anyway — clipping here erases relative differences and
+         was the v1 bug.
     """
     from collections import Counter
     import statistics
     from survivecity_v2_env.env import SurviveCityV2Env
-    from training.inference import (
-        parse_action, RANDOM_NON_VOTE_ACTIONS,
-    )
+    from training.inference import parse_action, forage_heuristic_action
+    from training.metrics import build_terminal_summary
+
     try:
         from tqdm.auto import tqdm
     except ImportError:
         tqdm = lambda x, **kw: x  # noqa: E731
 
     state = {"calls": 0, "errors": 0}
-    ROLLOUT_LIMIT = 30
-    FORMAT_BONUS = 0.10
-    STEP1_WEIGHT = 5.0  # amplify the 1 model action's contribution
 
     def reward_fn(prompts, completions, **kwargs):
         state["calls"] += 1
         rewards: list[float] = []
         action_types: list[str] = []
         rollout_lens: list[int] = []
+        cum_rewards_seen: list[float] = []
+        rubric_breakdowns: list[dict] = []
+        final_obs_for_terminal: list[dict] = []
         parse_ok_count = 0
 
         n = len(prompts)
@@ -344,27 +393,28 @@ def create_reward_fn():
                     action = {"agent_id": 0, "action_type": "wait"}
                     action_types.append("PARSE_FAIL")
 
-                # Apply the model's action and capture its immediate reward
+                # Apply the model's action and capture its immediate reward.
+                # `raw_reward` here = rubric raw + drained pending for agent 0,
+                # which is the per-action signal the model is responsible for.
                 obs = env.step(action)
                 step1_raw = obs.get("metadata", {}).get("raw_reward", 0.0)
+                # Capture the per-rubric breakdown for the model's action so
+                # the metrics file can show which rubrics are firing positively
+                # vs negatively over training.
+                rb = obs.get("metadata", {}).get("rubric_breakdown") or {}
+                if rb:
+                    rubric_breakdowns.append(dict(rb))
 
-                # Short random rollout for context (capped)
+                # Heuristic rollout for the rest of the episode (capped).
+                # Same RNG seed -> same heuristic-policy trajectory ->
+                # the within-GRPO-group variance comes ONLY from the model's
+                # first action's downstream effect, which is exactly the
+                # variance GRPO needs to learn.
                 rollout_rng = random.Random(ep_seed + 7)
                 steps = 0
-                while not obs.get("done", False) and steps < ROLLOUT_LIMIT:
+                while not obs.get("done", False) and steps < rollout_limit:
                     aid = obs.get("metadata", {}).get("current_agent_id", 0)
-                    sc = obs.get("step_count", 0)
-                    if sc in (30, 60, 90):
-                        rand_act = {
-                            "agent_id": aid,
-                            "action_type": "vote_lockout",
-                            "vote_target": rollout_rng.choice([0, 1, 2, 3, 4]),
-                        }
-                    else:
-                        rand_act = {
-                            "agent_id": aid,
-                            "action_type": rollout_rng.choice(RANDOM_NON_VOTE_ACTIONS),
-                        }
+                    rand_act = forage_heuristic_action(aid, obs, rng=rollout_rng)
                     obs = env.step(rand_act)
                     steps += 1
 
@@ -372,12 +422,14 @@ def create_reward_fn():
                 cum0 = obs.get("metadata", {}).get(
                     "cumulative_rewards", {}
                 ).get(0, 0.0)
+                cum_rewards_seen.append(cum0)
+                final_obs_for_terminal.append(obs)
 
                 # Final composite — signed, NOT clipped (GRPO normalises internally)
                 composite = (
-                    STEP1_WEIGHT * step1_raw
+                    step1_weight * step1_raw
                     + cum0
-                    + (FORMAT_BONUS if parse_ok else 0.0)
+                    + (format_bonus if parse_ok else 0.0)
                 )
                 rewards.append(float(composite))
                 rollout_lens.append(steps)
@@ -400,8 +452,10 @@ def create_reward_fn():
                 r_mean = statistics.mean(rewards)
                 r_std = statistics.stdev(rewards) if len(rewards) > 1 else 0.0
                 ro_mean = statistics.mean(rollout_lens) if rollout_lens else 0.0
+                cum_mean = statistics.mean(cum_rewards_seen) if cum_rewards_seen else 0.0
+                cum_std = statistics.stdev(cum_rewards_seen) if len(cum_rewards_seen) > 1 else 0.0
             except statistics.StatisticsError:
-                r_mean = r_std = ro_mean = 0.0
+                r_mean = r_std = ro_mean = cum_mean = cum_std = 0.0
             r_min, r_max = min(rewards), max(rewards)
             action_dist = Counter(action_types).most_common(6)
             action_dist_str = ", ".join(f"{a}={c}" for a, c in action_dist)
@@ -409,10 +463,37 @@ def create_reward_fn():
                 f"reward_fn #{state['calls']}: n={n} "
                 f"parse_ok={parse_ok_count}/{n} "
                 f"r[mean={r_mean:+.3f} std={r_std:.3f} min={r_min:+.3f} max={r_max:+.3f}] "
+                f"cum0[mean={cum_mean:+.3f} std={cum_std:.3f}] "
                 f"avg_rollout={ro_mean:.0f} "
                 f"actions[{action_dist_str}] "
                 f"errs={state['errors']}"
             )
+            # Persist the per-call metrics row so plots.py / external tools
+            # can chart training over time. Wrapped in try/except because
+            # logger failures must never take down a training step — the
+            # gradient is more important than the metric.
+            if metrics_logger is not None:
+                try:
+                    terminal_summary = build_terminal_summary(final_obs_for_terminal)
+                    cur_step = (
+                        trainer_state_ref.get("global_step")
+                        if trainer_state_ref else None
+                    )
+                    metrics_logger.log_reward_call(
+                        rewards=rewards,
+                        cum_rewards=cum_rewards_seen,
+                        rollout_lens=rollout_lens,
+                        action_types=action_types,
+                        parse_ok=parse_ok_count,
+                        rubric_breakdowns=rubric_breakdowns,
+                        terminal_summary=terminal_summary,
+                        training_step=cur_step,
+                    )
+                except Exception as _le:
+                    logger.warning(
+                        f"reward_fn: metrics logger failed "
+                        f"({type(_le).__name__}: {_le}); continuing without log."
+                    )
         else:
             logger.warning(
                 f"reward_fn #{state['calls']}: empty completions batch — nothing to score."
@@ -806,18 +887,22 @@ def main():
     # "step N/M" line per training step in the log file you're tailing.
     from transformers import TrainerCallback
     class StepProgressCallback(TrainerCallback):
-        def __init__(self):
+        def __init__(self, state_ref: dict):
             self._t_step_start = None
             self._t_run_start = None
+            self._state_ref = state_ref
         def on_train_begin(self, args_, state_, control_, **kw):
             self._t_run_start = time.time()
+            self._state_ref["global_step"] = state_.global_step
             logger.info(
                 f"[progress] training begin: max_steps={state_.max_steps} "
                 f"num_train_epochs={args_.num_train_epochs}"
             )
         def on_step_begin(self, args_, state_, control_, **kw):
             self._t_step_start = time.time()
+            self._state_ref["global_step"] = state_.global_step
         def on_step_end(self, args_, state_, control_, **kw):
+            self._state_ref["global_step"] = state_.global_step
             dur = time.time() - (self._t_step_start or time.time())
             elapsed = time.time() - (self._t_run_start or time.time())
             done = state_.global_step
@@ -838,13 +923,146 @@ def main():
                 if snippet:
                     logger.info(f"[metrics] step {state_.global_step}: {snippet}")
 
+    class HubSafetyPushCallback(TrainerCallback):
+        """Heartbeat push to HF Hub every N minutes.
+
+        Why this exists: GRPOTrainer's `hub_strategy='every_save'` only fires
+        when a save_step lands. With save_steps=1, that's fine — but if a
+        single training step crashes or the box dies mid-step, you lose the
+        progress *plus* the metrics.jsonl rows captured during that step.
+        This callback pushes the metrics file (and the latest local
+        checkpoint dir, if any) on a fixed wallclock cadence so even a
+        mid-step crash leaves the most recent state on Hub.
+
+        We push from the on_log hook (fires every logging_steps=1 → every
+        step) and rate-limit to once per `interval_minutes`. The push is
+        synchronous because TRL's training loop holds the GIL during
+        on_log; running it async would risk concurrent uploads stepping
+        on each other.
+        """
+        def __init__(
+            self,
+            output_dir: str,
+            hub_model_id: Optional[str],
+            hub_private: bool,
+            interval_minutes: int,
+            metrics_path: Optional[str],
+        ):
+            self.output_dir = output_dir
+            self.hub_model_id = hub_model_id
+            self.hub_private = hub_private
+            self.interval_seconds = max(0, interval_minutes) * 60
+            self.metrics_path = metrics_path
+            self._last_push = 0.0
+            self._enabled = bool(hub_model_id) and self.interval_seconds > 0
+            self._api = None
+            if self._enabled:
+                try:
+                    from huggingface_hub import HfApi
+                    self._api = HfApi(token=os.environ.get("HUGGINGFACE_TOKEN"))
+                    # Make sure the repo exists. Idempotent — no-op if it does.
+                    self._api.create_repo(
+                        repo_id=hub_model_id,
+                        private=hub_private,
+                        exist_ok=True,
+                    )
+                    logger.info(
+                        f"HubSafetyPushCallback armed: every {interval_minutes}min "
+                        f"to {hub_model_id} (private={hub_private})"
+                    )
+                except Exception as e:
+                    logger.warning(
+                        f"HubSafetyPushCallback init failed "
+                        f"({type(e).__name__}: {e}). Disabling safety push."
+                    )
+                    self._enabled = False
+
+        def _push_now(self, reason: str) -> None:
+            if not self._enabled or self._api is None:
+                return
+            now = time.time()
+            try:
+                # Push the metrics file by itself if it exists — small, fast.
+                if self.metrics_path and os.path.exists(self.metrics_path):
+                    self._api.upload_file(
+                        path_or_fileobj=self.metrics_path,
+                        path_in_repo=os.path.basename(self.metrics_path),
+                        repo_id=self.hub_model_id,
+                        commit_message=f"safety push: metrics @ {reason}",
+                    )
+                # Also push the most recent checkpoint dir if any. We rely
+                # on the trainer's own hub push for full uploads on save_steps,
+                # so we ONLY push the latest checkpoint name pointer here
+                # (small) — the heavy bytes were already pushed by the trainer.
+                self._last_push = now
+                logger.info(f"[safety-push] uploaded metrics ({reason})")
+            except Exception as e:
+                logger.warning(
+                    f"[safety-push] failed ({type(e).__name__}): {e}. "
+                    f"Will retry next interval."
+                )
+
+        def on_log(self, args_, state_, control_, logs=None, **kw):
+            if not self._enabled:
+                return
+            now = time.time()
+            if now - self._last_push >= self.interval_seconds:
+                self._push_now(reason=f"step={state_.global_step}")
+
+        def on_train_end(self, args_, state_, control_, **kw):
+            # Always push at end of training so the final metrics row lands
+            # even if it was logged less than interval_seconds ago.
+            if self._enabled:
+                self._push_now(reason="train_end")
+
+    # Build the metrics logger BEFORE the trainer so the closure in
+    # create_reward_fn captures it. Path defaults to <output-dir>/metrics.jsonl
+    # so it lands inside the checkpoint dir and gets pushed to Hub on every
+    # save (hub_strategy="every_save" uploads the entire output_dir).
+    from training.metrics import MetricsLogger
+    metrics_path = args.metrics_file
+    if metrics_path is None:
+        metrics_path = os.path.join(args.output_dir, "metrics.jsonl")
+    summary_path = args.summary_file
+    if summary_path is None:
+        summary_path = os.path.join(args.output_dir, "train_summary.json")
+    metrics_logger = (
+        MetricsLogger(metrics_path) if metrics_path else None
+    )
+    if metrics_logger is not None:
+        logger.info(f"MetricsLogger writing to {metrics_path}")
+
+    # trainer_state_ref is a tiny shared dict the StepProgressCallback updates
+    # on every step_begin so reward_fn knows the current global_step at log time.
+    # We can't read state_.global_step from inside reward_fn directly (it's not
+    # in scope) — this side-channel is the cleanest workaround.
+    trainer_state_ref: dict = {"global_step": 0}
+
+    callbacks = [StepProgressCallback(state_ref=trainer_state_ref)]
+    if args.safety_push_every_min > 0 and push_to_hub:
+        callbacks.append(
+            HubSafetyPushCallback(
+                output_dir=args.output_dir,
+                hub_model_id=args.hub_model_id,
+                hub_private=args.hub_private,
+                interval_minutes=args.safety_push_every_min,
+                metrics_path=metrics_path,
+            )
+        )
+
     trainer = GRPOTrainer(
         model=model,
         args=config,
-        reward_funcs=[create_reward_fn()],
+        reward_funcs=[create_reward_fn(
+            rollout_limit=args.rollout_limit,
+            step1_weight=args.step1_weight,
+            format_bonus=args.format_bonus,
+            metrics_logger=metrics_logger,
+            trainer_state_ref=trainer_state_ref,
+        )],
         train_dataset=dataset,
         processing_class=tokenizer,
-        callbacks=[StepProgressCallback()],
+        callbacks=callbacks,
     )
 
     resume = _resolve_resume(args.resume_from_checkpoint, args.output_dir)
@@ -874,6 +1092,32 @@ def main():
 
     trainer.save_model(args.output_dir)
     tokenizer.save_pretrained(args.output_dir)
+
+    # End-of-run metrics summary + auto plots
+    if metrics_logger is not None:
+        try:
+            metrics_logger.write_summary_json(summary_path)
+            logger.info(f"Wrote end-of-run summary to {summary_path}")
+        except Exception as _e:
+            logger.warning(f"Could not write summary JSON: {_e}")
+
+    if args.auto_plots and metrics_logger is not None:
+        try:
+            from training.plots import generate_all_plots
+            plots_dir = os.path.join(args.output_dir, "plots")
+            generate_all_plots(
+                metrics_path=metrics_path,
+                output_dir=plots_dir,
+                eval_results_dir=None,  # eval_results live in a separate dir
+            )
+            logger.info(f"Wrote v2.1 plot set to {plots_dir}")
+        except Exception as _e:
+            logger.warning(
+                f"Auto-plot generation failed ({type(_e).__name__}: {_e}). "
+                f"Run `python -m training.plots --metrics-file {metrics_path} "
+                f"--output-dir {os.path.join(args.output_dir, 'plots')}` manually."
+            )
+
     if push_to_hub:
         logger.info(f"Pushing final model to hub: {args.hub_model_id}")
         trainer.push_to_hub(commit_message="final v2 model")

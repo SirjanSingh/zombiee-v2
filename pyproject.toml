@@ -71,6 +71,14 @@ dev = [
     "httpx>=0.25",
     "ruff>=0.1",
 ]
+# Lightweight plotting/metrics-only extras for an eval box that doesn't
+# need the full GRPO training stack. `pip install -e v2/[plots]` is enough
+# to run `python -m training.plots --metrics-file ... --output-dir ...`.
+plots = [
+    "matplotlib>=3.8",
+    "numpy>=1.24",
+    "huggingface_hub>=0.20",
+]
 
 [tool.setuptools.packages.find]
 include = ["survivecity_v2_env*", "server*", "training*"]

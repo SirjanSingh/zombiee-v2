@@ -107,8 +107,17 @@ class SurviveCityV2Env:
         )
         self._episode.agents_acted_this_step += 1
 
-        # Compute reward for the acting agent
-        clipped, raw = compose_reward(self._episode, parsed.agent_id)
+        # Compute reward for the acting agent. Drain any out-of-turn pending
+        # reward (zombie/biter damage taken since this agent last acted) into
+        # the raw signal — without this, all non-self damage is silently
+        # dropped from the credit-assignment trail.
+        clipped_rubric, raw_rubric = compose_reward(self._episode, parsed.agent_id)
+        agent_internal = self._episode.agents[parsed.agent_id]
+        pending = agent_internal.pending_reward
+        agent_internal.pending_reward = 0.0
+        raw = raw_rubric + pending
+        # Re-clip after pending payment to honour OpenEnv's open unit interval.
+        clipped = max(0.01, min(0.99, raw))
         self._cumulative_rewards[parsed.agent_id] = (
             self._cumulative_rewards.get(parsed.agent_id, 0.0) + raw
         )
@@ -126,6 +135,31 @@ class SurviveCityV2Env:
             advance_step(self._episode)
             self._episode.agents_acted_this_step = 0
 
+            # Settle out-of-turn rewards generated during the zombie/wave phase
+            # for all agents (not just the actor). Without this, zombie damage
+            # to non-acting agents is dropped from cumulative_rewards.
+            for ag in self._episode.agents:
+                if ag.pending_reward != 0.0:
+                    self._cumulative_rewards[ag.agent_id] = (
+                        self._cumulative_rewards.get(ag.agent_id, 0.0)
+                        + ag.pending_reward
+                    )
+                    ag.pending_reward = 0.0
+
+            # Terminal settlement: if the episode just ended, make sure ALL
+            # agents see the terminal-only rubric contributions (group_outcome,
+            # hoarding_penalty, infected_deception). compose_reward(parsed)
+            # above ran BEFORE advance_step, so state.done was still False —
+            # so the actor missed terminal credit too. Pay everyone now.
+            if self._episode.done:
+                from survivecity_v2_env.rubric import terminal_only_reward
+                for ag in self._episode.agents:
+                    term = terminal_only_reward(self._episode, ag.agent_id)
+                    if term != 0.0:
+                        self._cumulative_rewards[ag.agent_id] = (
+                            self._cumulative_rewards.get(ag.agent_id, 0.0) + term
+                        )
+
         next_id = self._get_next_alive_agent()
         if next_id is None:
             next_id = 0
@@ -134,6 +168,7 @@ class SurviveCityV2Env:
             agent_id=next_id,
             last_reward=clipped,
             last_raw=raw,
+            last_actor_id=parsed.agent_id,
         )
         return obs.model_dump()
 
@@ -184,6 +219,7 @@ class SurviveCityV2Env:
         agent_id: int,
         last_reward: Optional[float] = None,
         last_raw: Optional[float] = None,
+        last_actor_id: Optional[int] = None,
     ) -> SurviveObservation:
         ep = self._episode
         if ep is None:
@@ -280,7 +316,13 @@ class SurviveCityV2Env:
 
         metadata: dict[str, Any] = {
             "raw_reward": round(raw, 6),
+            # current_agent_id == the agent who acts NEXT (whose obs this is).
+            # last_actor_id  == the agent whose action produced obs.reward.
+            # In v1 these two were conflated, leading to mis-attributed rewards
+            # in any downstream code that read `current_agent_id` as the owner
+            # of `obs.reward`. Keep both fields and make consumers be explicit.
             "current_agent_id": agent_id,
+            "last_actor_id": last_actor_id,
             "phase": phase,
             "day_phase": ep.day_phase,
             "step_count": ep.step_count,
@@ -299,6 +341,12 @@ class SurviveCityV2Env:
                 1 for a in ep.agents if a.is_alive and a.infection_state == "none"
             ),
             "last_inject_result": ep.last_inject_result.get(agent_id),
+            # Per-agent cumulative raw reward — the canonical training signal.
+            # train.py's GRPO reward_fn reads cumulative_rewards[0] and that is
+            # exactly what makes credit-assignment work: a value here reflects
+            # everything that ever happened to this specific agent, not just
+            # what happened during this step.
+            "cumulative_rewards": dict(self._cumulative_rewards),
         }
 
         return SurviveObservation(

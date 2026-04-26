@@ -22,3 +22,14 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .ipynb_checkpoints/
+
+# Claude Code local config — orientation pointers + session state.
+# Never commit: settings.local.json may contain personal preferences,
+# worktrees/ holds local-machine paths, and the directory is per-developer.
+.claude/
+
+# v2.1 metrics + plots written into output-dir during training
+checkpoints/metrics.jsonl
+checkpoints/train_summary.json
+checkpoints/plots/
+checkpoints/_warmstart/

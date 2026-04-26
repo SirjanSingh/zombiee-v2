@@ -65,6 +65,13 @@ class _AgentInternal:
     damage_this_step: int = 0
     died_this_step: bool = False
 
+    # Out-of-turn reward accumulator. Damage taken during another agent's
+    # turn (biter attack) or during the zombie/wave phase is credited here
+    # and drained the next time this agent's reward is computed. Without
+    # this, all non-self damage was silently dropped because per-step flags
+    # were reset at the start of the victim's next action.
+    pending_reward: float = 0.0
+
     # Cumulative stats
     food_eaten: int = 0
     water_drunk: int = 0
@@ -72,6 +79,7 @@ class _AgentInternal:
     medicine_picked_up: int = 0
     death_step: Optional[int] = None
     death_cause: Optional[str] = None
+    waits_streak: int = 0   # consecutive wait/no-op actions, for anti-camp
 
     def reset_step_flags(self) -> None:
         self.ate_this_step = False
@@ -286,6 +294,8 @@ def apply_agent_action(
         _do_drink(agent, state)
 
     elif action_type == "wait":
+        # waits_streak handled below the dispatch so any non-wait branch
+        # resets it cleanly.
         pass
 
     elif action_type == "vote_lockout":
@@ -309,6 +319,13 @@ def apply_agent_action(
     elif action_type == "inject":
         _do_inject(agent, state, inject_target, item_slot)
     # Unknown action_type just falls through as a no-op
+
+    # Track wait-streak for the anti-camp rubric. Any deliberate action
+    # other than a `wait` resets the streak; a `wait` increments it.
+    if action_type == "wait":
+        agent.waits_streak += 1
+    else:
+        agent.waits_streak = 0
 
     # Revealed biters bite at end of their turn
     if (
@@ -601,11 +618,13 @@ def _maybe_bite(biter: _AgentInternal, state: EpisodeState) -> None:
     ):
         return
 
-    # Bite lands. Damage + infection.
+    # Bite lands. Damage + infection — but credit the cost to the victim's
+    # pending_reward (out-of-turn event from victim's perspective) instead
+    # of damage_this_step which would be wiped on victim's next reset.
     victim.hp -= 1
-    victim.damage_this_step += 1
+    victim.pending_reward += -0.10
     if victim.hp <= 0:
-        _kill_agent(victim, state, "infected_attack")
+        _kill_agent(victim, state, "infected_attack", in_turn=False)
         return
 
     victim.infection_state = "latent"
@@ -619,12 +638,29 @@ def _maybe_bite(biter: _AgentInternal, state: EpisodeState) -> None:
     })
 
 
-def _kill_agent(agent: _AgentInternal, state: EpisodeState, cause: str) -> None:
+def _kill_agent(
+    agent: _AgentInternal,
+    state: EpisodeState,
+    cause: str,
+    in_turn: bool = True,
+) -> None:
+    """Kill an agent.
+
+    If `in_turn` (default), the death penalty is paid through `died_this_step`,
+    which `survival_reward` consumes when the agent's reward is computed at
+    the end of THIS action (the standard path: hunger/thirst/infection_progression
+    deaths happen during the agent's own turn). If `in_turn=False`, the agent
+    won't act again, so we credit the death penalty directly to pending_reward
+    so the rubric can drain it on the final state evaluation.
+    """
     agent.is_alive = False
     agent.hp = 0
-    agent.died_this_step = True
     agent.death_step = state.step_count
     agent.death_cause = cause
+    if in_turn:
+        agent.died_this_step = True
+    else:
+        agent.pending_reward += -0.50
 
     from survivecity_v2_env.postmortem import generate_postmortem
     pm = generate_postmortem(state, agent.agent_id)
@@ -649,15 +685,16 @@ def advance_zombies(state: EpisodeState) -> None:
                 _move_zombie_toward(zombie, target, state)
             else:
                 _wander_zombie(zombie, state)
-        # Collision with any agent on-cell: damage
+        # Collision with any agent on-cell: damage. Always out-of-turn from
+        # the victim's perspective, so credit -0.10 directly to pending_reward.
         for agent in state.agents:
             if not agent.is_alive:
                 continue
             if agent.row == zombie.row and agent.col == zombie.col:
                 agent.hp -= 1
-                agent.damage_this_step += 1
+                agent.pending_reward += -0.10
                 if agent.hp <= 0:
-                    _kill_agent(agent, state, "zombie_attack")
+                    _kill_agent(agent, state, "zombie_attack", in_turn=False)
 
 
 def _find_nearest_agent_for_zombie(
@@ -792,7 +829,7 @@ def _check_reveals(state: EpisodeState) -> None:
             duration = state.step_count - a.bite_at_step
             if duration >= 30 and a.medicine_used == 0:
                 a.hp = 0
-                _kill_agent(a, state, "infection_progression")
+                _kill_agent(a, state, "infection_progression", in_turn=False)
 
 
 def _resolve_vote_phase(state: EpisodeState, phase_step: int) -> None:

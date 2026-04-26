@@ -10,14 +10,25 @@ Rubrics:
     1. survival          — dense, per-step
     2. iterated_vote     — fires once at each of t=30, 60, 90; per-vote
     3. group_outcome     — terminal
-  v2-new:
+  v2-new (original 7):
     4. thirst            — dense, per-step
     5. broadcast_economy — per-broadcast-over-threshold
     6. night_survival    — dense in night windows
     7. infection_dodge   — dense + one-shot on latent->revealed transition
     8. medication        — one-shot on inject outcome
     9. hoarding_penalty  — terminal, per unused inventory slot
-   10. wave_survival     — one-shot at each wave step the agent survived
+   10. wave_survival     — one-shot per wave step
+  v2.1 — credit-assignment & shaping fixes (this revision):
+   11. forage_shaping    — dense potential toward nearest food/water when hungry/thirsty
+   12. zombie_proximity  — dense penalty proportional to 1/dist_to_nearest_zombie when close
+   13. anti_camp         — small per-step nudge against unbroken wait-streaks while at risk
+   14. infected_deception — terminal bonus for starting infected who stayed hidden / framed others
+
+The v2.1 rubrics were added because v1 eval transcripts showed agents
+starving in place: there was no gradient toward food/water, no penalty for
+sitting next to a zombie, and no incentive for the infected role to play
+its asymmetry. Each new rubric has small magnitudes (≤0.05/step) so the
+existing terminal/vote signals still dominate end-of-episode credit.
 """
 
 from __future__ import annotations
@@ -25,6 +36,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from survivecity_v2_env.spawn import WAVE_SCHEDULE
+from survivecity_v2_env.layout import (
+    FOOD_CELLS, WATER_CELLS, MEDICINE_CELLS,
+)
 
 if TYPE_CHECKING:
     from survivecity_v2_env.game import EpisodeState
@@ -259,6 +273,186 @@ def wave_survival_reward(state: "EpisodeState", agent_id: int) -> float:
 
 
 # ---------------------------------------------------------------------------
+# 11. forage_shaping_reward — dense potential-based shaping toward food/water
+# ---------------------------------------------------------------------------
+
+def _manhattan(a_row: int, a_col: int, cells) -> int:
+    """Min Manhattan distance from (a_row,a_col) to any cell in `cells`.
+
+    Returns 999 if `cells` is empty so the caller can shortcut.
+    """
+    if not cells:
+        return 999
+    best = 999
+    for (r, c) in cells:
+        d = abs(a_row - r) + abs(a_col - c)
+        if d < best:
+            best = d
+    return best
+
+
+def forage_shaping_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Dense gradient toward food when hungry, water when thirsty, medicine when latent.
+
+    The eval transcripts showed ~75% of episodes ending in collective
+    starvation by step 50: with 8 food cells on a 15×15 grid and a 100-step
+    horizon, a random walk almost never reaches food before hunger kills
+    the agent. There was nothing in the original 10 rubrics that nudged
+    the policy toward food before the moment of eating. This rubric adds
+    a tiny per-step potential that only kicks in when the agent is
+    actually at risk (hunger>=7 or thirst>=7), so it doesn't bias play
+    away from social-deduction once basic survival is solved.
+
+    Magnitudes per step:
+      * Hungry (hunger>=7): -0.003 * dist_to_nearest_food (clipped at 12)
+      * Thirsty (thirst>=7): -0.003 * dist_to_nearest_water
+      * Latent infected with medicine_used==0: -0.003 * dist_to_nearest_medicine
+    """
+    a = state.agents[agent_id]
+    if not a.is_alive:
+        return 0.0
+
+    r = 0.0
+
+    if a.hunger >= 7:
+        # Live food cells only — depleted depots aren't reachable food yet
+        live_food = [c for c in FOOD_CELLS if state.food_present.get(c, True)]
+        d = _manhattan(a.row, a.col, live_food)
+        r -= 0.003 * min(d, 12)
+
+    if a.thirst >= 7:
+        # Water depots are persistent (do not deplete) — always include all
+        d = _manhattan(a.row, a.col, list(WATER_CELLS))
+        r -= 0.003 * min(d, 12)
+
+    # Latent infected without a cure path — nudge toward medicine cells
+    if a.infection_state == "latent" and a.medicine_used == 0 and "medicine" not in a.inventory:
+        live_med = [c for c in MEDICINE_CELLS if state.medicine_present.get(c, True)]
+        d = _manhattan(a.row, a.col, live_med)
+        r -= 0.003 * min(d, 12)
+
+    return r
+
+
+# ---------------------------------------------------------------------------
+# 12. zombie_proximity_reward — dense penalty proportional to 1/dist when close
+# ---------------------------------------------------------------------------
+
+def zombie_proximity_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Penalise standing close to zombies. Encourages active avoidance.
+
+    Without this, the only zombie-related signal is the -0.10 damage hit
+    that fires on collision. By that point the agent has already lost HP;
+    the gradient is too sparse to learn avoidance. We pay a small cost
+    that scales as 1/distance for distance ∈ {1, 2, 3} so the agent feels
+    "pressure" before the zombie reaches them.
+
+    Capped at -0.03/step worst case (zombie 1 tile away). Safehouse cells
+    are exempt — agents inside the safehouse are already protected by the
+    no-zombie-can-enter rule, no extra incentive needed.
+    """
+    a = state.agents[agent_id]
+    if not a.is_alive:
+        return 0.0
+    if (a.row, a.col) in {(r, c) for r in range(6, 9) for c in range(6, 9)}:
+        return 0.0
+    if not state.zombies:
+        return 0.0
+    best = 999
+    for z in state.zombies:
+        d = abs(a.row - z.row) + abs(a.col - z.col)
+        if d < best:
+            best = d
+    if best >= 4:
+        return 0.0
+    if best == 0:
+        # Already on the zombie — survival_reward already paid the damage.
+        return -0.03
+    return -0.03 / best
+
+
+# ---------------------------------------------------------------------------
+# 13. anti_camp_reward — small nudge against camping with hunger/thirst
+# ---------------------------------------------------------------------------
+
+def anti_camp_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Tiny penalty for sitting still while resources are running out.
+
+    Works off `agent.waits_streak` which game.py increments on `wait` and
+    resets on any movement/action. Once waits_streak >= 4 AND hunger or
+    thirst has crossed the warning threshold, each additional wait costs
+    -0.005. Caps the wait-spam exploit observed in v1 eval transcripts
+    (agent stuck with hunger=12 spamming wait until death).
+    """
+    a = state.agents[agent_id]
+    if not a.is_alive:
+        return 0.0
+    if a.waits_streak < 4:
+        return 0.0
+    if a.hunger < 8 and a.thirst < 8:
+        return 0.0
+    # Linear ramp: cap at -0.02 for very long streaks
+    return -0.005 * min(a.waits_streak - 3, 4)
+
+
+# ---------------------------------------------------------------------------
+# 14. infected_deception_reward — terminal bonus for starting infected
+# ---------------------------------------------------------------------------
+
+def infected_deception_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Terminal-only bonus for the asymmetric infected role.
+
+    Without this, biter/saboteur agents had the same per-step incentive as
+    healthy agents (stay alive). The vote rubric is the only place
+    asymmetry showed up, but it's an order of magnitude smaller than
+    cumulative survival. Eval transcripts showed infected agents
+    "winning" purely by accident (everyone else starved). This rubric
+    pays a real terminal bonus for active deception:
+
+      +0.30  if the starting infected reached step 100 still in `latent`
+             (never revealed, hidden the whole game)
+      +0.20  if at least one healthy agent got locked out by a vote that
+             the infected voted for
+      +0.10  per healthy agent killed by this biter (at most 4 healthy)
+
+    Caps at +0.60 to keep the rubric within the same order of magnitude
+    as group_outcome (+0.40 / +0.30).
+    """
+    if not state.done:
+        return 0.0
+    a = state.agents[agent_id]
+    if a.infection_role not in {"biter", "saboteur"}:
+        return 0.0
+
+    r = 0.0
+    if a.is_alive and a.infection_state == "latent":
+        r += 0.30
+
+    # Healthy locked out by a vote this agent participated in voting for
+    framed = False
+    for phase, target in state.lockout_results.items():
+        if target is None:
+            continue
+        target_a = state.agents[target]
+        if target_a.infection_role is None:  # was healthy
+            voted_target = state.votes_cast.get(phase, {}).get(agent_id)
+            if voted_target == target:
+                framed = True
+                break
+    if framed:
+        r += 0.20
+
+    # Bites this agent landed (healthy victims they personally infected)
+    bites_landed = sum(
+        1 for b in state.bite_history
+        if b.get("biter_id") == agent_id
+    )
+    r += 0.10 * min(bites_landed, 3)
+
+    return min(r, 0.60)
+
+
+# ---------------------------------------------------------------------------
 # Composition
 # ---------------------------------------------------------------------------
 
@@ -273,6 +467,19 @@ _RUBRIC_FUNCS = (
     medication_reward,
     hoarding_penalty_reward,
     wave_survival_reward,
+    forage_shaping_reward,
+    zombie_proximity_reward,
+    anti_camp_reward,
+    infected_deception_reward,
+)
+
+# Rubrics whose value is non-zero only when state.done. env.py settles
+# these for ALL agents at the moment the episode terminates, so no agent
+# loses terminal credit just because they weren't the last actor.
+_TERMINAL_RUBRICS = (
+    group_outcome_reward,
+    hoarding_penalty_reward,
+    infected_deception_reward,
 )
 
 
@@ -280,6 +487,13 @@ def compose_reward(state: "EpisodeState", agent_id: int) -> tuple[float, float]:
     """Sum all rubrics and clip to (0.01, 0.99). Returns (clipped, raw)."""
     raw = sum(fn(state, agent_id) for fn in _RUBRIC_FUNCS)
     return _clip(raw), raw
+
+
+def terminal_only_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Sum of just the terminal rubrics for end-of-episode settlement."""
+    if not state.done:
+        return 0.0
+    return sum(fn(state, agent_id) for fn in _TERMINAL_RUBRICS)
 
 
 def per_rubric_breakdown(state: "EpisodeState", agent_id: int) -> dict[str, float]:
