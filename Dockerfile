@@ -278,6 +278,7 @@ exec python -m training.train \
     --max-seq-length 4096 \
     --report-to tensorboard \
     --resume-from-checkpoint auto \
+    --per-device-batch-size 8 \
     $PUSH_FLAGS \
     $EXTRA_ARGS \
 "]
