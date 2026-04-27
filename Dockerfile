@@ -266,8 +266,8 @@ echo '------------------------------------------------------'; \
 exec python -m training.train \
     --model-name Qwen/Qwen2.5-3B-Instruct \
     --max-steps 15 \
-    --save-steps 1 \
-    --save-total-limit 15 \
+    --save-steps 3 \
+    --save-total-limit 6 \
     --output-dir /app/checkpoints \
     --num-generations 8 \
     --grad-accum-steps 4 \
