@@ -7,6 +7,7 @@ training loops are interchangeable. Adds v2-specific metadata fields.
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, Optional
 
 from survivecity_v2_env.models import (
@@ -35,6 +36,14 @@ logger = logging.getLogger(__name__)
 
 
 N_AGENTS = 5
+
+# Log a periodic [v2 STEP] every Nth game-step (and an [v2 END] summary at
+# episode terminus). Default 8 → ~7-10 step lines per ~60-step episode plus
+# START/END = ~9-12 lines/episode. Override with SC_STEP_LOG_EVERY=0 to
+# silence step logs entirely (useful on DGX where stdout I/O is the bottleneck
+# at high num_generations × num_scenarios). Set to 1 to restore old verbose
+# behaviour for debugging a single rollout.
+_STEP_LOG_EVERY = int(os.environ.get("SC_STEP_LOG_EVERY", "8"))
 
 
 class SurviveCityV2Env:
@@ -122,11 +131,29 @@ class SurviveCityV2Env:
             self._cumulative_rewards.get(parsed.agent_id, 0.0) + raw
         )
 
-        logger.info(
-            f"[v2 STEP] ep={self._episode_id} step={self._episode.step_count} "
-            f"agent=A{parsed.agent_id} action={parsed.action_type} "
-            f"reward={clipped:.4f} raw={raw:+.4f} done={self._episode.done}"
+        # Sampled step log: keep stdout small on DGX where 8 generations × 200
+        # scenarios × 60 steps × 5 agents would otherwise emit ~480k lines/run.
+        # Log on the first agent of every Nth game-step, on terminal events,
+        # and on rare-but-interesting actions (vote/scan/inject). Routine
+        # wait/forage/move steps drop to debug. Tune via SC_STEP_LOG_EVERY.
+        _interesting = parsed.action_type in {"vote_lockout", "scan", "inject", "broadcast"}
+        _periodic = (
+            _STEP_LOG_EVERY > 0
+            and parsed.agent_id == 0
+            and (self._episode.step_count % _STEP_LOG_EVERY == 0)
         )
+        if self._episode.done or _interesting or _periodic:
+            logger.info(
+                f"[v2 STEP] ep={self._episode_id} step={self._episode.step_count} "
+                f"agent=A{parsed.agent_id} action={parsed.action_type} "
+                f"reward={clipped:.4f} raw={raw:+.4f} done={self._episode.done}"
+            )
+        else:
+            logger.debug(
+                f"[v2 STEP] ep={self._episode_id} step={self._episode.step_count} "
+                f"agent=A{parsed.agent_id} action={parsed.action_type} "
+                f"reward={clipped:.4f} raw={raw:+.4f} done={self._episode.done}"
+            )
 
         # If all alive agents have acted this step, advance zombies + step
         alive_count = sum(1 for a in self._episode.agents if a.is_alive)
@@ -159,6 +186,12 @@ class SurviveCityV2Env:
                         self._cumulative_rewards[ag.agent_id] = (
                             self._cumulative_rewards.get(ag.agent_id, 0.0) + term
                         )
+                _alive = sum(1 for ag in self._episode.agents if ag.is_alive)
+                _cum_total = sum(self._cumulative_rewards.values())
+                logger.info(
+                    f"[v2 END] ep={self._episode_id} steps={self._episode.step_count} "
+                    f"alive={_alive}/{N_AGENTS} cum_reward={_cum_total:+.3f}"
+                )
 
         next_id = self._get_next_alive_agent()
         if next_id is None:
