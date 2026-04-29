@@ -220,7 +220,7 @@ def run_simulation(args, out: TextIO):
     print(f"  Initial zombies: {obs['metadata']['n_zombies']}", file=out)
     print(f"  Resources: F=8, W=4, M=2 cells. Inventory cap=3 per agent.", file=out)
     print(f"  Wave schedule: t=25 (+2), t=50 (+3), t=75 (+3). Zombie cap=12.", file=out)
-    print(f"  Vote phases: t=30, 60, 90.", file=out)
+    print(f"  Vote phases: t=30, 50, 70, 90.", file=out)
     print(f"  Day/night: 0-24 day, 25-49 night, 50-74 day, 75-99 night.", file=out)
     print(file=out)
 

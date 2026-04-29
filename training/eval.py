@@ -84,7 +84,7 @@ def run_one_episode(
     actions_called = 0
 
     # Vote-phase tracking (per round)
-    vote_phases = (30, 60, 90)
+    vote_phases = (30, 50, 70, 90)
     votes_per_phase: dict[int, dict[int, Optional[int]]] = {p: {} for p in vote_phases}
 
     # Inject and broadcast tracking
@@ -207,7 +207,7 @@ def aggregate(records: list[dict]) -> dict:
 
     # Vote accuracy aggregation per phase
     phase_acc: dict[int, dict[str, float | int]] = {}
-    for phase in (30, 60, 90):
+    for phase in (30, 50, 70, 90):
         accs = [r["vote_phase_accuracy"].get(phase) for r in records]
         accs = [a for a in accs if a is not None]
         if accs:

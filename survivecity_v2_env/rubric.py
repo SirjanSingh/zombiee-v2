@@ -8,7 +8,7 @@ by game.advance_step before the next round.
 Rubrics:
   v1-derived:
     1. survival          — dense, per-step
-    2. iterated_vote     — fires once at each of t=30, 60, 90; per-vote
+    2. iterated_vote     — fires once at each of t=30, 50, 70, 90; per-vote
     3. group_outcome     — terminal
   v2-new (original 7):
     4. thirst            — dense, per-step
@@ -54,7 +54,10 @@ def _clip(score: float) -> float:
 
 
 # Vote phases by step. game.py resolves them in advance_step at step T+1.
-VOTE_PHASES: list[int] = [30, 60, 90]
+# Schedule rationale: 30 (5 steps post-biter-reveal), 50 (mid-game retry),
+# 70 (10 steps post-saboteur-reveal so cues accumulate), 90 (final, lockout
+# still has 9 steps to bite before episode end at 100).
+VOTE_PHASES: list[int] = [30, 50, 70, 90]
 
 
 # ---------------------------------------------------------------------------

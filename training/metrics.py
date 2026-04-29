@@ -73,7 +73,8 @@ class RewardCallStats:
     n_healthy_survived: int = 0
     n_infected_hidden: int = 0
     n_reached_vote30: int = 0
-    n_reached_vote60: int = 0
+    n_reached_vote50: int = 0
+    n_reached_vote70: int = 0
     n_reached_vote90: int = 0
     final_step_mean: float = 0.0
 
@@ -197,7 +198,8 @@ class MetricsLogger:
             s.n_healthy_survived = int(terminal_summary.get("n_healthy_survived", 0))
             s.n_infected_hidden = int(terminal_summary.get("n_infected_hidden", 0))
             s.n_reached_vote30 = int(terminal_summary.get("n_reached_vote30", 0))
-            s.n_reached_vote60 = int(terminal_summary.get("n_reached_vote60", 0))
+            s.n_reached_vote50 = int(terminal_summary.get("n_reached_vote50", 0))
+            s.n_reached_vote70 = int(terminal_summary.get("n_reached_vote70", 0))
             s.n_reached_vote90 = int(terminal_summary.get("n_reached_vote90", 0))
             s.final_step_mean = float(terminal_summary.get("final_step_mean", 0.0))
         return s
@@ -318,7 +320,8 @@ def build_terminal_summary(final_obs_per_completion: list[dict]) -> dict[str, An
     # latent state at episode end.
     n_infected_hidden = 0
     n_reached_vote30 = 0
-    n_reached_vote60 = 0
+    n_reached_vote50 = 0
+    n_reached_vote70 = 0
     n_reached_vote90 = 0
     final_steps: list[int] = []
     for o in final_obs_per_completion:
@@ -334,8 +337,10 @@ def build_terminal_summary(final_obs_per_completion: list[dict]) -> dict[str, An
         final_steps.append(s)
         if s >= 30:
             n_reached_vote30 += 1
-        if s >= 60:
-            n_reached_vote60 += 1
+        if s >= 50:
+            n_reached_vote50 += 1
+        if s >= 70:
+            n_reached_vote70 += 1
         if s >= 90:
             n_reached_vote90 += 1
     return {
@@ -343,7 +348,8 @@ def build_terminal_summary(final_obs_per_completion: list[dict]) -> dict[str, An
         "n_healthy_survived": n_healthy_survived,
         "n_infected_hidden": n_infected_hidden,
         "n_reached_vote30": n_reached_vote30,
-        "n_reached_vote60": n_reached_vote60,
+        "n_reached_vote50": n_reached_vote50,
+        "n_reached_vote70": n_reached_vote70,
         "n_reached_vote90": n_reached_vote90,
         "final_step_mean": (
             float(statistics.mean(final_steps)) if final_steps else 0.0

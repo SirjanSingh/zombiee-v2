@@ -396,9 +396,9 @@ def _do_vote_lockout(
     state: EpisodeState,
     vote_target: Optional[int],
 ) -> None:
-    """Record a vote — only valid at exactly t in {30, 60, 90}."""
+    """Record a vote — only valid at exactly t in {30, 50, 70, 90}."""
     s = state.step_count
-    if s not in (30, 60, 90):
+    if s not in (30, 50, 70, 90):
         return
     if vote_target is None:
         state.votes_cast.setdefault(s, {})[agent.agent_id] = None
@@ -949,7 +949,7 @@ def advance_step(state: EpisodeState) -> None:
     _check_reveals(state)
 
     # Vote resolution: a vote at step T is resolved at step T+1
-    for vstep in (30, 60, 90):
+    for vstep in (30, 50, 70, 90):
         if state.step_count == vstep + 1 and vstep not in state.vote_resolved_steps:
             _resolve_vote_phase(state, vstep)
 

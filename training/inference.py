@@ -128,7 +128,7 @@ def random_action(agent_id: int, obs: dict, rng: Optional[random.Random] = None)
     """Random baseline action. Casts a random vote at vote-phase steps."""
     rng = rng or random
     s = obs.get("step_count", 0)
-    if s in (30, 60, 90):
+    if s in (30, 50, 70, 90):
         return {
             "agent_id": agent_id,
             "action_type": "vote_lockout",
@@ -245,7 +245,7 @@ def forage_heuristic_action(
 
     # Vote phase always takes precedence over forage routing — the rollout
     # needs to actually exercise the vote rubric for the gradient to see it.
-    if s in (30, 60, 90):
+    if s in (30, 50, 70, 90):
         choices = [i for i in range(5) if i != agent_id]
         return {
             "agent_id": agent_id,

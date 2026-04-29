@@ -383,8 +383,9 @@ def plot_survival_rates(records: list[dict], out_path: str) -> Optional[str]:
     ax_top.grid(True, alpha=0.3)
 
     ax_bot.plot(xs, rate("n_reached_vote30"), label="reached vote 1 (t=30)", linewidth=1.5)
-    ax_bot.plot(xs, rate("n_reached_vote60"), label="reached vote 2 (t=60)", linewidth=1.5)
-    ax_bot.plot(xs, rate("n_reached_vote90"), label="reached vote 3 (t=90)", linewidth=1.5)
+    ax_bot.plot(xs, rate("n_reached_vote50"), label="reached vote 2 (t=50)", linewidth=1.5)
+    ax_bot.plot(xs, rate("n_reached_vote70"), label="reached vote 3 (t=70)", linewidth=1.5)
+    ax_bot.plot(xs, rate("n_reached_vote90"), label="reached vote 4 (t=90)", linewidth=1.5)
     ax_bot.set_ylabel("rate (per rollout in group)")
     ax_bot.set_ylim(-0.02, 1.02)
     ax_bot.set_xlabel("reward_fn call")

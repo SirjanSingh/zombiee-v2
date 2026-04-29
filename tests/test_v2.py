@@ -540,7 +540,7 @@ def test_metrics_logger_writes_jsonl_and_summary(tmp_path):
         ],
         terminal_summary={
             "n_done": 4, "n_healthy_survived": 1, "n_infected_hidden": 0,
-            "n_reached_vote30": 0, "n_reached_vote60": 0, "n_reached_vote90": 0,
+            "n_reached_vote30": 0, "n_reached_vote50": 0, "n_reached_vote70": 0, "n_reached_vote90": 0,
             "final_step_mean": 18.5,
         },
         training_step=1,
@@ -633,6 +633,8 @@ def test_metrics_logger_terminal_summary_helper():
     assert s["n_healthy_survived"] == 1
     assert s["n_infected_hidden"] == 1  # A0 is starting_infected & latent in obs[0]
     assert s["n_reached_vote30"] == 1  # obs[0] reached step 100; obs[1] did not
+    assert s["n_reached_vote50"] == 1
+    assert s["n_reached_vote70"] == 1
     assert s["n_reached_vote90"] == 1  # only obs[0]
     assert s["final_step_mean"] == pytest.approx(59.0, abs=1e-6)
 
@@ -666,7 +668,8 @@ def test_plots_generate_pngs(tmp_path):
             terminal_summary={
                 "n_done": i, "n_healthy_survived": min(i, 1),
                 "n_infected_hidden": 0, "n_reached_vote30": i,
-                "n_reached_vote60": max(0, i - 1), "n_reached_vote90": 0,
+                "n_reached_vote50": max(0, i - 1), "n_reached_vote70": max(0, i - 2),
+                "n_reached_vote90": 0,
                 "final_step_mean": 18.0 + i * 5,
             },
             training_step=i + 1,

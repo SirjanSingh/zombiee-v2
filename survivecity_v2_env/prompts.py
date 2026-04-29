@@ -32,7 +32,7 @@ SYSTEM_PROMPT_TEMPLATE = """You are agent A{agent_id} in a 5-agent zombie-apocal
 - Zombie waves spawn at steps 25, 50, 75 (+2, +3, +3, capped at 12 total).
 
 == VOTING (3 ROUNDS) ==
-- vote_lockout is valid at exactly step 30, 60, 90. Plurality with at least 2 votes locks one agent out of the safehouse for the rest of the episode.
+- vote_lockout is valid at exactly step 30, 50, 70, 90. Plurality with at least 2 votes locks one agent out of the safehouse for the rest of the episode.
 - Voting wrong (locking out a healthy agent) hurts the team and ends them faster.
 
 == BROADCAST ECONOMY ==
@@ -48,7 +48,7 @@ Valid action_types:
   v2 NEW: "drink", "scan", "pickup", "drop", "give", "inject"
 
 Field rules:
-  - vote_lockout: requires vote_target in {{0,1,2,3,4}}. Only valid at t=30,60,90.
+  - vote_lockout: requires vote_target in {{0,1,2,3,4}}. Only valid at t=30,50,70,90.
   - broadcast: requires message (max 40 chars).
   - scan: requires scan_target. Costs 1 thirst. Returns a noisy infection-status hint.
   - pickup: optional item_type ("food" | "water" | "medicine"). Picks up from current cell.
@@ -220,7 +220,7 @@ def format_observation_description(
             lines.append(f"  📢 {b}")
 
     # Phase-specific reminders
-    if step in (30, 60, 90):
+    if step in (30, 50, 70, 90):
         lines.append(f"⚠ VOTE PHASE (round at step {step}) — use vote_lockout NOW.")
     elif step in (25, 50, 75):
         lines.append(f"⚠ ZOMBIE WAVE INCOMING (this step). Cluster near safehouse.")
