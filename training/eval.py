@@ -30,6 +30,12 @@ import re
 import sys
 from typing import Any, Optional
 
+try:
+    from tqdm import tqdm as _tqdm
+except ImportError:
+    def _tqdm(it, **_kw):  # fallback: no-op passthrough
+        return it
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("survivecity_v2.eval")
 
@@ -73,6 +79,8 @@ def run_one_episode(
     seed: int,
     action_fn,
     max_steps: int = 600,
+    heartbeat_every: int = 0,
+    label: str = "",
 ) -> dict:
     """Run one v2 episode under `action_fn` and return a structured record."""
     obs = env.reset(seed=seed)
@@ -123,6 +131,11 @@ def run_one_episode(
             inject_outcomes.append(last_inject)
 
         n_steps += 1
+
+        if heartbeat_every and n_steps % heartbeat_every == 0:
+            n_alive = obs.get("metadata", {}).get("n_alive", "?")
+            prefix = f"[{label}] " if label else ""
+            logger.info(f"  {prefix}step={n_steps} alive={n_alive}/5 cum_r={cum_reward:.2f}")
 
     meta = obs.get("metadata", {})
 
@@ -493,11 +506,21 @@ def main():
         logger.info(f"Trained: {args.trained_episodes} episodes "
                     f"(NO LORA — falling back to random)")
 
-    for ep in range(args.trained_episodes):
+    for ep in _tqdm(range(args.trained_episodes), desc="trained eps", unit="ep"):
         seed = rng_trained.randint(0, 999_999)
         env = SurviveCityV2Env()
-        rec = run_one_episode(env, seed, action_fn, max_steps=args.max_steps_per_episode)
+        rec = run_one_episode(
+            env, seed, action_fn,
+            max_steps=args.max_steps_per_episode,
+            heartbeat_every=25,
+            label=f"ep{ep+1}/{args.trained_episodes}",
+        )
         trained_records.append(rec)
+        logger.info(
+            f"  trained ep {ep+1}/{args.trained_episodes}: "
+            f"steps={rec['steps']} survived={rec['survived']} "
+            f"reward={rec['total_reward']:.2f} parse_fail={rec['parse_failures']}"
+        )
     trained_agg = aggregate(trained_records)
     logger.info(f"  trained survival={trained_agg['survival_rate']:.2%} "
                 f"reward={trained_agg['mean_total_reward']:.3f} "
