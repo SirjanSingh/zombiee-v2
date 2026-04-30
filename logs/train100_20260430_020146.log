@@ -1,0 +1,1431 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-04-29 20:31:49,199 INFO checkpoints: no checkpoint-* dirs under /app/checkpoints (fresh start).
+2026-04-29 20:31:49,210 INFO mem watchdog started (interval=30s)
+2026-04-29 20:31:49,383 INFO GPU=Tesla V100-SXM2-32GB cc=7.0 cuda=12.1 bf16=False fp16=True VRAM free=32.9GB total=34.1GB
+2026-04-29 20:31:49,384 INFO [mem] RSS=0.3GB sys_avail=467.8GB  GPU_free=32.9/34.1GB alloc=0.0GB reserved=0.0GB
+2026-04-29 20:31:49,384 INFO VRAM holder disabled (commented out). Training uses whatever the GPU has free.
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Downloading shards:  50%|█████     | 1/2 [00:35<00:35, 35.96s/it]Downloading shards: 100%|██████████| 2/2 [00:57<00:00, 27.36s/it]Downloading shards: 100%|██████████| 2/2 [00:57<00:00, 28.65s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.31s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.69s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.78s/it]
+`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+build_scenario_dataset:   0%|          | 0/200 [00:00<?, ?it/s]build_scenario_dataset: 100%|██████████| 200/200 [00:00<00:00, 2305.94it/s]
+2026-04-29 20:33:06,605 WARNING Detected kernel version 3.10.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+max_steps is given, it will override any value given in num_train_epochs
+  0%|          | 0/100 [00:00<?, ?it/s]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #1:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #1:  50%|█████     | 4/8 [00:00<00:00, 39.18it/s][A
+                                                           [A
+reward_fn #2:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #2:  50%|█████     | 4/8 [00:00<00:00, 37.92it/s][A
+                                                           [A
+reward_fn #3:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #3:  62%|██████▎   | 5/8 [00:00<00:00, 39.48it/s][A
+                                                           [A
+reward_fn #4:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #4:  50%|█████     | 4/8 [00:00<00:00, 37.28it/s][A
+reward_fn #4: 100%|██████████| 8/8 [00:00<00:00, 37.53it/s][A
+                                                           [A  1%|          | 1/100 [02:26<4:01:05, 146.11s/it]                                                  {'loss': 0.0, 'grad_norm': nan, 'learning_rate': 5e-06, 'rewards/reward_fn': -0.9161874800920486, 'reward': -0.9161874800920486, 'reward_std': 0.02072435326408595, 'completion_length': 22.0, 'kl': 0.0, 'epoch': 0.02}
+  1%|          | 1/100 [02:26<4:01:05, 146.11s/it]
+reward_fn #5:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #5:  50%|█████     | 4/8 [00:00<00:00, 39.85it/s][A
+                                                           [A
+reward_fn #6:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #6:  50%|█████     | 4/8 [00:00<00:00, 39.75it/s][A
+                                                           [A
+reward_fn #7:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #7:  50%|█████     | 4/8 [00:00<00:00, 36.79it/s][A
+reward_fn #7: 100%|██████████| 8/8 [00:00<00:00, 38.47it/s][A
+                                                           [A
+reward_fn #8:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #8:  50%|█████     | 4/8 [00:00<00:00, 37.22it/s][A
+                                                           [A  2%|▏         | 2/100 [05:43<4:47:50, 176.23s/it]                                                  {'loss': 0.0, 'grad_norm': 19.889022827148438, 'learning_rate': 4.95e-06, 'rewards/reward_fn': -0.7999374717473984, 'reward': -0.7999374717473984, 'reward_std': 0.07797953952103853, 'completion_length': 29.0, 'kl': 0.0, 'epoch': 0.04}
+  2%|▏         | 2/100 [05:43<4:47:50, 176.23s/it]
+reward_fn #9:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #9:  50%|█████     | 4/8 [00:00<00:00, 37.76it/s][A
+                                                           [A
+reward_fn #10:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #10:  50%|█████     | 4/8 [00:00<00:00, 37.94it/s][A
+reward_fn #10: 100%|██████████| 8/8 [00:00<00:00, 38.66it/s][A
+                                                            [A
+reward_fn #11:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #11:  50%|█████     | 4/8 [00:00<00:00, 35.85it/s][A
+reward_fn #11: 100%|██████████| 8/8 [00:00<00:00, 37.18it/s][A
+                                                            [A
+reward_fn #12:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #12:  50%|█████     | 4/8 [00:00<00:00, 38.18it/s][A
+reward_fn #12: 100%|██████████| 8/8 [00:00<00:00, 38.13it/s][A
+                                                            [A  3%|▎         | 3/100 [08:06<4:20:06, 160.89s/it]                                                  {'loss': 0.0001, 'grad_norm': 9.091608047485352, 'learning_rate': 4.9000000000000005e-06, 'rewards/reward_fn': -0.7069062441587448, 'reward': -0.7069062441587448, 'reward_std': 0.024840920232236385, 'completion_length': 19.0, 'kl': 0.000650696048012378, 'epoch': 0.06}
+  3%|▎         | 3/100 [08:06<4:20:06, 160.89s/it]
+reward_fn #13:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #13:  62%|██████▎   | 5/8 [00:00<00:00, 43.03it/s][A
+                                                            [A
+reward_fn #14:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #14:  50%|█████     | 4/8 [00:00<00:00, 39.63it/s][A
+                                                            [A
+reward_fn #15:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #15:  62%|██████▎   | 5/8 [00:00<00:00, 41.53it/s][A
+                                                            [A
+reward_fn #16:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #16:  62%|██████▎   | 5/8 [00:00<00:00, 40.78it/s][A
+                                                            [A  4%|▍         | 4/100 [10:09<3:53:41, 146.06s/it]                                                  {'loss': 0.0003, 'grad_norm': 4.368764877319336, 'learning_rate': 4.85e-06, 'rewards/reward_fn': -0.640687495470047, 'reward': -0.640687495470047, 'reward_std': 0.14949370420072228, 'completion_length': 16.5, 'kl': 0.002578247425844893, 'epoch': 0.08}
+  4%|▍         | 4/100 [10:09<3:53:41, 146.06s/it]
+reward_fn #17:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #17:  62%|██████▎   | 5/8 [00:00<00:00, 42.56it/s][A
+                                                            [A
+reward_fn #18:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #18:  50%|█████     | 4/8 [00:00<00:00, 39.45it/s][A
+                                                            [A
+reward_fn #19:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #19:  50%|█████     | 4/8 [00:00<00:00, 37.22it/s][A
+reward_fn #19: 100%|██████████| 8/8 [00:00<00:00, 38.38it/s][A
+                                                            [A
+reward_fn #20:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #20:  50%|█████     | 4/8 [00:00<00:00, 37.89it/s][A
+reward_fn #20: 100%|██████████| 8/8 [00:00<00:00, 38.33it/s][A
+                                                            [A  5%|▌         | 5/100 [12:17<3:41:00, 139.58s/it]                                                  {'loss': 0.0009, 'grad_norm': nan, 'learning_rate': 4.85e-06, 'rewards/reward_fn': -1.0396875143051147, 'reward': -1.0396875143051147, 'reward_std': 0.010886200223467313, 'completion_length': 16.75, 'kl': 0.008912457789392647, 'epoch': 0.1}
+  5%|▌         | 5/100 [12:17<3:41:00, 139.58s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #21:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #21:  62%|██████▎   | 5/8 [00:00<00:00, 44.13it/s][A
+                                                            [A
+reward_fn #22:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #22:  50%|█████     | 4/8 [00:00<00:00, 39.61it/s][A
+                                                            [A
+reward_fn #23:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #23:  62%|██████▎   | 5/8 [00:00<00:00, 40.35it/s][A
+                                                            [A
+reward_fn #24:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #24:  62%|██████▎   | 5/8 [00:00<00:00, 40.55it/s][A
+                                                            [A  6%|▌         | 6/100 [14:09<3:23:43, 130.04s/it]                                                  {'loss': 0.0004, 'grad_norm': 20.54234504699707, 'learning_rate': 4.800000000000001e-06, 'rewards/reward_fn': -0.8188124895095825, 'reward': -0.8188124895095825, 'reward_std': 0.13112564384937286, 'completion_length': 13.5, 'kl': 0.0036300804058555514, 'epoch': 0.12}
+  6%|▌         | 6/100 [14:09<3:23:43, 130.04s/it]
+reward_fn #25:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #25:  50%|█████     | 4/8 [00:00<00:00, 37.02it/s][A
+reward_fn #25: 100%|██████████| 8/8 [00:00<00:00, 37.37it/s][A
+                                                            [A
+reward_fn #26:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #26:  50%|█████     | 4/8 [00:00<00:00, 36.76it/s][A
+reward_fn #26: 100%|██████████| 8/8 [00:00<00:00, 38.09it/s][A
+                                                            [A
+reward_fn #27:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #27:  50%|█████     | 4/8 [00:00<00:00, 35.86it/s][A
+reward_fn #27: 100%|██████████| 8/8 [00:00<00:00, 36.28it/s][A
+                                                            [A
+reward_fn #28:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #28:  62%|██████▎   | 5/8 [00:00<00:00, 42.99it/s][A
+                                                            [A  7%|▋         | 7/100 [16:40<3:32:30, 137.10s/it]                                                  {'loss': 0.001, 'grad_norm': 3.7583465576171875, 'learning_rate': 4.75e-06, 'rewards/reward_fn': -0.6950937509536743, 'reward': -0.6950937509536743, 'reward_std': 0.038690175861120224, 'completion_length': 16.75, 'kl': 0.010445918756886385, 'epoch': 0.14}
+  7%|▋         | 7/100 [16:40<3:32:30, 137.10s/it]
+reward_fn #29:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #29:  62%|██████▎   | 5/8 [00:00<00:00, 41.95it/s][A
+                                                            [A
+reward_fn #30:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #30:  62%|██████▎   | 5/8 [00:00<00:00, 44.29it/s][A
+                                                            [A
+reward_fn #31:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #31:  62%|██████▎   | 5/8 [00:00<00:00, 40.19it/s][A
+                                                            [A
+reward_fn #32:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #32:  62%|██████▎   | 5/8 [00:00<00:00, 41.23it/s][A
+                                                            [A  8%|▊         | 8/100 [26:51<7:21:27, 287.91s/it]                                                  {'loss': 0.003, 'grad_norm': 10.42988395690918, 'learning_rate': 4.7e-06, 'rewards/reward_fn': -0.7225625216960907, 'reward': -0.7225625216960907, 'reward_std': 0.01791638834401965, 'completion_length': 75.25, 'kl': 0.029951297134175547, 'epoch': 0.16}
+  8%|▊         | 8/100 [26:51<7:21:27, 287.91s/it]
+reward_fn #33:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #33:  62%|██████▎   | 5/8 [00:00<00:00, 39.02it/s][A
+                                                            [A
+reward_fn #34:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #34:  50%|█████     | 4/8 [00:00<00:00, 38.44it/s][A
+reward_fn #34: 100%|██████████| 8/8 [00:00<00:00, 38.90it/s][A
+                                                            [A
+reward_fn #35:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #35:  50%|█████     | 4/8 [00:00<00:00, 39.46it/s][A
+reward_fn #35: 100%|██████████| 8/8 [00:00<00:00, 38.21it/s][A
+                                                            [A
+reward_fn #36:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #36:  50%|█████     | 4/8 [00:00<00:00, 34.77it/s][A
+reward_fn #36: 100%|██████████| 8/8 [00:00<00:00, 35.25it/s][A
+                                                            [A  9%|▉         | 9/100 [31:00<6:58:14, 275.76s/it]                                                  {'loss': 0.0069, 'grad_norm': 7.302149772644043, 'learning_rate': 4.65e-06, 'rewards/reward_fn': -0.7280937284231186, 'reward': -0.7280937284231186, 'reward_std': 0.23905017226934433, 'completion_length': 30.5, 'kl': 0.06941465754061937, 'epoch': 0.18}
+  9%|▉         | 9/100 [31:00<6:58:14, 275.76s/it]
+reward_fn #37:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #37:  50%|█████     | 4/8 [00:00<00:00, 39.96it/s][A
+reward_fn #37: 100%|██████████| 8/8 [00:00<00:00, 39.63it/s][A
+                                                            [A
+reward_fn #38:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #38:  50%|█████     | 4/8 [00:00<00:00, 39.05it/s][A
+reward_fn #38: 100%|██████████| 8/8 [00:00<00:00, 39.28it/s][A
+                                                            [A
+reward_fn #39:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #39:  62%|██████▎   | 5/8 [00:00<00:00, 44.75it/s][A
+                                                            [A
+reward_fn #40:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #40:  62%|██████▎   | 5/8 [00:00<00:00, 40.91it/s][A
+                                                            [A 10%|█         | 10/100 [41:42<9:43:15, 388.84s/it]                                                   {'loss': 0.0052, 'grad_norm': 15.195643424987793, 'learning_rate': 4.600000000000001e-06, 'rewards/reward_fn': -0.6030624657869339, 'reward': -0.6030624657869339, 'reward_std': 0.033539741300046444, 'completion_length': 77.0, 'kl': 0.05217456351965666, 'epoch': 0.2}
+ 10%|█         | 10/100 [41:42<9:43:15, 388.84s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #41:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #41:  50%|█████     | 4/8 [00:00<00:00, 39.06it/s][A
+reward_fn #41: 100%|██████████| 8/8 [00:00<00:00, 39.24it/s][A
+                                                            [A
+reward_fn #42:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #42:  62%|██████▎   | 5/8 [00:00<00:00, 44.81it/s][A
+                                                            [A
+reward_fn #43:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #43:  50%|█████     | 4/8 [00:00<00:00, 37.02it/s][A
+reward_fn #43: 100%|██████████| 8/8 [00:00<00:00, 38.32it/s][A
+                                                            [A
+reward_fn #44:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #44:  50%|█████     | 4/8 [00:00<00:00, 39.15it/s][A
+reward_fn #44: 100%|██████████| 8/8 [00:00<00:00, 38.73it/s][A
+                                                            [A 11%|█         | 11/100 [52:30<11:34:28, 468.18s/it]                                                    {'loss': 0.0055, 'grad_norm': 5.066953659057617, 'learning_rate': 4.5500000000000005e-06, 'rewards/reward_fn': -0.4989999979734421, 'reward': -0.4989999979734421, 'reward_std': 0.059266190975904465, 'completion_length': 77.5, 'kl': 0.054687933064997196, 'epoch': 0.22}
+ 11%|█         | 11/100 [52:30<11:34:28, 468.18s/it]
+reward_fn #45:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #45:  50%|█████     | 4/8 [00:00<00:00, 39.02it/s][A
+reward_fn #45: 100%|██████████| 8/8 [00:00<00:00, 38.81it/s][A
+                                                            [A
+reward_fn #46:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #46:  50%|█████     | 4/8 [00:00<00:00, 35.29it/s][A
+reward_fn #46: 100%|██████████| 8/8 [00:00<00:00, 36.14it/s][A
+                                                            [A
+reward_fn #47:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #47:  50%|█████     | 4/8 [00:00<00:00, 36.80it/s][A
+reward_fn #47: 100%|██████████| 8/8 [00:00<00:00, 37.32it/s][A
+                                                            [A
+reward_fn #48:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #48:  62%|██████▎   | 5/8 [00:00<00:00, 42.33it/s][A
+                                                            [A 12%|█▏        | 12/100 [55:30<9:18:11, 380.59s/it]                                                    {'loss': 0.0079, 'grad_norm': 10.258124351501465, 'learning_rate': 4.5e-06, 'rewards/reward_fn': -1.0001875311136246, 'reward': -1.0001875311136246, 'reward_std': 0.028463080059736967, 'completion_length': 20.75, 'kl': 0.0790722519159317, 'epoch': 0.24}
+ 12%|█▏        | 12/100 [55:30<9:18:11, 380.59s/it]
+reward_fn #49:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #49:  50%|█████     | 4/8 [00:00<00:00, 36.96it/s][A
+reward_fn #49: 100%|██████████| 8/8 [00:00<00:00, 36.85it/s][A
+                                                            [A
+reward_fn #50:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #50:  50%|█████     | 4/8 [00:00<00:00, 37.46it/s][A
+reward_fn #50: 100%|██████████| 8/8 [00:00<00:00, 37.95it/s][A
+                                                            [A
+reward_fn #51:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #51:  62%|██████▎   | 5/8 [00:00<00:00, 45.12it/s][A
+                                                            [A
+reward_fn #52:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #52:  62%|██████▎   | 5/8 [00:00<00:00, 40.39it/s][A
+                                                            [A 13%|█▎        | 13/100 [58:54<7:54:08, 326.99s/it]                                                   {'loss': 0.0134, 'grad_norm': 7.8888139724731445, 'learning_rate': 4.450000000000001e-06, 'rewards/reward_fn': -0.5152187496423721, 'reward': -0.5152187496423721, 'reward_std': 0.05530960578471422, 'completion_length': 25.0, 'kl': 0.13408861309289932, 'epoch': 0.26}
+ 13%|█▎        | 13/100 [58:54<7:54:08, 326.99s/it]
+reward_fn #53:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #53:  50%|█████     | 4/8 [00:00<00:00, 34.27it/s][A
+reward_fn #53: 100%|██████████| 8/8 [00:00<00:00, 36.07it/s][A
+                                                            [A
+reward_fn #54:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #54:  62%|██████▎   | 5/8 [00:00<00:00, 39.86it/s][A
+                                                            [A
+reward_fn #55:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #55:  62%|██████▎   | 5/8 [00:00<00:00, 42.29it/s][A
+                                                            [A
+reward_fn #56:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #56:  62%|██████▎   | 5/8 [00:00<00:00, 41.93it/s][A
+                                                            [A 14%|█▍        | 14/100 [1:09:29<10:02:01, 420.01s/it]                                                      {'loss': 0.0143, 'grad_norm': 16.428035736083984, 'learning_rate': 4.4e-06, 'rewards/reward_fn': -0.17631250247359276, 'reward': -0.17631250247359276, 'reward_std': 0.09821848478168249, 'completion_length': 82.25, 'kl': 0.1426482405513525, 'epoch': 0.28}
+ 14%|█▍        | 14/100 [1:09:29<10:02:01, 420.01s/it]
+reward_fn #57:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #57:  62%|██████▎   | 5/8 [00:00<00:00, 45.35it/s][A
+                                                            [A
+reward_fn #58:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #58:  62%|██████▎   | 5/8 [00:00<00:00, 41.09it/s][A
+                                                            [A
+reward_fn #59:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #59:  62%|██████▎   | 5/8 [00:00<00:00, 45.18it/s][A
+                                                            [A
+reward_fn #60:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #60:  62%|██████▎   | 5/8 [00:00<00:00, 44.81it/s][A
+                                                            [A 15%|█▌        | 15/100 [1:14:01<8:51:44, 375.35s/it]                                                      {'loss': 0.0162, 'grad_norm': 8.140278816223145, 'learning_rate': 4.350000000000001e-06, 'rewards/reward_fn': -1.0638750195503235, 'reward': -1.0638750195503235, 'reward_std': 0.03365691751241684, 'completion_length': 34.0, 'kl': 0.1619274546392262, 'epoch': 0.3}
+ 15%|█▌        | 15/100 [1:14:01<8:51:44, 375.35s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #61:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #61:  62%|██████▎   | 5/8 [00:00<00:00, 41.23it/s][A
+                                                            [A
+reward_fn #62:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #62:  62%|██████▎   | 5/8 [00:00<00:00, 42.36it/s][A
+                                                            [A
+reward_fn #63:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #63:  62%|██████▎   | 5/8 [00:00<00:00, 43.64it/s][A
+                                                            [A
+reward_fn #64:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #64:  50%|█████     | 4/8 [00:00<00:00, 37.67it/s][A
+reward_fn #64: 100%|██████████| 8/8 [00:00<00:00, 37.95it/s][A
+                                                            [A 16%|█▌        | 16/100 [1:18:09<7:51:52, 337.05s/it]                                                     {'loss': 0.0175, 'grad_norm': 11.404274940490723, 'learning_rate': 4.3e-06, 'rewards/reward_fn': -0.8693437725305557, 'reward': -0.8693437725305557, 'reward_std': 0.05359191820025444, 'completion_length': 32.5, 'kl': 0.17456120997667313, 'epoch': 0.32}
+ 16%|█▌        | 16/100 [1:18:09<7:51:52, 337.05s/it]
+reward_fn #65:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #65:  50%|█████     | 4/8 [00:00<00:00, 38.54it/s][A
+reward_fn #65: 100%|██████████| 8/8 [00:00<00:00, 39.35it/s][A
+                                                            [A
+reward_fn #66:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #66:  50%|█████     | 4/8 [00:00<00:00, 36.39it/s][A
+reward_fn #66: 100%|██████████| 8/8 [00:00<00:00, 35.10it/s][A
+                                                            [A
+reward_fn #67:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #67:  62%|██████▎   | 5/8 [00:00<00:00, 41.19it/s][A
+                                                            [A
+reward_fn #68:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #68:  50%|█████     | 4/8 [00:00<00:00, 38.96it/s][A
+reward_fn #68: 100%|██████████| 8/8 [00:00<00:00, 39.42it/s][A
+                                                            [A 17%|█▋        | 17/100 [1:22:23<7:11:54, 312.22s/it]                                                     {'loss': 0.0142, 'grad_norm': 14.3567476272583, 'learning_rate': 4.25e-06, 'rewards/reward_fn': -0.8048125207424164, 'reward': -0.8048125207424164, 'reward_std': 0.10968590248376131, 'completion_length': 31.0, 'kl': 0.1424615834839642, 'epoch': 0.34}
+ 17%|█▋        | 17/100 [1:22:23<7:11:54, 312.22s/it]
+reward_fn #69:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #69:  50%|█████     | 4/8 [00:00<00:00, 39.66it/s][A
+                                                            [A
+reward_fn #70:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #70:  50%|█████     | 4/8 [00:00<00:00, 37.27it/s][A
+                                                            [A
+reward_fn #71:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #71:  50%|█████     | 4/8 [00:00<00:00, 37.92it/s][A
+reward_fn #71: 100%|██████████| 8/8 [00:00<00:00, 38.26it/s][A
+                                                            [A
+reward_fn #72:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #72:  50%|█████     | 4/8 [00:00<00:00, 36.78it/s][A
+reward_fn #72: 100%|██████████| 8/8 [00:00<00:00, 37.62it/s][A
+                                                            [A 18%|█▊        | 18/100 [1:24:39<5:54:03, 259.07s/it]                                                     {'loss': 0.008, 'grad_norm': 13.571937561035156, 'learning_rate': 4.2000000000000004e-06, 'rewards/reward_fn': -0.5717812478542328, 'reward': -0.5717812478542328, 'reward_std': 0.09997242502868176, 'completion_length': 17.25, 'kl': 0.07958822479849914, 'epoch': 0.36}
+ 18%|█▊        | 18/100 [1:24:39<5:54:03, 259.07s/it]
+reward_fn #73:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #73:  62%|██████▎   | 5/8 [00:00<00:00, 47.31it/s][A
+                                                            [A
+reward_fn #74:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #74:  62%|██████▎   | 5/8 [00:00<00:00, 43.05it/s][A
+                                                            [A
+reward_fn #75:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #75:  62%|██████▎   | 5/8 [00:00<00:00, 43.32it/s][A
+                                                            [A
+reward_fn #76:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #76:  62%|██████▎   | 5/8 [00:00<00:00, 42.71it/s][A
+                                                            [A 19%|█▉        | 19/100 [1:27:20<5:10:13, 229.80s/it]                                                     {'loss': 0.0075, 'grad_norm': 11.52131175994873, 'learning_rate': 4.15e-06, 'rewards/reward_fn': -0.7849687784910202, 'reward': -0.7849687784910202, 'reward_std': 0.029806528356857598, 'completion_length': 19.0, 'kl': 0.07492299936711788, 'epoch': 0.38}
+ 19%|█▉        | 19/100 [1:27:20<5:10:13, 229.80s/it]
+reward_fn #77:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #77:  50%|█████     | 4/8 [00:00<00:00, 33.38it/s][A
+reward_fn #77: 100%|██████████| 8/8 [00:00<00:00, 33.12it/s][A
+                                                            [A
+reward_fn #78:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #78:  62%|██████▎   | 5/8 [00:00<00:00, 45.46it/s][A
+                                                            [A
+reward_fn #79:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #79:  62%|██████▎   | 5/8 [00:00<00:00, 45.03it/s][A
+                                                            [A
+reward_fn #80:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #80:  62%|██████▎   | 5/8 [00:00<00:00, 45.29it/s][A
+                                                            [A 20%|██        | 20/100 [1:30:29<4:50:05, 217.57s/it]                                                     {'loss': 0.014, 'grad_norm': 11.539267539978027, 'learning_rate': 4.1e-06, 'rewards/reward_fn': -0.8877187669277191, 'reward': -0.8877187669277191, 'reward_std': 0.08642759639769793, 'completion_length': 23.0, 'kl': 0.14001135807484388, 'epoch': 0.4}
+ 20%|██        | 20/100 [1:30:29<4:50:05, 217.57s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #81:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #81:  50%|█████     | 4/8 [00:00<00:00, 37.93it/s][A
+reward_fn #81: 100%|██████████| 8/8 [00:00<00:00, 38.84it/s][A
+                                                            [A
+reward_fn #82:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #82:  62%|██████▎   | 5/8 [00:00<00:00, 40.94it/s][A
+                                                            [A
+reward_fn #83:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #83:  50%|█████     | 4/8 [00:00<00:00, 38.55it/s][A
+reward_fn #83: 100%|██████████| 8/8 [00:00<00:00, 35.51it/s][A
+                                                            [A
+reward_fn #84:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #84:  62%|██████▎   | 5/8 [00:00<00:00, 47.97it/s][A
+                                                            [A 21%|██        | 21/100 [1:38:55<6:40:18, 304.03s/it]                                                     {'loss': 0.0131, 'grad_norm': 5.55564546585083, 'learning_rate': 4.05e-06, 'rewards/reward_fn': -0.7205625101923943, 'reward': -0.7205625101923943, 'reward_std': 0.12897115980740637, 'completion_length': 67.75, 'kl': 0.13076693657785654, 'epoch': 0.42}
+ 21%|██        | 21/100 [1:38:55<6:40:18, 304.03s/it]
+reward_fn #85:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #85:  62%|██████▎   | 5/8 [00:00<00:00, 43.09it/s][A
+                                                            [A
+reward_fn #86:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #86:  62%|██████▎   | 5/8 [00:00<00:00, 46.02it/s][A
+                                                            [A
+reward_fn #87:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #87:  50%|█████     | 4/8 [00:00<00:00, 39.69it/s][A
+                                                            [A
+reward_fn #88:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #88:  62%|██████▎   | 5/8 [00:00<00:00, 43.31it/s][A
+                                                            [A 22%|██▏       | 22/100 [1:42:10<5:52:50, 271.42s/it]                                                     {'loss': 0.012, 'grad_norm': 23.55381202697754, 'learning_rate': 4.000000000000001e-06, 'rewards/reward_fn': -0.9775312840938568, 'reward': -0.9775312840938568, 'reward_std': 0.04485094046685845, 'completion_length': 23.75, 'kl': 0.11956728110089898, 'epoch': 0.44}
+ 22%|██▏       | 22/100 [1:42:10<5:52:50, 271.42s/it]
+reward_fn #89:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #89:  50%|█████     | 4/8 [00:00<00:00, 39.35it/s][A
+                                                            [A
+reward_fn #90:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #90:  62%|██████▎   | 5/8 [00:00<00:00, 41.70it/s][A
+                                                            [A
+reward_fn #91:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #91:  62%|██████▎   | 5/8 [00:00<00:00, 42.66it/s][A
+                                                            [A
+reward_fn #92:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #92:  62%|██████▎   | 5/8 [00:00<00:00, 40.82it/s][A
+                                                            [A 23%|██▎       | 23/100 [1:44:41<5:01:54, 235.25s/it]                                                     {'loss': 0.0127, 'grad_norm': 9.38047981262207, 'learning_rate': 3.95e-06, 'rewards/reward_fn': -0.3020000159740448, 'reward': -0.3020000159740448, 'reward_std': 0.14195718802511692, 'completion_length': 18.5, 'kl': 0.1272892002016306, 'epoch': 0.46}
+ 23%|██▎       | 23/100 [1:44:41<5:01:54, 235.25s/it]
+reward_fn #93:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #93:  62%|██████▎   | 5/8 [00:00<00:00, 42.53it/s][A
+                                                            [A
+reward_fn #94:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #94:  62%|██████▎   | 5/8 [00:00<00:00, 40.91it/s][A
+                                                            [A
+reward_fn #95:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #95:  62%|██████▎   | 5/8 [00:00<00:00, 44.38it/s][A
+                                                            [A
+reward_fn #96:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #96:  62%|██████▎   | 5/8 [00:00<00:00, 43.61it/s][A
+                                                            [A 24%|██▍       | 24/100 [1:47:27<4:31:35, 214.42s/it]                                                     {'loss': 0.0088, 'grad_norm': 4.832093238830566, 'learning_rate': 3.900000000000001e-06, 'rewards/reward_fn': -0.7474375218153, 'reward': -0.7474375218153, 'reward_std': 0.11652312334626913, 'completion_length': 19.75, 'kl': 0.08848188782576472, 'epoch': 0.48}
+ 24%|██▍       | 24/100 [1:47:27<4:31:35, 214.42s/it]
+reward_fn #97:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #97:  62%|██████▎   | 5/8 [00:00<00:00, 42.50it/s][A
+                                                            [A
+reward_fn #98:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #98:  62%|██████▎   | 5/8 [00:00<00:00, 46.67it/s][A
+                                                            [A
+reward_fn #99:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #99:  62%|██████▎   | 5/8 [00:00<00:00, 48.86it/s][A
+                                                            [A
+reward_fn #100:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #100:  62%|██████▎   | 5/8 [00:00<00:00, 43.74it/s][A
+                                                             [A 25%|██▌       | 25/100 [1:49:58<4:04:08, 195.31s/it]                                                      25%|██▌       | 25/100 [1:49:58<4:04:08, 195.31s/it]{'loss': 0.0093, 'grad_norm': 14.97620677947998, 'learning_rate': 3.85e-06, 'rewards/reward_fn': -0.21281248703598976, 'reward': -0.21281248703598976, 'reward_std': 0.10642166994512081, 'completion_length': 17.25, 'kl': 0.09261404164135456, 'epoch': 0.5}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #101:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #101:  62%|██████▎   | 5/8 [00:00<00:00, 41.94it/s][A
+                                                             [A
+reward_fn #102:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #102:  62%|██████▎   | 5/8 [00:00<00:00, 43.90it/s][A
+                                                             [A
+reward_fn #103:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #103:  62%|██████▎   | 5/8 [00:00<00:00, 44.20it/s][A
+                                                             [A
+reward_fn #104:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #104:  62%|██████▎   | 5/8 [00:00<00:00, 41.67it/s][A
+                                                             [A 26%|██▌       | 26/100 [1:53:19<4:02:58, 197.01s/it]                                                     {'loss': 0.0101, 'grad_norm': 6.413547515869141, 'learning_rate': 3.8000000000000005e-06, 'rewards/reward_fn': -0.6222812533378601, 'reward': -0.6222812533378601, 'reward_std': 0.03754060389474034, 'completion_length': 26.0, 'kl': 0.10113866534084082, 'epoch': 0.52}
+ 26%|██▌       | 26/100 [1:53:19<4:02:58, 197.01s/it]
+reward_fn #105:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #105:  62%|██████▎   | 5/8 [00:00<00:00, 42.99it/s][A
+                                                             [A
+reward_fn #106:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #106:  62%|██████▎   | 5/8 [00:00<00:00, 45.99it/s][A
+                                                             [A
+reward_fn #107:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #107:  62%|██████▎   | 5/8 [00:00<00:00, 46.47it/s][A
+                                                             [A
+reward_fn #108:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #108:  50%|█████     | 4/8 [00:00<00:00, 35.95it/s][A
+reward_fn #108: 100%|██████████| 8/8 [00:00<00:00, 37.33it/s][A
+                                                             [A 27%|██▋       | 27/100 [1:57:40<4:23:07, 216.26s/it]                                                     {'loss': 0.0127, 'grad_norm': 7.702932357788086, 'learning_rate': 3.7500000000000005e-06, 'rewards/reward_fn': -1.1184687614440918, 'reward': -1.1184687614440918, 'reward_std': 0.027881117537617683, 'completion_length': 32.5, 'kl': 0.12705189734697342, 'epoch': 0.54}
+ 27%|██▋       | 27/100 [1:57:40<4:23:07, 216.26s/it]
+reward_fn #109:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #109:  50%|█████     | 4/8 [00:00<00:00, 38.73it/s][A
+                                                             [A
+reward_fn #110:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #110:  62%|██████▎   | 5/8 [00:00<00:00, 39.00it/s][A
+                                                             [A
+reward_fn #111:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #111:  50%|█████     | 4/8 [00:00<00:00, 38.25it/s][A
+reward_fn #111: 100%|██████████| 8/8 [00:00<00:00, 38.58it/s][A
+                                                             [A
+reward_fn #112:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #112:  62%|██████▎   | 5/8 [00:00<00:00, 42.07it/s][A
+                                                             [A 28%|██▊       | 28/100 [2:00:29<4:02:38, 202.20s/it]                                                     {'loss': 0.0041, 'grad_norm': 9.047077178955078, 'learning_rate': 3.7e-06, 'rewards/reward_fn': -0.2057187408208847, 'reward': -0.2057187408208847, 'reward_std': 0.08303426578640938, 'completion_length': 19.0, 'kl': 0.040918265702202916, 'epoch': 0.56}
+ 28%|██▊       | 28/100 [2:00:29<4:02:38, 202.20s/it]
+reward_fn #113:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #113:  50%|█████     | 4/8 [00:00<00:00, 39.84it/s][A
+                                                             [A
+reward_fn #114:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #114:  62%|██████▎   | 5/8 [00:00<00:00, 42.33it/s][A
+                                                             [A
+reward_fn #115:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #115:  62%|██████▎   | 5/8 [00:00<00:00, 40.67it/s][A
+                                                             [A
+reward_fn #116:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #116:  50%|█████     | 4/8 [00:00<00:00, 39.82it/s][A
+reward_fn #116: 100%|██████████| 8/8 [00:00<00:00, 39.21it/s][A
+                                                             [A 29%|██▉       | 29/100 [2:03:05<3:42:38, 188.15s/it]                                                     {'loss': 0.0062, 'grad_norm': 7.178382873535156, 'learning_rate': 3.65e-06, 'rewards/reward_fn': -0.559218768030405, 'reward': -0.559218768030405, 'reward_std': 0.1138740498572588, 'completion_length': 17.5, 'kl': 0.06184903159737587, 'epoch': 0.58}
+ 29%|██▉       | 29/100 [2:03:05<3:42:38, 188.15s/it]
+reward_fn #117:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #117:  50%|█████     | 4/8 [00:00<00:00, 35.29it/s][A
+                                                             [A
+reward_fn #118:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #118:  50%|█████     | 4/8 [00:00<00:00, 37.97it/s][A
+                                                             [A
+reward_fn #119:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #119:  62%|██████▎   | 5/8 [00:00<00:00, 40.73it/s][A
+                                                             [A
+reward_fn #120:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #120:  50%|█████     | 4/8 [00:00<00:00, 38.61it/s][A
+reward_fn #120: 100%|██████████| 8/8 [00:00<00:00, 38.79it/s][A
+                                                             [A 30%|███       | 30/100 [2:08:20<4:23:51, 226.16s/it]                                                      30%|███       | 30/100 [2:08:20<4:23:51, 226.16s/it]{'loss': 0.0067, 'grad_norm': 15.94996452331543, 'learning_rate': 3.6000000000000003e-06, 'rewards/reward_fn': -0.3702812511473894, 'reward': -0.3702812511473894, 'reward_std': 0.2618498366791755, 'completion_length': 39.75, 'kl': 0.06680248444899917, 'epoch': 0.6}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #121:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #121:  62%|██████▎   | 5/8 [00:00<00:00, 40.70it/s][A
+                                                             [A
+reward_fn #122:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #122:  50%|█████     | 4/8 [00:00<00:00, 35.98it/s][A
+reward_fn #122: 100%|██████████| 8/8 [00:00<00:00, 37.62it/s][A
+                                                             [A
+reward_fn #123:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #123:  62%|██████▎   | 5/8 [00:00<00:00, 41.60it/s][A
+                                                             [A
+reward_fn #124:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #124:  62%|██████▎   | 5/8 [00:00<00:00, 42.63it/s][A
+                                                             [A 31%|███       | 31/100 [2:11:17<4:03:13, 211.51s/it]                                                     {'loss': 0.0063, 'grad_norm': 8.446439743041992, 'learning_rate': 3.5500000000000003e-06, 'rewards/reward_fn': -0.9425624907016754, 'reward': -0.9425624907016754, 'reward_std': 0.03433625935576856, 'completion_length': 22.0, 'kl': 0.06314327102154493, 'epoch': 0.62}
+ 31%|███       | 31/100 [2:11:17<4:03:13, 211.51s/it]
+reward_fn #125:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #125:  50%|█████     | 4/8 [00:00<00:00, 38.68it/s][A
+                                                             [A
+reward_fn #126:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #126:  62%|██████▎   | 5/8 [00:00<00:00, 40.38it/s][A
+                                                             [A
+reward_fn #127:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #127:  62%|██████▎   | 5/8 [00:00<00:00, 43.87it/s][A
+                                                             [A
+reward_fn #128:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #128:  62%|██████▎   | 5/8 [00:00<00:00, 48.08it/s][A
+                                                             [A 32%|███▏      | 32/100 [2:13:32<3:33:44, 188.60s/it]                                                     {'loss': 0.0025, 'grad_norm': 6.561995983123779, 'learning_rate': 3.5e-06, 'rewards/reward_fn': -0.6794687658548355, 'reward': -0.6794687658548355, 'reward_std': 0.03516992134973407, 'completion_length': 15.25, 'kl': 0.02510294914827682, 'epoch': 0.64}
+ 32%|███▏      | 32/100 [2:13:32<3:33:44, 188.60s/it]
+reward_fn #129:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #129:  50%|█████     | 4/8 [00:00<00:00, 37.56it/s][A
+reward_fn #129: 100%|██████████| 8/8 [00:00<00:00, 38.12it/s][A
+                                                             [A
+reward_fn #130:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #130:  50%|█████     | 4/8 [00:00<00:00, 37.95it/s][A
+reward_fn #130: 100%|██████████| 8/8 [00:00<00:00, 38.04it/s][A
+                                                             [A
+reward_fn #131:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #131:  62%|██████▎   | 5/8 [00:00<00:00, 44.59it/s][A
+                                                             [A
+reward_fn #132:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #132:  62%|██████▎   | 5/8 [00:00<00:00, 41.95it/s][A
+                                                             [A 33%|███▎      | 33/100 [2:23:22<5:44:52, 308.85s/it]                                                     {'loss': 0.0054, 'grad_norm': 22.817724227905273, 'learning_rate': 3.45e-06, 'rewards/reward_fn': -1.0290312245488167, 'reward': -1.0290312245488167, 'reward_std': 0.08062594011425972, 'completion_length': 75.75, 'kl': 0.05403513880446553, 'epoch': 0.66}
+ 33%|███▎      | 33/100 [2:23:22<5:44:52, 308.85s/it]
+reward_fn #133:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #133:  62%|██████▎   | 5/8 [00:00<00:00, 41.80it/s][A
+                                                             [A
+reward_fn #134:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #134:  62%|██████▎   | 5/8 [00:00<00:00, 40.36it/s][A
+                                                             [A
+reward_fn #135:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #135:  62%|██████▎   | 5/8 [00:00<00:00, 41.53it/s][A
+                                                             [A
+reward_fn #136:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #136:  62%|██████▎   | 5/8 [00:00<00:00, 41.80it/s][A
+                                                             [A 34%|███▍      | 34/100 [2:25:37<4:42:30, 256.83s/it]                                                     {'loss': 0.0036, 'grad_norm': 9.993755340576172, 'learning_rate': 3.4000000000000005e-06, 'rewards/reward_fn': -0.6660312637686729, 'reward': -0.6660312637686729, 'reward_std': 0.03998819878324866, 'completion_length': 15.5, 'kl': 0.03645647026132792, 'epoch': 0.68}
+ 34%|███▍      | 34/100 [2:25:37<4:42:30, 256.83s/it]
+reward_fn #137:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #137:  50%|█████     | 4/8 [00:00<00:00, 37.41it/s][A
+reward_fn #137: 100%|██████████| 8/8 [00:00<00:00, 37.67it/s][A
+                                                             [A
+reward_fn #138:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #138:  50%|█████     | 4/8 [00:00<00:00, 36.54it/s][A
+reward_fn #138: 100%|██████████| 8/8 [00:00<00:00, 36.54it/s][A
+                                                             [A
+reward_fn #139:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #139:  62%|██████▎   | 5/8 [00:00<00:00, 43.57it/s][A
+                                                             [A
+reward_fn #140:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #140:  62%|██████▎   | 5/8 [00:00<00:00, 41.51it/s][A
+                                                             [A 35%|███▌      | 35/100 [2:36:00<6:37:05, 366.54s/it]                                                      35%|███▌      | 35/100 [2:36:00<6:37:05, 366.54s/it]{'loss': 0.0081, 'grad_norm': 9.158571243286133, 'learning_rate': 3.3500000000000005e-06, 'rewards/reward_fn': -0.8595312237739563, 'reward': -0.8595312237739563, 'reward_std': 0.047397518530488014, 'completion_length': 81.25, 'kl': 0.08140816166996956, 'epoch': 0.7}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #141:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #141:  62%|██████▎   | 5/8 [00:00<00:00, 40.59it/s][A
+                                                             [A
+reward_fn #142:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #142:  62%|██████▎   | 5/8 [00:00<00:00, 44.38it/s][A
+                                                             [A
+reward_fn #143:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #143:  62%|██████▎   | 5/8 [00:00<00:00, 41.15it/s][A
+                                                             [A
+reward_fn #144:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #144:  62%|██████▎   | 5/8 [00:00<00:00, 41.44it/s][A
+                                                             [A 36%|███▌      | 36/100 [2:46:29<7:54:58, 445.29s/it]                                                     {'loss': 0.0089, 'grad_norm': 11.211210250854492, 'learning_rate': 3.3000000000000006e-06, 'rewards/reward_fn': -0.8920000270009041, 'reward': -0.8920000270009041, 'reward_std': 0.07007556594908237, 'completion_length': 79.25, 'kl': 0.0888670114800334, 'epoch': 0.72}
+ 36%|███▌      | 36/100 [2:46:29<7:54:58, 445.29s/it]
+reward_fn #145:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #145:  62%|██████▎   | 5/8 [00:00<00:00, 41.82it/s][A
+                                                             [A
+reward_fn #146:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #146:  62%|██████▎   | 5/8 [00:00<00:00, 41.93it/s][A
+                                                             [A
+reward_fn #147:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #147:  62%|██████▎   | 5/8 [00:00<00:00, 41.19it/s][A
+                                                             [A
+reward_fn #148:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #148:  62%|██████▎   | 5/8 [00:00<00:00, 41.84it/s][A
+                                                             [A 37%|███▋      | 37/100 [2:49:40<6:27:42, 369.25s/it]                                                     {'loss': 0.0047, 'grad_norm': 10.920490264892578, 'learning_rate': 3.2500000000000002e-06, 'rewards/reward_fn': -1.0355624705553055, 'reward': -1.0355624705553055, 'reward_std': 0.03875275934115052, 'completion_length': 21.25, 'kl': 0.046998048201203346, 'epoch': 0.74}
+ 37%|███▋      | 37/100 [2:49:40<6:27:42, 369.25s/it]
+reward_fn #149:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #149:  62%|██████▎   | 5/8 [00:00<00:00, 43.02it/s][A
+                                                             [A
+reward_fn #150:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #150:  62%|██████▎   | 5/8 [00:00<00:00, 43.32it/s][A
+                                                             [A
+reward_fn #151:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #151:  50%|█████     | 4/8 [00:00<00:00, 39.98it/s][A
+reward_fn #151: 100%|██████████| 8/8 [00:00<00:00, 39.97it/s][A
+                                                             [A
+reward_fn #152:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #152:  62%|██████▎   | 5/8 [00:00<00:00, 43.32it/s][A
+                                                             [A 38%|███▊      | 38/100 [2:52:08<5:12:45, 302.67s/it]                                                     {'loss': 0.0045, 'grad_norm': 15.007587432861328, 'learning_rate': 3.2000000000000003e-06, 'rewards/reward_fn': -0.43924999237060547, 'reward': -0.43924999237060547, 'reward_std': 0.10777095519006252, 'completion_length': 16.5, 'kl': 0.045426052529364824, 'epoch': 0.76}
+ 38%|███▊      | 38/100 [2:52:08<5:12:45, 302.67s/it]
+reward_fn #153:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #153:  50%|█████     | 4/8 [00:00<00:00, 37.49it/s][A
+reward_fn #153: 100%|██████████| 8/8 [00:00<00:00, 37.64it/s][A
+                                                             [A
+reward_fn #154:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #154:  62%|██████▎   | 5/8 [00:00<00:00, 44.57it/s][A
+                                                             [A
+reward_fn #155:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #155:  62%|██████▎   | 5/8 [00:00<00:00, 46.75it/s][A
+                                                             [A
+reward_fn #156:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #156:  62%|██████▎   | 5/8 [00:00<00:00, 43.32it/s][A
+                                                             [A 39%|███▉      | 39/100 [2:54:11<4:12:52, 248.73s/it]                                                     {'loss': 0.0034, 'grad_norm': 4.878978729248047, 'learning_rate': 3.1500000000000003e-06, 'rewards/reward_fn': -0.6201562434434891, 'reward': -0.6201562434434891, 'reward_std': 0.03001571202185005, 'completion_length': 14.0, 'kl': 0.03366933134384453, 'epoch': 0.78}
+ 39%|███▉      | 39/100 [2:54:11<4:12:52, 248.73s/it]
+reward_fn #157:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #157:  62%|██████▎   | 5/8 [00:00<00:00, 42.49it/s][A
+                                                             [A
+reward_fn #158:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #158:  75%|███████▌  | 6/8 [00:00<00:00, 50.59it/s][A
+                                                             [A
+reward_fn #159:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #159:  62%|██████▎   | 5/8 [00:00<00:00, 45.26it/s][A
+                                                             [A
+reward_fn #160:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #160:  62%|██████▎   | 5/8 [00:00<00:00, 45.27it/s][A
+                                                             [A 40%|████      | 40/100 [2:57:32<3:54:37, 234.62s/it]                                                     {'loss': 0.0073, 'grad_norm': 15.899676322937012, 'learning_rate': 3.1000000000000004e-06, 'rewards/reward_fn': -0.39521874487400055, 'reward': -0.39521874487400055, 'reward_std': 0.030530196032486856, 'completion_length': 23.75, 'kl': 0.07336071459576488, 'epoch': 0.8}
+ 40%|████      | 40/100 [2:57:32<3:54:37, 234.62s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #161:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #161:  62%|██████▎   | 5/8 [00:00<00:00, 42.33it/s][A
+                                                             [A
+reward_fn #162:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #162:  62%|██████▎   | 5/8 [00:00<00:00, 39.83it/s][A
+                                                             [A
+reward_fn #163:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #163:  50%|█████     | 4/8 [00:00<00:00, 39.41it/s][A
+                                                             [A
+reward_fn #164:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #164:  62%|██████▎   | 5/8 [00:00<00:00, 41.68it/s][A
+                                                             [A 41%|████      | 41/100 [3:08:29<5:55:17, 361.31s/it]                                                     {'loss': 0.0082, 'grad_norm': 12.354637145996094, 'learning_rate': 3.05e-06, 'rewards/reward_fn': -0.5541249886155128, 'reward': -0.5541249886155128, 'reward_std': 0.06470573879778385, 'completion_length': 80.5, 'kl': 0.08228707266971469, 'epoch': 0.82}
+ 41%|████      | 41/100 [3:08:29<5:55:17, 361.31s/it]
+reward_fn #165:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #165:  62%|██████▎   | 5/8 [00:00<00:00, 43.41it/s][A
+                                                             [A
+reward_fn #166:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #166:  62%|██████▎   | 5/8 [00:00<00:00, 42.80it/s][A
+                                                             [A
+reward_fn #167:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #167:  62%|██████▎   | 5/8 [00:00<00:00, 43.50it/s][A
+                                                             [A
+reward_fn #168:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #168:  62%|██████▎   | 5/8 [00:00<00:00, 41.02it/s][A
+                                                             [A 42%|████▏     | 42/100 [3:13:40<5:34:42, 346.25s/it]                                                     {'loss': 0.0059, 'grad_norm': 19.50924301147461, 'learning_rate': 3e-06, 'rewards/reward_fn': -0.6377499774098396, 'reward': -0.6377499774098396, 'reward_std': 0.053161160089075565, 'completion_length': 38.25, 'kl': 0.05865989509038627, 'epoch': 0.84}
+ 42%|████▏     | 42/100 [3:13:40<5:34:42, 346.25s/it]
+reward_fn #169:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #169:  62%|██████▎   | 5/8 [00:00<00:00, 44.12it/s][A
+                                                             [A
+reward_fn #170:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #170:  62%|██████▎   | 5/8 [00:00<00:00, 43.43it/s][A
+                                                             [A
+reward_fn #171:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #171:  62%|██████▎   | 5/8 [00:00<00:00, 40.88it/s][A
+                                                             [A
+reward_fn #172:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #172:  50%|█████     | 4/8 [00:00<00:00, 35.89it/s][A
+reward_fn #172: 100%|██████████| 8/8 [00:00<00:00, 36.93it/s][A
+                                                             [A 43%|████▎     | 43/100 [3:16:34<4:39:53, 294.62s/it]                                                      43%|████▎     | 43/100 [3:16:34<4:39:53, 294.62s/it]{'loss': 0.0032, 'grad_norm': 19.551973342895508, 'learning_rate': 2.95e-06, 'rewards/reward_fn': -0.5644062384963036, 'reward': -0.5644062384963036, 'reward_std': 0.10165184596553445, 'completion_length': 20.25, 'kl': 0.0318355472991243, 'epoch': 0.86}
+
+reward_fn #173:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #173:  62%|██████▎   | 5/8 [00:00<00:00, 43.79it/s][A
+                                                             [A
+reward_fn #174:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #174:  62%|██████▎   | 5/8 [00:00<00:00, 42.78it/s][A
+                                                             [A
+reward_fn #175:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #175:  62%|██████▎   | 5/8 [00:00<00:00, 45.99it/s][A
+                                                             [A
+reward_fn #176:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #176:  62%|██████▎   | 5/8 [00:00<00:00, 46.31it/s][A
+                                                             [A 44%|████▍     | 44/100 [3:19:26<4:00:31, 257.70s/it]{'loss': 0.0046, 'grad_norm': 14.670341491699219, 'learning_rate': 2.9e-06, 'rewards/reward_fn': -0.6687812656164169, 'reward': -0.6687812656164169, 'reward_std': 0.03814377496019006, 'completion_length': 19.25, 'kl': 0.04576081037521362, 'epoch': 0.88}
+                                                      44%|████▍     | 44/100 [3:19:26<4:00:31, 257.70s/it]
+reward_fn #177:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #177:  62%|██████▎   | 5/8 [00:00<00:00, 45.46it/s][A
+                                                             [A
+reward_fn #178:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #178:  62%|██████▎   | 5/8 [00:00<00:00, 40.46it/s][A
+                                                             [A
+reward_fn #179:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #179:  62%|██████▎   | 5/8 [00:00<00:00, 44.66it/s][A
+                                                             [A
+reward_fn #180:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #180:  62%|██████▎   | 5/8 [00:00<00:00, 44.44it/s][A
+                                                             [A 45%|████▌     | 45/100 [3:23:40<3:55:16, 256.66s/it]                                                     {'loss': 0.0053, 'grad_norm': 11.781176567077637, 'learning_rate': 2.85e-06, 'rewards/reward_fn': -0.6427187621593475, 'reward': -0.6427187621593475, 'reward_std': 0.05439749779179692, 'completion_length': 31.0, 'kl': 0.05338952969759703, 'epoch': 0.9}
+ 45%|████▌     | 45/100 [3:23:40<3:55:16, 256.66s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #181:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #181:  62%|██████▎   | 5/8 [00:00<00:00, 47.70it/s][A
+                                                             [A
+reward_fn #182:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #182:  62%|██████▎   | 5/8 [00:00<00:00, 46.16it/s][A
+                                                             [A
+reward_fn #183:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #183:  62%|██████▎   | 5/8 [00:00<00:00, 44.10it/s][A
+                                                             [A
+reward_fn #184:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #184:  62%|██████▎   | 5/8 [00:00<00:00, 47.93it/s][A
+                                                             [A 46%|████▌     | 46/100 [3:29:46<4:20:32, 289.50s/it]                                                     {'loss': 0.0065, 'grad_norm': 10.274409294128418, 'learning_rate': 2.8000000000000003e-06, 'rewards/reward_fn': -0.769781231880188, 'reward': -0.769781231880188, 'reward_std': 0.026413101702928543, 'completion_length': 46.0, 'kl': 0.06497795134782791, 'epoch': 0.92}
+ 46%|████▌     | 46/100 [3:29:46<4:20:32, 289.50s/it]
+reward_fn #185:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #185:  62%|██████▎   | 5/8 [00:00<00:00, 43.92it/s][A
+                                                             [A
+reward_fn #186:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #186:  62%|██████▎   | 5/8 [00:00<00:00, 42.37it/s][A
+                                                             [A
+reward_fn #187:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #187:  62%|██████▎   | 5/8 [00:00<00:00, 43.60it/s][A
+                                                             [A
+reward_fn #188:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #188:  62%|██████▎   | 5/8 [00:00<00:00, 43.16it/s][A
+                                                             [A 47%|████▋     | 47/100 [3:32:25<3:40:57, 250.14s/it]                                                     {'loss': 0.0048, 'grad_norm': 4.767032623291016, 'learning_rate': 2.7500000000000004e-06, 'rewards/reward_fn': -0.5463750213384628, 'reward': -0.5463750213384628, 'reward_std': 0.13072169572114944, 'completion_length': 18.25, 'kl': 0.04809718485921621, 'epoch': 0.94}
+ 47%|████▋     | 47/100 [3:32:25<3:40:57, 250.14s/it]
+reward_fn #189:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #189:  62%|██████▎   | 5/8 [00:00<00:00, 44.61it/s][A
+                                                             [A
+reward_fn #190:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #190:  62%|██████▎   | 5/8 [00:00<00:00, 43.17it/s][A
+                                                             [A
+reward_fn #191:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #191:  62%|██████▎   | 5/8 [00:00<00:00, 44.93it/s][A
+                                                             [A
+reward_fn #192:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #192:  62%|██████▎   | 5/8 [00:00<00:00, 48.00it/s][A
+                                                             [A 48%|████▊     | 48/100 [3:37:09<3:45:42, 260.43s/it]                                                      48%|████▊     | 48/100 [3:37:09<3:45:42, 260.43s/it]{'loss': 0.006, 'grad_norm': 17.287738800048828, 'learning_rate': 2.7000000000000004e-06, 'rewards/reward_fn': -0.9761249721050262, 'reward': -0.9761249721050262, 'reward_std': 0.039363074116408825, 'completion_length': 34.75, 'kl': 0.060304176062345505, 'epoch': 0.96}
+
+reward_fn #193:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #193:  62%|██████▎   | 5/8 [00:00<00:00, 46.66it/s][A
+                                                             [A
+reward_fn #194:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #194:  62%|██████▎   | 5/8 [00:00<00:00, 45.77it/s][A
+                                                             [A
+reward_fn #195:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #195:  62%|██████▎   | 5/8 [00:00<00:00, 45.94it/s][A
+                                                             [A
+reward_fn #196:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #196:  62%|██████▎   | 5/8 [00:00<00:00, 47.49it/s][A
+                                                             [A 49%|████▉     | 49/100 [3:39:57<3:17:50, 232.75s/it]                                                      49%|████▉     | 49/100 [3:39:57<3:17:50, 232.75s/it]{'loss': 0.0056, 'grad_norm': 16.716289520263672, 'learning_rate': 2.6500000000000005e-06, 'rewards/reward_fn': -0.8186874985694885, 'reward': -0.8186874985694885, 'reward_std': 0.052624077536165714, 'completion_length': 17.5, 'kl': 0.05600392818450928, 'epoch': 0.98}
+
+reward_fn #197:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #197:  62%|██████▎   | 5/8 [00:00<00:00, 44.08it/s][A
+                                                             [A
+reward_fn #198:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #198:  62%|██████▎   | 5/8 [00:00<00:00, 43.77it/s][A
+                                                             [A
+reward_fn #199:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #199:  62%|██████▎   | 5/8 [00:00<00:00, 43.28it/s][A
+                                                             [A
+reward_fn #200:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #200:  62%|██████▎   | 5/8 [00:00<00:00, 48.56it/s][A
+                                                             [A 50%|█████     | 50/100 [3:42:41<2:56:36, 211.93s/it]                                                     {'loss': 0.0054, 'grad_norm': 9.187814712524414, 'learning_rate': 2.6e-06, 'rewards/reward_fn': -0.7374999821186066, 'reward': -0.7374999821186066, 'reward_std': 0.06669123517349362, 'completion_length': 17.75, 'kl': 0.05445910058915615, 'epoch': 1.0}
+ 50%|█████     | 50/100 [3:42:41<2:56:36, 211.93s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #201:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #201:  62%|██████▎   | 5/8 [00:00<00:00, 46.08it/s][A
+                                                             [A
+reward_fn #202:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #202:  62%|██████▎   | 5/8 [00:00<00:00, 44.10it/s][A
+                                                             [A
+reward_fn #203:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #203:  62%|██████▎   | 5/8 [00:00<00:00, 45.15it/s][A
+                                                             [A
+reward_fn #204:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #204:  62%|██████▎   | 5/8 [00:00<00:00, 47.11it/s][A
+                                                             [A 51%|█████     | 51/100 [3:46:30<2:57:26, 217.27s/it]                                                      51%|█████     | 51/100 [3:46:30<2:57:26, 217.27s/it]{'loss': 0.0067, 'grad_norm': 10.87104320526123, 'learning_rate': 2.55e-06, 'rewards/reward_fn': -0.8529687821865082, 'reward': -0.8529687821865082, 'reward_std': 0.12947403639554977, 'completion_length': 25.75, 'kl': 0.0665891133248806, 'epoch': 1.02}
+
+reward_fn #205:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #205:  62%|██████▎   | 5/8 [00:00<00:00, 44.47it/s][A
+                                                             [A
+reward_fn #206:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #206:  62%|██████▎   | 5/8 [00:00<00:00, 48.23it/s][A
+                                                             [A
+reward_fn #207:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #207:  62%|██████▎   | 5/8 [00:00<00:00, 43.44it/s][A
+                                                             [A
+reward_fn #208:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #208:  62%|██████▎   | 5/8 [00:00<00:00, 48.50it/s][A
+                                                             [A 52%|█████▏    | 52/100 [3:49:57<2:51:13, 214.02s/it]                                                      52%|█████▏    | 52/100 [3:49:57<2:51:13, 214.02s/it]{'loss': 0.0051, 'grad_norm': 5.766862869262695, 'learning_rate': 2.5e-06, 'rewards/reward_fn': -0.9444374740123749, 'reward': -0.9444374740123749, 'reward_std': 0.029766425024718046, 'completion_length': 22.0, 'kl': 0.05103647941723466, 'epoch': 1.04}
+
+reward_fn #209:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #209:  62%|██████▎   | 5/8 [00:00<00:00, 48.17it/s][A
+                                                             [A
+reward_fn #210:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #210:  62%|██████▎   | 5/8 [00:00<00:00, 43.76it/s][A
+                                                             [A
+reward_fn #211:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #211:  62%|██████▎   | 5/8 [00:00<00:00, 44.34it/s][A
+                                                             [A
+reward_fn #212:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #212:  62%|██████▎   | 5/8 [00:00<00:00, 42.31it/s][A
+                                                             [A 53%|█████▎    | 53/100 [3:53:30<2:47:30, 213.85s/it]                                                     {'loss': 0.005, 'grad_norm': 14.609753608703613, 'learning_rate': 2.4500000000000003e-06, 'rewards/reward_fn': -0.8675625026226044, 'reward': -0.8675625026226044, 'reward_std': 0.05996632436290383, 'completion_length': 24.25, 'kl': 0.05017213569954038, 'epoch': 1.06}
+ 53%|█████▎    | 53/100 [3:53:30<2:47:30, 213.85s/it]
+reward_fn #213:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #213:  62%|██████▎   | 5/8 [00:00<00:00, 43.46it/s][A
+                                                             [A
+reward_fn #214:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #214:  62%|██████▎   | 5/8 [00:00<00:00, 47.72it/s][A
+                                                             [A
+reward_fn #215:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #215:  62%|██████▎   | 5/8 [00:00<00:00, 46.94it/s][A
+                                                             [A
+reward_fn #216:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #216:  62%|██████▎   | 5/8 [00:00<00:00, 41.40it/s][A
+                                                             [A 54%|█████▍    | 54/100 [3:56:39<2:38:15, 206.43s/it]                                                     {'loss': 0.0071, 'grad_norm': 15.92204475402832, 'learning_rate': 2.4000000000000003e-06, 'rewards/reward_fn': -0.7242187410593033, 'reward': -0.7242187410593033, 'reward_std': 0.05463465303182602, 'completion_length': 20.75, 'kl': 0.07117725536227226, 'epoch': 1.08}
+ 54%|█████▍    | 54/100 [3:56:39<2:38:15, 206.43s/it]
+reward_fn #217:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #217:  62%|██████▎   | 5/8 [00:00<00:00, 45.21it/s][A
+                                                             [A
+reward_fn #218:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #218:  62%|██████▎   | 5/8 [00:00<00:00, 44.02it/s][A
+                                                             [A
+reward_fn #219:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #219:  62%|██████▎   | 5/8 [00:00<00:00, 46.04it/s][A
+                                                             [A
+reward_fn #220:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #220:  62%|██████▎   | 5/8 [00:00<00:00, 43.58it/s][A
+                                                             [A 55%|█████▌    | 55/100 [3:59:18<2:24:08, 192.19s/it]                                                      55%|█████▌    | 55/100 [3:59:18<2:24:08, 192.19s/it]{'loss': 0.0073, 'grad_norm': 20.48388671875, 'learning_rate': 2.35e-06, 'rewards/reward_fn': -0.5811875052750111, 'reward': -0.5811875052750111, 'reward_std': 0.14049541298300028, 'completion_length': 16.25, 'kl': 0.07327338494360447, 'epoch': 1.1}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #221:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #221:  62%|██████▎   | 5/8 [00:00<00:00, 46.98it/s][A
+                                                             [A
+reward_fn #222:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #222:  62%|██████▎   | 5/8 [00:00<00:00, 43.51it/s][A
+                                                             [A
+reward_fn #223:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #223:  62%|██████▎   | 5/8 [00:00<00:00, 45.03it/s][A
+                                                             [A
+reward_fn #224:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #224:  62%|██████▎   | 5/8 [00:00<00:00, 43.20it/s][A
+                                                             [A 56%|█████▌    | 56/100 [4:01:45<2:10:59, 178.62s/it]                                                      56%|█████▌    | 56/100 [4:01:45<2:10:59, 178.62s/it]{'loss': 0.0061, 'grad_norm': 12.556312561035156, 'learning_rate': 2.3000000000000004e-06, 'rewards/reward_fn': -0.5477500110864639, 'reward': -0.5477500110864639, 'reward_std': 0.048051795456558466, 'completion_length': 15.5, 'kl': 0.06066375691443682, 'epoch': 1.12}
+
+reward_fn #225:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #225:  62%|██████▎   | 5/8 [00:00<00:00, 46.39it/s][A
+                                                             [A
+reward_fn #226:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #226:  62%|██████▎   | 5/8 [00:00<00:00, 44.53it/s][A
+                                                             [A
+reward_fn #227:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #227:  62%|██████▎   | 5/8 [00:00<00:00, 45.31it/s][A
+                                                             [A
+reward_fn #228:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #228:  62%|██████▎   | 5/8 [00:00<00:00, 42.83it/s][A
+                                                             [A 57%|█████▋    | 57/100 [4:06:29<2:30:38, 210.19s/it]                                                      57%|█████▋    | 57/100 [4:06:29<2:30:38, 210.19s/it]{'loss': 0.0075, 'grad_norm': 19.11016273498535, 'learning_rate': 2.25e-06, 'rewards/reward_fn': -0.932750016450882, 'reward': -0.932750016450882, 'reward_std': 0.12725632265210152, 'completion_length': 32.25, 'kl': 0.07455169595777988, 'epoch': 1.14}
+
+reward_fn #229:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #229:  75%|███████▌  | 6/8 [00:00<00:00, 50.67it/s][A
+                                                             [A
+reward_fn #230:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #230:  62%|██████▎   | 5/8 [00:00<00:00, 42.79it/s][A
+                                                             [A
+reward_fn #231:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #231:  62%|██████▎   | 5/8 [00:00<00:00, 47.74it/s][A
+                                                             [A
+reward_fn #232:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #232:  62%|██████▎   | 5/8 [00:00<00:00, 45.44it/s][A
+                                                             [A 58%|█████▊    | 58/100 [4:08:56<2:13:52, 191.24s/it]                                                     {'loss': 0.0067, 'grad_norm': 5.172739505767822, 'learning_rate': 2.2e-06, 'rewards/reward_fn': -0.8399999886751175, 'reward': -0.8399999886751175, 'reward_std': 0.04045313410460949, 'completion_length': 15.5, 'kl': 0.06691855750977993, 'epoch': 1.16}
+ 58%|█████▊    | 58/100 [4:08:56<2:13:52, 191.24s/it]
+reward_fn #233:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #233:  62%|██████▎   | 5/8 [00:00<00:00, 48.56it/s][A
+                                                             [A
+reward_fn #234:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #234:  62%|██████▎   | 5/8 [00:00<00:00, 46.12it/s][A
+                                                             [A
+reward_fn #235:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #235:  62%|██████▎   | 5/8 [00:00<00:00, 45.84it/s][A
+                                                             [A
+reward_fn #236:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #236:  62%|██████▎   | 5/8 [00:00<00:00, 42.88it/s][A
+                                                             [A 59%|█████▉    | 59/100 [4:11:37<2:04:33, 182.27s/it]                                                     {'loss': 0.0091, 'grad_norm': 20.433935165405273, 'learning_rate': 2.15e-06, 'rewards/reward_fn': -0.6378437206149101, 'reward': -0.6378437206149101, 'reward_std': 0.1784488447010517, 'completion_length': 17.5, 'kl': 0.09059259854257107, 'epoch': 1.18}
+ 59%|█████▉    | 59/100 [4:11:37<2:04:33, 182.27s/it]
+reward_fn #237:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #237:  62%|██████▎   | 5/8 [00:00<00:00, 42.73it/s][A
+                                                             [A
+reward_fn #238:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #238:  62%|██████▎   | 5/8 [00:00<00:00, 46.37it/s][A
+                                                             [A
+reward_fn #239:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #239:  62%|██████▎   | 5/8 [00:00<00:00, 44.06it/s][A
+                                                             [A
+reward_fn #240:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #240:  62%|██████▎   | 5/8 [00:00<00:00, 45.10it/s][A
+                                                             [A 60%|██████    | 60/100 [4:14:12<1:56:02, 174.05s/it]                                                     {'loss': 0.0078, 'grad_norm': 8.578916549682617, 'learning_rate': 2.1000000000000002e-06, 'rewards/reward_fn': -0.5138750076293945, 'reward': -0.5138750076293945, 'reward_std': 0.11418917216360569, 'completion_length': 16.0, 'kl': 0.0779327186755836, 'epoch': 1.2}
+ 60%|██████    | 60/100 [4:14:12<1:56:02, 174.05s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #241:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #241:  62%|██████▎   | 5/8 [00:00<00:00, 48.75it/s][A
+                                                             [A
+reward_fn #242:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #242:  62%|██████▎   | 5/8 [00:00<00:00, 45.27it/s][A
+                                                             [A
+reward_fn #243:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #243:  62%|██████▎   | 5/8 [00:00<00:00, 45.04it/s][A
+                                                             [A
+reward_fn #244:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #244:  62%|██████▎   | 5/8 [00:00<00:00, 42.56it/s][A
+                                                             [A 61%|██████    | 61/100 [4:19:25<2:20:08, 215.60s/it]                                                      61%|██████    | 61/100 [4:19:25<2:20:08, 215.60s/it]{'loss': 0.0111, 'grad_norm': 10.197537422180176, 'learning_rate': 2.05e-06, 'rewards/reward_fn': -0.567875012755394, 'reward': -0.567875012755394, 'reward_std': 0.04004815383814275, 'completion_length': 36.75, 'kl': 0.11110856756567955, 'epoch': 1.22}
+
+reward_fn #245:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #245:  62%|██████▎   | 5/8 [00:00<00:00, 48.14it/s][A
+                                                             [A
+reward_fn #246:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #246:  62%|██████▎   | 5/8 [00:00<00:00, 44.51it/s][A
+                                                             [A
+reward_fn #247:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #247:  62%|██████▎   | 5/8 [00:00<00:00, 48.09it/s][A
+                                                             [A
+reward_fn #248:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #248:  62%|██████▎   | 5/8 [00:00<00:00, 44.73it/s][A
+                                                             [A 62%|██████▏   | 62/100 [4:22:36<2:11:47, 208.10s/it]                                                      62%|██████▏   | 62/100 [4:22:36<2:11:47, 208.10s/it]{'loss': 0.0066, 'grad_norm': 4.518076419830322, 'learning_rate': 2.0000000000000003e-06, 'rewards/reward_fn': -0.47312499582767487, 'reward': -0.47312499582767487, 'reward_std': 0.053137265145778656, 'completion_length': 20.25, 'kl': 0.06633615726605058, 'epoch': 1.24}
+
+reward_fn #249:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #249:  62%|██████▎   | 5/8 [00:00<00:00, 49.36it/s][A
+                                                             [A
+reward_fn #250:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #250:  62%|██████▎   | 5/8 [00:00<00:00, 46.45it/s][A
+                                                             [A
+reward_fn #251:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #251:  62%|██████▎   | 5/8 [00:00<00:00, 43.93it/s][A
+                                                             [A
+reward_fn #252:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #252:  62%|██████▎   | 5/8 [00:00<00:00, 44.07it/s][A
+                                                             [A 63%|██████▎   | 63/100 [4:30:16<2:55:02, 283.85s/it]                                                     {'loss': 0.0078, 'grad_norm': 20.6553955078125, 'learning_rate': 1.9500000000000004e-06, 'rewards/reward_fn': -0.701593779027462, 'reward': -0.701593779027462, 'reward_std': 0.10618087835609913, 'completion_length': 54.5, 'kl': 0.0783697934821248, 'epoch': 1.26}
+ 63%|██████▎   | 63/100 [4:30:16<2:55:02, 283.85s/it]
+reward_fn #253:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #253:  62%|██████▎   | 5/8 [00:00<00:00, 45.77it/s][A
+                                                             [A
+reward_fn #254:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #254:  62%|██████▎   | 5/8 [00:00<00:00, 41.74it/s][A
+                                                             [A
+reward_fn #255:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #255:  62%|██████▎   | 5/8 [00:00<00:00, 46.30it/s][A
+                                                             [A
+reward_fn #256:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #256:  62%|██████▎   | 5/8 [00:00<00:00, 44.95it/s][A
+                                                             [A 64%|██████▍   | 64/100 [4:37:15<3:14:33, 324.25s/it]                                                     {'loss': 0.0072, 'grad_norm': 6.312982082366943, 'learning_rate': 1.9000000000000002e-06, 'rewards/reward_fn': -0.8860624879598618, 'reward': -0.8860624879598618, 'reward_std': 0.008364225970581174, 'completion_length': 81.5, 'kl': 0.07173928152769804, 'epoch': 1.28}
+ 64%|██████▍   | 64/100 [4:37:15<3:14:33, 324.25s/it]
+reward_fn #257:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #257:  62%|██████▎   | 5/8 [00:00<00:00, 44.76it/s][A
+                                                             [A
+reward_fn #258:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #258:  62%|██████▎   | 5/8 [00:00<00:00, 45.04it/s][A
+                                                             [A
+reward_fn #259:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #259:  62%|██████▎   | 5/8 [00:00<00:00, 45.22it/s][A
+                                                             [A
+reward_fn #260:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #260:  62%|██████▎   | 5/8 [00:00<00:00, 44.53it/s][A
+                                                             [A 65%|██████▌   | 65/100 [4:38:55<2:29:56, 257.03s/it]                                                      65%|██████▌   | 65/100 [4:38:55<2:29:56, 257.03s/it]{'loss': 0.0083, 'grad_norm': 9.397536277770996, 'learning_rate': 1.85e-06, 'rewards/reward_fn': -0.7750937640666962, 'reward': -0.7750937640666962, 'reward_std': 0.028219337749760598, 'completion_length': 19.5, 'kl': 0.08263749442994595, 'epoch': 1.3}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #261:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #261:  62%|██████▎   | 5/8 [00:00<00:00, 44.34it/s][A
+                                                             [A
+reward_fn #262:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #262:  62%|██████▎   | 5/8 [00:00<00:00, 42.91it/s][A
+                                                             [A
+reward_fn #263:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #263:  62%|██████▎   | 5/8 [00:00<00:00, 44.69it/s][A
+                                                             [A
+reward_fn #264:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #264:  62%|██████▎   | 5/8 [00:00<00:00, 45.85it/s][A
+                                                             [A 66%|██████▌   | 66/100 [4:41:25<2:07:31, 225.04s/it]                                                     {'loss': 0.0063, 'grad_norm': 13.54530143737793, 'learning_rate': 1.8000000000000001e-06, 'rewards/reward_fn': -0.8381250202655792, 'reward': -0.8381250202655792, 'reward_std': 0.05509648937731981, 'completion_length': 31.0, 'kl': 0.06310670264065266, 'epoch': 1.32}
+ 66%|██████▌   | 66/100 [4:41:25<2:07:31, 225.04s/it]
+reward_fn #265:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #265:  62%|██████▎   | 5/8 [00:00<00:00, 48.26it/s][A
+                                                             [A
+reward_fn #266:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #266:  62%|██████▎   | 5/8 [00:00<00:00, 44.52it/s][A
+                                                             [A
+reward_fn #267:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #267:  62%|██████▎   | 5/8 [00:00<00:00, 43.58it/s][A
+                                                             [A
+reward_fn #268:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #268:  62%|██████▎   | 5/8 [00:00<00:00, 46.04it/s][A
+                                                             [A 67%|██████▋   | 67/100 [4:43:01<1:42:30, 186.39s/it]                                                     {'loss': 0.0061, 'grad_norm': 21.275102615356445, 'learning_rate': 1.75e-06, 'rewards/reward_fn': -0.6445000022649765, 'reward': -0.6445000022649765, 'reward_std': 0.03526472509838641, 'completion_length': 19.0, 'kl': 0.06059105694293976, 'epoch': 1.34}
+ 67%|██████▋   | 67/100 [4:43:01<1:42:30, 186.39s/it]
+reward_fn #269:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #269:  62%|██████▎   | 5/8 [00:00<00:00, 45.57it/s][A
+                                                             [A
+reward_fn #270:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #270:  62%|██████▎   | 5/8 [00:00<00:00, 43.51it/s][A
+                                                             [A
+reward_fn #271:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #271:  62%|██████▎   | 5/8 [00:00<00:00, 48.43it/s][A
+                                                             [A
+reward_fn #272:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #272:  62%|██████▎   | 5/8 [00:00<00:00, 46.46it/s][A
+                                                             [A 68%|██████▊   | 68/100 [4:45:19<1:31:35, 171.72s/it]                                                     {'loss': 0.006, 'grad_norm': 8.365472793579102, 'learning_rate': 1.7000000000000002e-06, 'rewards/reward_fn': -0.9000312387943268, 'reward': -0.9000312387943268, 'reward_std': 0.023718865937553346, 'completion_length': 28.25, 'kl': 0.06021632440388203, 'epoch': 1.36}
+ 68%|██████▊   | 68/100 [4:45:19<1:31:35, 171.72s/it]
+reward_fn #273:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #273:  62%|██████▎   | 5/8 [00:00<00:00, 46.40it/s][A
+                                                             [A
+reward_fn #274:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #274:  62%|██████▎   | 5/8 [00:00<00:00, 43.91it/s][A
+                                                             [A
+reward_fn #275:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #275:  62%|██████▎   | 5/8 [00:00<00:00, 46.18it/s][A
+                                                             [A
+reward_fn #276:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #276:  62%|██████▎   | 5/8 [00:00<00:00, 44.72it/s][A
+                                                             [A 69%|██████▉   | 69/100 [4:47:12<1:19:38, 154.15s/it]                                                     {'loss': 0.0084, 'grad_norm': 17.07602882385254, 'learning_rate': 1.6500000000000003e-06, 'rewards/reward_fn': -0.7768437378108501, 'reward': -0.7768437378108501, 'reward_std': 0.17438893485814333, 'completion_length': 22.5, 'kl': 0.08426962047815323, 'epoch': 1.38}
+ 69%|██████▉   | 69/100 [4:47:12<1:19:38, 154.15s/it]
+reward_fn #277:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #277:  62%|██████▎   | 5/8 [00:00<00:00, 44.74it/s][A
+                                                             [A
+reward_fn #278:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #278:  62%|██████▎   | 5/8 [00:00<00:00, 43.87it/s][A
+                                                             [A
+reward_fn #279:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #279:  62%|██████▎   | 5/8 [00:00<00:00, 44.19it/s][A
+                                                             [A
+reward_fn #280:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #280:  62%|██████▎   | 5/8 [00:00<00:00, 44.28it/s][A
+                                                             [A 70%|███████   | 70/100 [4:49:07<1:11:13, 142.44s/it]                                                      70%|███████   | 70/100 [4:49:07<1:11:13, 142.44s/it]{'loss': 0.0054, 'grad_norm': 11.095462799072266, 'learning_rate': 1.6000000000000001e-06, 'rewards/reward_fn': -0.43437499180436134, 'reward': -0.43437499180436134, 'reward_std': 0.026677878573536873, 'completion_length': 23.0, 'kl': 0.05386829885537736, 'epoch': 1.4}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #281:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #281:  62%|██████▎   | 5/8 [00:00<00:00, 46.39it/s][A
+                                                             [A
+reward_fn #282:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #282:  62%|██████▎   | 5/8 [00:00<00:00, 48.60it/s][A
+                                                             [A
+reward_fn #283:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #283:  62%|██████▎   | 5/8 [00:00<00:00, 45.35it/s][A
+                                                             [A
+reward_fn #284:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #284:  62%|██████▎   | 5/8 [00:00<00:00, 43.73it/s][A
+                                                             [A 71%|███████   | 71/100 [4:50:52<1:03:25, 131.22s/it]                                                     {'loss': 0.0057, 'grad_norm': 7.429694652557373, 'learning_rate': 1.5500000000000002e-06, 'rewards/reward_fn': -0.7010000497102737, 'reward': -0.7010000497102737, 'reward_std': 0.026165006682276726, 'completion_length': 20.25, 'kl': 0.05689430423080921, 'epoch': 1.42}
+ 71%|███████   | 71/100 [4:50:52<1:03:25, 131.22s/it]
+reward_fn #285:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #285:  62%|██████▎   | 5/8 [00:00<00:00, 45.68it/s][A
+                                                             [A
+reward_fn #286:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #286:  62%|██████▎   | 5/8 [00:00<00:00, 43.36it/s][A
+                                                             [A
+reward_fn #287:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #287:  62%|██████▎   | 5/8 [00:00<00:00, 45.30it/s][A
+                                                             [A
+reward_fn #288:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #288:  62%|██████▎   | 5/8 [00:00<00:00, 45.97it/s][A
+                                                             [A 72%|███████▏  | 72/100 [4:56:48<1:32:40, 198.60s/it]                                                     {'loss': 0.0065, 'grad_norm': 19.44525146484375, 'learning_rate': 1.5e-06, 'rewards/reward_fn': -0.9031562507152557, 'reward': -0.9031562507152557, 'reward_std': 0.04478009045124054, 'completion_length': 77.75, 'kl': 0.06480348855257034, 'epoch': 1.44}
+ 72%|███████▏  | 72/100 [4:56:48<1:32:40, 198.60s/it]
+reward_fn #289:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #289:  62%|██████▎   | 5/8 [00:00<00:00, 44.41it/s][A
+                                                             [A
+reward_fn #290:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #290:  62%|██████▎   | 5/8 [00:00<00:00, 44.13it/s][A
+                                                             [A
+reward_fn #291:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #291:  62%|██████▎   | 5/8 [00:00<00:00, 47.53it/s][A
+                                                             [A
+reward_fn #292:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #292:  62%|██████▎   | 5/8 [00:00<00:00, 48.00it/s][A
+                                                             [A 73%|███████▎  | 73/100 [4:58:16<1:14:22, 165.27s/it]                                                     {'loss': 0.0048, 'grad_norm': 9.973678588867188, 'learning_rate': 1.45e-06, 'rewards/reward_fn': -0.7461249828338623, 'reward': -0.7461249828338623, 'reward_std': 0.04640380130149424, 'completion_length': 16.75, 'kl': 0.047841014340519905, 'epoch': 1.46}
+ 73%|███████▎  | 73/100 [4:58:16<1:14:22, 165.27s/it]
+reward_fn #293:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #293:  62%|██████▎   | 5/8 [00:00<00:00, 44.35it/s][A
+                                                             [A
+reward_fn #294:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #294:  62%|██████▎   | 5/8 [00:00<00:00, 43.13it/s][A
+                                                             [A
+reward_fn #295:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #295:  62%|██████▎   | 5/8 [00:00<00:00, 48.72it/s][A
+                                                             [A
+reward_fn #296:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #296:  62%|██████▎   | 5/8 [00:00<00:00, 45.66it/s][A
+                                                             [A 74%|███████▍  | 74/100 [5:00:01<1:03:47, 147.23s/it]                                                      74%|███████▍  | 74/100 [5:00:01<1:03:47, 147.23s/it]{'loss': 0.0066, 'grad_norm': 11.862876892089844, 'learning_rate': 1.4000000000000001e-06, 'rewards/reward_fn': -0.7123750150203705, 'reward': -0.7123750150203705, 'reward_std': 0.04537368565797806, 'completion_length': 20.75, 'kl': 0.06629117392003536, 'epoch': 1.48}
+
+reward_fn #297:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #297:  62%|██████▎   | 5/8 [00:00<00:00, 45.39it/s][A
+                                                             [A
+reward_fn #298:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #298:  62%|██████▎   | 5/8 [00:00<00:00, 40.99it/s][A
+                                                             [A
+reward_fn #299:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #299:  62%|██████▎   | 5/8 [00:00<00:00, 43.81it/s][A
+                                                             [A
+reward_fn #300:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #300:  62%|██████▎   | 5/8 [00:00<00:00, 42.77it/s][A
+                                                             [A 75%|███████▌  | 75/100 [5:01:44<55:50, 134.04s/it]                                                     {'loss': 0.0054, 'grad_norm': 6.340975284576416, 'learning_rate': 1.3500000000000002e-06, 'rewards/reward_fn': -0.8266250193119049, 'reward': -0.8266250193119049, 'reward_std': 0.0253410980803892, 'completion_length': 20.25, 'kl': 0.054110188502818346, 'epoch': 1.5}
+ 75%|███████▌  | 75/100 [5:01:44<55:50, 134.04s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #301:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #301:  62%|██████▎   | 5/8 [00:00<00:00, 44.84it/s][A
+                                                             [A
+reward_fn #302:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #302:  62%|██████▎   | 5/8 [00:00<00:00, 45.27it/s][A
+                                                             [A
+reward_fn #303:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #303:  62%|██████▎   | 5/8 [00:00<00:00, 46.44it/s][A
+                                                             [A
+reward_fn #304:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #304:  62%|██████▎   | 5/8 [00:00<00:00, 43.63it/s][A
+                                                             [A 76%|███████▌  | 76/100 [5:03:22<49:17, 123.23s/it]                                                   {'loss': 0.0059, 'grad_norm': 11.769392967224121, 'learning_rate': 1.3e-06, 'rewards/reward_fn': -0.4700937569141388, 'reward': -0.4700937569141388, 'reward_std': 0.18288141582161188, 'completion_length': 19.0, 'kl': 0.05903193214908242, 'epoch': 1.52}
+ 76%|███████▌  | 76/100 [5:03:22<49:17, 123.23s/it]
+reward_fn #305:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #305:  62%|██████▎   | 5/8 [00:00<00:00, 49.47it/s][A
+                                                             [A
+reward_fn #306:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #306:  62%|██████▎   | 5/8 [00:00<00:00, 41.41it/s][A
+                                                             [A
+reward_fn #307:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #307:  62%|██████▎   | 5/8 [00:00<00:00, 44.63it/s][A
+                                                             [A
+reward_fn #308:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #308:  62%|██████▎   | 5/8 [00:00<00:00, 46.24it/s][A
+                                                             [A 77%|███████▋  | 77/100 [5:05:50<50:02, 130.54s/it]                                                   {'loss': 0.0071, 'grad_norm': 16.483808517456055, 'learning_rate': 1.25e-06, 'rewards/reward_fn': -1.0257499814033508, 'reward': -1.0257499814033508, 'reward_std': 0.051118615083396435, 'completion_length': 30.5, 'kl': 0.07131790835410357, 'epoch': 1.54}
+ 77%|███████▋  | 77/100 [5:05:50<50:02, 130.54s/it]
+reward_fn #309:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #309:  62%|██████▎   | 5/8 [00:00<00:00, 41.84it/s][A
+                                                             [A
+reward_fn #310:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #310:  62%|██████▎   | 5/8 [00:00<00:00, 47.06it/s][A
+                                                             [A
+reward_fn #311:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #311:  62%|██████▎   | 5/8 [00:00<00:00, 44.87it/s][A
+                                                             [A
+reward_fn #312:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #312:  62%|██████▎   | 5/8 [00:00<00:00, 44.37it/s][A
+                                                             [A 78%|███████▊  | 78/100 [5:07:11<42:31, 115.96s/it]                                                   {'loss': 0.0055, 'grad_norm': 17.200481414794922, 'learning_rate': 1.2000000000000002e-06, 'rewards/reward_fn': -0.45612500002607703, 'reward': -0.45612500002607703, 'reward_std': 0.1071204780600965, 'completion_length': 15.5, 'kl': 0.05514861177653074, 'epoch': 1.56}
+ 78%|███████▊  | 78/100 [5:07:11<42:31, 115.96s/it]
+reward_fn #313:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #313:  62%|██████▎   | 5/8 [00:00<00:00, 43.62it/s][A
+                                                             [A
+reward_fn #314:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #314:  62%|██████▎   | 5/8 [00:00<00:00, 42.30it/s][A
+                                                             [A
+reward_fn #315:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #315:  62%|██████▎   | 5/8 [00:00<00:00, 43.01it/s][A
+                                                             [A
+reward_fn #316:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #316:  62%|██████▎   | 5/8 [00:00<00:00, 45.39it/s][A
+                                                             [A 79%|███████▉  | 79/100 [5:09:09<40:46, 116.50s/it]                                                   {'loss': 0.0057, 'grad_norm': 10.701360702514648, 'learning_rate': 1.1500000000000002e-06, 'rewards/reward_fn': -0.7960312366485596, 'reward': -0.7960312366485596, 'reward_std': 0.08764913398772478, 'completion_length': 23.75, 'kl': 0.05722439009696245, 'epoch': 1.58}
+ 79%|███████▉  | 79/100 [5:09:09<40:46, 116.50s/it]
+reward_fn #317:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #317:  62%|██████▎   | 5/8 [00:00<00:00, 43.48it/s][A
+                                                             [A
+reward_fn #318:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #318:  62%|██████▎   | 5/8 [00:00<00:00, 49.96it/s][A
+                                                             [A
+reward_fn #319:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #319:  62%|██████▎   | 5/8 [00:00<00:00, 47.20it/s][A
+                                                             [A
+reward_fn #320:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #320:  62%|██████▎   | 5/8 [00:00<00:00, 47.45it/s][A
+                                                             [A 80%|████████  | 80/100 [5:10:31<35:24, 106.21s/it]                                                    80%|████████  | 80/100 [5:10:31<35:24, 106.21s/it]{'loss': 0.0036, 'grad_norm': 5.824599742889404, 'learning_rate': 1.1e-06, 'rewards/reward_fn': -0.42628125846385956, 'reward': -0.42628125846385956, 'reward_std': 0.05265705240890384, 'completion_length': 15.5, 'kl': 0.036201988812536, 'epoch': 1.6}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #321:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #321:  62%|██████▎   | 5/8 [00:00<00:00, 44.38it/s][A
+                                                             [A
+reward_fn #322:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #322:  62%|██████▎   | 5/8 [00:00<00:00, 42.43it/s][A
+                                                             [A
+reward_fn #323:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #323:  62%|██████▎   | 5/8 [00:00<00:00, 43.61it/s][A
+                                                             [A
+reward_fn #324:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #324:  62%|██████▎   | 5/8 [00:00<00:00, 42.57it/s][A
+                                                             [A 81%|████████  | 81/100 [5:12:33<35:04, 110.75s/it]                                                   {'loss': 0.0059, 'grad_norm': 6.7590131759643555, 'learning_rate': 1.0500000000000001e-06, 'rewards/reward_fn': -0.7121874988079071, 'reward': -0.7121874988079071, 'reward_std': 0.03748171869665384, 'completion_length': 24.0, 'kl': 0.059382420033216476, 'epoch': 1.62}
+ 81%|████████  | 81/100 [5:12:33<35:04, 110.75s/it]
+reward_fn #325:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #325:  62%|██████▎   | 5/8 [00:00<00:00, 43.11it/s][A
+                                                             [A
+reward_fn #326:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #326:  62%|██████▎   | 5/8 [00:00<00:00, 46.18it/s][A
+                                                             [A
+reward_fn #327:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #327:  62%|██████▎   | 5/8 [00:00<00:00, 44.46it/s][A
+                                                             [A
+reward_fn #328:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #328:  62%|██████▎   | 5/8 [00:00<00:00, 46.41it/s][A
+                                                             [A 82%|████████▏ | 82/100 [5:15:18<38:05, 126.95s/it]                                                   {'loss': 0.0049, 'grad_norm': 8.55603313446045, 'learning_rate': 1.0000000000000002e-06, 'rewards/reward_fn': -0.7909062504768372, 'reward': -0.7909062504768372, 'reward_std': 0.05965084955096245, 'completion_length': 34.25, 'kl': 0.04947095061652362, 'epoch': 1.64}
+ 82%|████████▏ | 82/100 [5:15:18<38:05, 126.95s/it]
+reward_fn #329:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #329:  62%|██████▎   | 5/8 [00:00<00:00, 44.04it/s][A
+                                                             [A
+reward_fn #330:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #330:  62%|██████▎   | 5/8 [00:00<00:00, 42.29it/s][A
+                                                             [A
+reward_fn #331:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #331:  62%|██████▎   | 5/8 [00:00<00:00, 41.90it/s][A
+                                                             [A
+reward_fn #332:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #332:  62%|██████▎   | 5/8 [00:00<00:00, 45.84it/s][A
+                                                             [A 83%|████████▎ | 83/100 [5:17:20<35:36, 125.67s/it]                                                   {'loss': 0.0044, 'grad_norm': 19.282989501953125, 'learning_rate': 9.500000000000001e-07, 'rewards/reward_fn': -0.5267187431454659, 'reward': -0.5267187431454659, 'reward_std': 0.14792373031377792, 'completion_length': 25.0, 'kl': 0.04359176754951477, 'epoch': 1.66}
+ 83%|████████▎ | 83/100 [5:17:20<35:36, 125.67s/it]
+reward_fn #333:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #333:  62%|██████▎   | 5/8 [00:00<00:00, 44.46it/s][A
+                                                             [A
+reward_fn #334:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #334:  62%|██████▎   | 5/8 [00:00<00:00, 45.06it/s][A
+                                                             [A
+reward_fn #335:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #335:  62%|██████▎   | 5/8 [00:00<00:00, 47.39it/s][A
+                                                             [A
+reward_fn #336:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #336:  62%|██████▎   | 5/8 [00:00<00:00, 44.38it/s][A
+                                                             [A 84%|████████▍ | 84/100 [5:19:49<35:21, 132.59s/it]                                                   {'loss': 0.0045, 'grad_norm': 16.919713973999023, 'learning_rate': 9.000000000000001e-07, 'rewards/reward_fn': -0.78065624833107, 'reward': -0.78065624833107, 'reward_std': 0.024075814289972186, 'completion_length': 31.25, 'kl': 0.04518698714673519, 'epoch': 1.68}
+ 84%|████████▍ | 84/100 [5:19:49<35:21, 132.59s/it]
+reward_fn #337:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #337:  62%|██████▎   | 5/8 [00:00<00:00, 43.91it/s][A
+                                                             [A
+reward_fn #338:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #338:  62%|██████▎   | 5/8 [00:00<00:00, 44.32it/s][A
+                                                             [A
+reward_fn #339:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #339:  62%|██████▎   | 5/8 [00:00<00:00, 40.23it/s][A
+                                                             [A
+reward_fn #340:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #340:  62%|██████▎   | 5/8 [00:00<00:00, 46.46it/s][A
+                                                             [A 85%|████████▌ | 85/100 [5:26:20<52:32, 210.14s/it]                                                   {'loss': 0.004, 'grad_norm': 8.773488998413086, 'learning_rate': 8.500000000000001e-07, 'rewards/reward_fn': -0.6665625423192978, 'reward': -0.6665625423192978, 'reward_std': 0.0231613009236753, 'completion_length': 82.25, 'kl': 0.040170419961214066, 'epoch': 1.7}
+ 85%|████████▌ | 85/100 [5:26:20<52:32, 210.14s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #341:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #341:  62%|██████▎   | 5/8 [00:00<00:00, 43.87it/s][A
+                                                             [A
+reward_fn #342:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #342:  62%|██████▎   | 5/8 [00:00<00:00, 46.87it/s][A
+                                                             [A
+reward_fn #343:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #343:  62%|██████▎   | 5/8 [00:00<00:00, 44.69it/s][A
+                                                             [A
+reward_fn #344:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #344:  62%|██████▎   | 5/8 [00:00<00:00, 48.74it/s][A
+                                                             [A 86%|████████▌ | 86/100 [5:28:43<44:21, 190.09s/it]                                                   {'loss': 0.005, 'grad_norm': 7.165809154510498, 'learning_rate': 8.000000000000001e-07, 'rewards/reward_fn': -0.5288750007748604, 'reward': -0.5288750007748604, 'reward_std': 0.04443909414112568, 'completion_length': 29.75, 'kl': 0.049722276628017426, 'epoch': 1.72}
+ 86%|████████▌ | 86/100 [5:28:43<44:21, 190.09s/it]
+reward_fn #345:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #345:  62%|██████▎   | 5/8 [00:00<00:00, 49.32it/s][A
+                                                             [A
+reward_fn #346:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #346:  62%|██████▎   | 5/8 [00:00<00:00, 46.01it/s][A
+                                                             [A
+reward_fn #347:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #347:  62%|██████▎   | 5/8 [00:00<00:00, 41.62it/s][A
+                                                             [A
+reward_fn #348:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #348:  62%|██████▎   | 5/8 [00:00<00:00, 41.20it/s][A
+                                                             [A 87%|████████▋ | 87/100 [5:31:05<38:03, 175.69s/it]                                                    87%|████████▋ | 87/100 [5:31:05<38:03, 175.69s/it]{'loss': 0.006, 'grad_norm': 10.434640884399414, 'learning_rate': 7.5e-07, 'rewards/reward_fn': -1.030218780040741, 'reward': -1.030218780040741, 'reward_std': 0.018427339964546263, 'completion_length': 29.25, 'kl': 0.06028053443878889, 'epoch': 1.74}
+
+reward_fn #349:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #349:  62%|██████▎   | 5/8 [00:00<00:00, 43.78it/s][A
+                                                             [A
+reward_fn #350:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #350:  62%|██████▎   | 5/8 [00:00<00:00, 42.70it/s][A
+                                                             [A
+reward_fn #351:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #351:  62%|██████▎   | 5/8 [00:00<00:00, 43.58it/s][A
+                                                             [A
+reward_fn #352:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #352:  62%|██████▎   | 5/8 [00:00<00:00, 41.74it/s][A
+                                                             [A 88%|████████▊ | 88/100 [5:33:04<31:43, 158.65s/it]                                                    88%|████████▊ | 88/100 [5:33:04<31:43, 158.65s/it]{'loss': 0.007, 'grad_norm': 10.470906257629395, 'learning_rate': 7.000000000000001e-07, 'rewards/reward_fn': -0.4697499945759773, 'reward': -0.4697499945759773, 'reward_std': 0.04435374401509762, 'completion_length': 23.75, 'kl': 0.0704761166125536, 'epoch': 1.76}
+
+reward_fn #353:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #353:  50%|█████     | 4/8 [00:00<00:00, 39.86it/s][A
+reward_fn #353: 100%|██████████| 8/8 [00:00<00:00, 39.78it/s][A
+                                                             [A
+reward_fn #354:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #354:  62%|██████▎   | 5/8 [00:00<00:00, 42.04it/s][A
+                                                             [A
+reward_fn #355:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #355:  62%|██████▎   | 5/8 [00:00<00:00, 46.22it/s][A
+                                                             [A
+reward_fn #356:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #356:  62%|██████▎   | 5/8 [00:00<00:00, 47.71it/s][A
+                                                             [A 89%|████████▉ | 89/100 [5:35:53<29:38, 161.71s/it]                                                    89%|████████▉ | 89/100 [5:35:53<29:38, 161.71s/it]{'loss': 0.0059, 'grad_norm': 14.499815940856934, 'learning_rate': 6.5e-07, 'rewards/reward_fn': -0.8238750174641609, 'reward': -0.8238750174641609, 'reward_std': 0.03447519429028034, 'completion_length': 35.5, 'kl': 0.0585549371317029, 'epoch': 1.78}
+
+reward_fn #357:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #357:  62%|██████▎   | 5/8 [00:00<00:00, 47.65it/s][A
+                                                             [A
+reward_fn #358:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #358:  62%|██████▎   | 5/8 [00:00<00:00, 45.27it/s][A
+                                                             [A
+reward_fn #359:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #359:  62%|██████▎   | 5/8 [00:00<00:00, 43.27it/s][A
+                                                             [A
+reward_fn #360:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #360:  75%|███████▌  | 6/8 [00:00<00:00, 50.50it/s][A
+                                                             [A 90%|█████████ | 90/100 [5:37:44<24:24, 146.46s/it]                                                    90%|█████████ | 90/100 [5:37:44<24:24, 146.46s/it]{'loss': 0.0062, 'grad_norm': 5.656716346740723, 'learning_rate': 6.000000000000001e-07, 'rewards/reward_fn': -0.529218778014183, 'reward': -0.529218778014183, 'reward_std': 0.02609808137640357, 'completion_length': 22.0, 'kl': 0.06202119588851929, 'epoch': 1.8}
+/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #361:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #361:  62%|██████▎   | 5/8 [00:00<00:00, 47.53it/s][A
+                                                             [A
+reward_fn #362:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #362:  62%|██████▎   | 5/8 [00:00<00:00, 49.60it/s][A
+                                                             [A
+reward_fn #363:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #363:  62%|██████▎   | 5/8 [00:00<00:00, 45.31it/s][A
+                                                             [A
+reward_fn #364:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #364:  62%|██████▎   | 5/8 [00:00<00:00, 43.80it/s][A
+                                                             [A 91%|█████████ | 91/100 [5:39:29<20:05, 133.98s/it]{'loss': 0.0043, 'grad_norm': 15.024965286254883, 'learning_rate': 5.5e-07, 'rewards/reward_fn': -0.47209371626377106, 'reward': -0.47209371626377106, 'reward_std': 0.04452149709686637, 'completion_length': 20.25, 'kl': 0.042993283132091165, 'epoch': 1.82}
+                                                    91%|█████████ | 91/100 [5:39:29<20:05, 133.98s/it]
+reward_fn #365:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #365:  62%|██████▎   | 5/8 [00:00<00:00, 44.71it/s][A
+                                                             [A
+reward_fn #366:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #366:  62%|██████▎   | 5/8 [00:00<00:00, 44.55it/s][A
+                                                             [A
+reward_fn #367:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #367:  62%|██████▎   | 5/8 [00:00<00:00, 42.80it/s][A
+                                                             [A
+reward_fn #368:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #368:  62%|██████▎   | 5/8 [00:00<00:00, 41.31it/s][A
+                                                             [A 92%|█████████▏| 92/100 [5:41:28<17:15, 129.46s/it]                                                   {'loss': 0.0037, 'grad_norm': 10.319493293762207, 'learning_rate': 5.000000000000001e-07, 'rewards/reward_fn': -0.641000010073185, 'reward': -0.641000010073185, 'reward_std': 0.0468212990090251, 'completion_length': 24.0, 'kl': 0.03737962432205677, 'epoch': 1.84}
+ 92%|█████████▏| 92/100 [5:41:28<17:15, 129.46s/it]
+reward_fn #369:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #369:  50%|█████     | 4/8 [00:00<00:00, 31.10it/s][A
+reward_fn #369: 100%|██████████| 8/8 [00:00<00:00, 31.13it/s][A
+                                                             [A
+reward_fn #370:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #370:  50%|█████     | 4/8 [00:00<00:00, 32.27it/s][A
+reward_fn #370: 100%|██████████| 8/8 [00:00<00:00, 32.31it/s][A
+                                                             [A
+reward_fn #371:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #371:  50%|█████     | 4/8 [00:00<00:00, 33.11it/s][A
+reward_fn #371: 100%|██████████| 8/8 [00:00<00:00, 33.18it/s][A
+                                                             [A
+reward_fn #372:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #372:  38%|███▊      | 3/8 [00:00<00:00, 29.16it/s][A
+reward_fn #372:  75%|███████▌  | 6/8 [00:00<00:00, 29.20it/s][A
+                                                             [A 93%|█████████▎| 93/100 [5:43:19<14:26, 123.84s/it]                                                   {'loss': 0.0025, 'grad_norm': 14.161118507385254, 'learning_rate': 4.5000000000000003e-07, 'rewards/reward_fn': -0.798156276345253, 'reward': -0.798156276345253, 'reward_std': 0.04604964051395655, 'completion_length': 22.0, 'kl': 0.025206365215126425, 'epoch': 1.86}
+ 93%|█████████▎| 93/100 [5:43:19<14:26, 123.84s/it]
+reward_fn #373:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #373:  62%|██████▎   | 5/8 [00:00<00:00, 43.33it/s][A
+                                                             [A
+reward_fn #374:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #374:  62%|██████▎   | 5/8 [00:00<00:00, 44.60it/s][A
+                                                             [A
+reward_fn #375:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #375:  62%|██████▎   | 5/8 [00:00<00:00, 44.62it/s][A
+                                                             [A
+reward_fn #376:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #376:  50%|█████     | 4/8 [00:00<00:00, 37.02it/s][A
+reward_fn #376: 100%|██████████| 8/8 [00:00<00:00, 37.87it/s][A
+                                                             [A 94%|█████████▍| 94/100 [5:45:32<12:39, 126.66s/it]                                                   {'loss': 0.0028, 'grad_norm': 10.869111061096191, 'learning_rate': 4.0000000000000003e-07, 'rewards/reward_fn': -0.7514687478542328, 'reward': -0.7514687478542328, 'reward_std': 0.03778064623475075, 'completion_length': 27.5, 'kl': 0.028384691569954157, 'epoch': 1.88}
+ 94%|█████████▍| 94/100 [5:45:32<12:39, 126.66s/it]
+reward_fn #377:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #377:  62%|██████▎   | 5/8 [00:00<00:00, 48.54it/s][A
+                                                             [A
+reward_fn #378:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #378:  62%|██████▎   | 5/8 [00:00<00:00, 43.84it/s][A
+                                                             [A
+reward_fn #379:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #379:  62%|██████▎   | 5/8 [00:00<00:00, 46.00it/s][A
+                                                             [A
+reward_fn #380:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #380:  62%|██████▎   | 5/8 [00:00<00:00, 48.24it/s][A
+                                                             [A 95%|█████████▌| 95/100 [5:47:21<10:07, 121.55s/it]                                                   {'loss': 0.0069, 'grad_norm': 12.25583267211914, 'learning_rate': 3.5000000000000004e-07, 'rewards/reward_fn': -1.0844686925411224, 'reward': -1.0844686925411224, 'reward_std': 0.03951108921319246, 'completion_length': 21.75, 'kl': 0.06906452216207981, 'epoch': 1.9}
+ 95%|█████████▌| 95/100 [5:47:21<10:07, 121.55s/it]/usr/local/lib/python3.11/dist-packages/torch/utils/checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+
+reward_fn #381:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #381:  62%|██████▎   | 5/8 [00:00<00:00, 47.17it/s][A
+                                                             [A
+reward_fn #382:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #382:  62%|██████▎   | 5/8 [00:00<00:00, 41.37it/s][A
+                                                             [A
+reward_fn #383:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #383:  62%|██████▎   | 5/8 [00:00<00:00, 46.24it/s][A
+                                                             [A
+reward_fn #384:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #384:  38%|███▊      | 3/8 [00:00<00:00, 29.51it/s][A
+reward_fn #384:  75%|███████▌  | 6/8 [00:00<00:00, 29.10it/s][A
+                                                             [A 96%|█████████▌| 96/100 [5:48:36<07:10, 107.57s/it]                                                   {'loss': 0.0027, 'grad_norm': 15.728161811828613, 'learning_rate': 3.0000000000000004e-07, 'rewards/reward_fn': -0.526562511920929, 'reward': -0.526562511920929, 'reward_std': 0.10380499623715878, 'completion_length': 13.5, 'kl': 0.02667075302451849, 'epoch': 1.92}
+ 96%|█████████▌| 96/100 [5:48:36<07:10, 107.57s/it]
+reward_fn #385:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #385:  50%|█████     | 4/8 [00:00<00:00, 35.02it/s][A
+reward_fn #385: 100%|██████████| 8/8 [00:00<00:00, 34.78it/s][A
+                                                             [A
+reward_fn #386:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #386:  50%|█████     | 4/8 [00:00<00:00, 31.27it/s][A
+reward_fn #386: 100%|██████████| 8/8 [00:00<00:00, 31.12it/s][A
+                                                             [A
+reward_fn #387:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #387:  50%|█████     | 4/8 [00:00<00:00, 33.95it/s][A
+reward_fn #387: 100%|██████████| 8/8 [00:00<00:00, 33.54it/s][A
+                                                             [A
+reward_fn #388:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #388:  50%|█████     | 4/8 [00:00<00:00, 36.03it/s][A
+reward_fn #388: 100%|██████████| 8/8 [00:00<00:00, 36.55it/s][A
+                                                             [A 97%|█████████▋| 97/100 [5:50:29<05:27, 109.11s/it]                                                   {'loss': 0.0041, 'grad_norm': 11.109317779541016, 'learning_rate': 2.5000000000000004e-07, 'rewards/reward_fn': -0.4885937459766865, 'reward': -0.4885937459766865, 'reward_std': 0.1729535263730213, 'completion_length': 23.0, 'kl': 0.04102367255836725, 'epoch': 1.94}
+ 97%|█████████▋| 97/100 [5:50:29<05:27, 109.11s/it]
+reward_fn #389:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #389:  62%|██████▎   | 5/8 [00:00<00:00, 42.59it/s][A
+                                                             [A
+reward_fn #390:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #390:  62%|██████▎   | 5/8 [00:00<00:00, 48.11it/s][A
+                                                             [A
+reward_fn #391:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #391:  62%|██████▎   | 5/8 [00:00<00:00, 43.33it/s][A
+                                                             [A
+reward_fn #392:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #392:  50%|█████     | 4/8 [00:00<00:00, 32.05it/s][A
+reward_fn #392: 100%|██████████| 8/8 [00:00<00:00, 33.02it/s][A
+                                                             [A 98%|█████████▊| 98/100 [5:53:48<04:32, 136.02s/it]                                                   {'loss': 0.0045, 'grad_norm': 13.242402076721191, 'learning_rate': 2.0000000000000002e-07, 'rewards/reward_fn': -0.8168125078082085, 'reward': -0.8168125078082085, 'reward_std': 0.08516090409830213, 'completion_length': 42.75, 'kl': 0.04476980213075876, 'epoch': 1.96}
+ 98%|█████████▊| 98/100 [5:53:48<04:32, 136.02s/it]
+reward_fn #393:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #393:  50%|█████     | 4/8 [00:00<00:00, 35.53it/s][A
+reward_fn #393: 100%|██████████| 8/8 [00:00<00:00, 35.08it/s][A
+                                                             [A
+reward_fn #394:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #394:  50%|█████     | 4/8 [00:00<00:00, 36.57it/s][A
+reward_fn #394: 100%|██████████| 8/8 [00:00<00:00, 36.78it/s][A
+                                                             [A
+reward_fn #395:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #395:  50%|█████     | 4/8 [00:00<00:00, 32.80it/s][A
+reward_fn #395: 100%|██████████| 8/8 [00:00<00:00, 32.88it/s][A
+                                                             [A
+reward_fn #396:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #396:  50%|█████     | 4/8 [00:00<00:00, 30.54it/s][A
+reward_fn #396: 100%|██████████| 8/8 [00:00<00:00, 30.49it/s][A
+                                                             [A 99%|█████████▉| 99/100 [5:55:49<02:11, 131.41s/it]                                                   {'loss': 0.0049, 'grad_norm': 6.138788223266602, 'learning_rate': 1.5000000000000002e-07, 'rewards/reward_fn': -0.6409374848008156, 'reward': -0.6409374848008156, 'reward_std': 0.15652112045791, 'completion_length': 24.25, 'kl': 0.04937978833913803, 'epoch': 1.98}
+ 99%|█████████▉| 99/100 [5:55:49<02:11, 131.41s/it]
+reward_fn #397:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #397:  62%|██████▎   | 5/8 [00:00<00:00, 43.04it/s][A
+                                                             [A
+reward_fn #398:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #398:  62%|██████▎   | 5/8 [00:00<00:00, 43.32it/s][A
+                                                             [A
+reward_fn #399:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #399:  62%|██████▎   | 5/8 [00:00<00:00, 44.79it/s][A
+                                                             [A
+reward_fn #400:   0%|          | 0/8 [00:00<?, ?it/s][A
+reward_fn #400:  62%|██████▎   | 5/8 [00:00<00:00, 45.54it/s][A
+                                                             [A100%|██████████| 100/100 [5:57:59<00:00, 131.06s/it]                                                    {'loss': 0.0035, 'grad_norm': 23.646930694580078, 'learning_rate': 1.0000000000000001e-07, 'rewards/reward_fn': -0.0963749811053276, 'reward': -0.0963749811053276, 'reward_std': 0.027439726749435067, 'completion_length': 26.75, 'kl': 0.0348467247094959, 'epoch': 2.0}
+100%|██████████| 100/100 [5:57:59<00:00, 131.06s/it]                                                    {'train_runtime': 21480.5519, 'train_samples_per_second': 0.149, 'train_steps_per_second': 0.005, 'train_loss': 0.006344948026962811, 'epoch': 2.0}
+100%|██████████| 100/100 [5:58:00<00:00, 131.06s/it]100%|██████████| 100/100 [5:58:00<00:00, 214.81s/it]
