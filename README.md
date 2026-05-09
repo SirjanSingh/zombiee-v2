@@ -68,6 +68,17 @@ the v2.0 first pass:
    terminal-only rubrics (`group_outcome`, `hoarding_penalty`,
    `infected_deception`) for ALL agents at the moment the episode ends.
 
+**Post-run-2 fixes (commits `1e814d4`, `4f34535`, `95b3d57`):**
+- **`parse_action` word-boundary fix** — Strategy 3 used `in text_lower` (substring), so
+  `"scan"` matched inside `"scan_target"`. Fixed with `re.search(r"\bscan\b", ...)`.
+  Also closes: `"wait"` in `"waiting"`, `"eat"` in `"death"`, `"drop"` in `"dropped"`.
+- **`scan_economy_reward`** (rubric 15) — flat **-0.03** per-scan cost on any scan
+  (streak ≥ 1), escalating **-0.05/streak** past streak 2. Closes the scan-spam exploit
+  that caused scan=49.5% in run 1 and 66.1% in run 2 under single-action GRPO rollouts.
+- **`forage_shaping_reward` threshold** — now fires at hunger≥1 / thirst≥1 (was ≥7),
+  with magnitude scaled linearly by urgency. Eliminates the dead zone at episode start
+  that let scan dominate when forage gradient was absent.
+
 Plus: `obs.metadata` now exposes `last_actor_id`, `cumulative_rewards`
 per agent, and `raw_reward` (un-clipped) so training code can pick the
 right field instead of the OpenEnv-clipped `obs.reward`.
@@ -376,6 +387,82 @@ cd v2
 pytest -q
 ```
 
+## Training history
+
+### Run 1 — baseline (2026-04-30, 100 steps)
+
+**Hardware:** Tesla V100-SXM2-32GB (`sm_70`), fp16 only, no bf16, no `adamw_torch_fused`.
+
+**Command:**
+```
+--lr 5e-6 --beta 0.1 --no-4bit --optim adamw_torch --max-steps 100
+--save-steps 5 --save-total-limit 20 --per-device-batch-size 8
+--num-generations 8 --grad-accum-steps 4 --max-completion-length 256
+--lora-r 32 --lora-alpha 64
+```
+
+**Reward trajectory:** -0.92 (step 1) → ~-0.60 plateau → -0.51 (step 100). ~6 h wallclock (~3.6 min/step).
+
+**Eval results** (`--baseline-episodes 20 --trained-episodes 10 --max-steps-per-episode 150`):
+
+| metric              | baseline | ckpt-25 | ckpt-100 |
+|---------------------|----------|---------|----------|
+| survival rate       | 0%       | 0%      | 0%       |
+| mean reward         | 1.064    | 0.879   | 0.857    |
+| infection isolation | 85%      | 100%    | 100%     |
+
+**Diagnosis:** Model learned voting (100% infection isolation) but not survival.
+Root cause: `scan` was Pareto-better than every other action — no rubric penalised it.
+Action histogram: `scan=49.5%`, `eat=1.8%`; agents starved by step 17.
+
+---
+
+### Run 2 — partial (2026-05-09, aborted at step 21)
+
+Applied fixes from commit `1e814d4` (parse_action word-boundary, scan_streak field,
+invalid-target scan reclassified as wait, `scan_economy_reward` streak penalty).
+
+**Result:** scan_economy never fired — the streak threshold of 2 was unreachable
+because GRPO takes exactly one model action per rollout (the rest is forage heuristic,
+which never scans). `scan_streak` never exceeded 1. Cumulative scan rose to **66.1%**
+(worse than run 1). Run aborted at step 21.
+
+Action histogram (steps 0–21):
+
+| action      | rate |
+|-------------|------|
+| scan        | 66.1% |
+| drink       | 14.4% |
+| wait         | 6.1% |
+| inject       | 4.8% |
+| vote_lockout | 3.5% |
+| movement     | 2.1% |
+| eat          | 0.7% |
+
+---
+
+### Fixes applied for run 3 (commits since run 2)
+
+| Commit | Change |
+|--------|--------|
+| `4f34535` | `scan_economy_reward`: flat **-0.03** per-scan cost on any scan (streak ≥ 1), keeps -0.05/streak escalation past streak 2. Net: scan=-0.025 vs wait=+0.005 at step 0. |
+| `95b3d57` | `forage_shaping_reward`: fires at **hunger≥1** (was ≥7), magnitude scaled linearly with urgency — eliminates the dead zone at episode start that let scan dominate. |
+
+Also confirmed: vote schedule is `[30, 50, 70, 90]` (committed `b8c55eb`).
+
+**Status:** All fixes committed. Next step is to launch run 3 with the same hyperparams.
+
+---
+
+### What to do next (run 3)
+
+1. Launch training from scratch (same hyperparams as run 1/2).
+2. Watch: `scan%` in `metrics.jsonl` should drop below ~10% by step 20; `eat%` should rise above ~10%.
+3. If `movement%` is still ~2% at step 20, lower the `forage_shaping_reward` threshold further.
+4. Eval with `--max-steps-per-episode 150` (covers all four vote phases at t=30/50/70/90).
+
+---
+
 ## What changed vs v1
 
 | Aspect | v1 | v2 |
@@ -391,7 +478,7 @@ pytest -q
 | Day/night | none | **day/night cycle** (t=0-24 day, 25-49 night, 50-74 day, 75-99 night) |
 | Zombies | 3 fixed | start 3 + **waves at t=25/50/75** (+2/+3/+3, cap 12) |
 | Action types | 8 | **14** (added drink, scan, pickup, drop, give, inject) |
-| Reward rubrics | 3 | **14** (10 from v2.0 + 4 from v2.1: forage_shaping, zombie_proximity, anti_camp, infected_deception) |
+| Reward rubrics | 3 | **15** (10 from v2.0 + 4 from v2.1: forage_shaping, zombie_proximity, anti_camp, infected_deception + scan_economy from post-run-2 fix) |
 | Damage credit | dropped for non-acting victims | **`pending_reward` accumulator** drained into `cumulative_rewards` at end-of-round |
 | Terminal settlement | only last-actor saw `group_outcome` | **all agents** receive terminal-rubric credit on `done=True` |
 | GRPO rollout | random actions (rewards floor-pinned) | **forage heuristic** (`reward_std` ~0.5 vs ~0.014 in v1) |
