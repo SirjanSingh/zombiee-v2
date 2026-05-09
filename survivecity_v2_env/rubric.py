@@ -403,29 +403,40 @@ def anti_camp_reward(state: "EpisodeState", agent_id: int) -> float:
 # ---------------------------------------------------------------------------
 
 def scan_economy_reward(state: "EpisodeState", agent_id: int) -> float:
-    """Penalise scan-spam to close the v1 exploit.
+    """Penalise scan as a per-action cost to close the scan-spam exploit.
 
-    During the 100-step run, `scan` accounted for 49.5% of all actions.
-    It dodged every existing rubric guardrail: no movement (no
-    zombie_proximity penalty), the legacy logic reset waits_streak (no
-    anti_camp), no noise meter, only +1 thirst (silent until 7+).
-    Combined with the parse_action substring bug, "no-op scan" became
-    Pareto-better than `wait` for the policy. We close the loop by:
+    Run-1 history: `scan` was 49.5% of all actions; agents starved (eat
+    1.8%) because scan dodged every rubric guardrail.
 
-      1. Reclassifying invalid-target scans as `wait` in game.py so they
-         can no longer dodge anti_camp.
-      2. Penalising consecutive valid scans past the second here.
+    Run-2 history (this revision): the streak-only fix DID NOT FIRE in
+    GRPO training because the model takes exactly one action per
+    rollout (rest is forage-heuristic which never scans). scan_streak
+    therefore never exceeds 1 during training, the streak threshold of
+    2 was unreachable, and scan_economy_reward returned 0.0 every time.
+    At step 20 of run 2, scan was 66.1% of model actions — worse than
+    run 1.
 
-    Magnitude: -0.05 per scan beyond the second, capped at -0.30 (streak
-    of 8+). Same order as a single bad vote; far smaller than terminal
-    rubrics so it shapes behaviour without overwhelming social signals.
+    Architecture-correct fix: charge a flat cost for ANY scan, plus
+    an escalating penalty for streaks (still useful for multi-step
+    policies / inference). The flat cost gives GRPO direct gradient
+    pressure away from scan even with single-action rollouts.
+
+    Magnitudes:
+      streak 1     : -0.03  (flat per-scan cost)
+      streak 2     : -0.03
+      streak 3     : -0.08  (-0.03 flat + -0.05 escalation)
+      streak 4     : -0.13
+      streak 8+    : -0.33  (capped)
     """
     a = state.agents[agent_id]
     if not a.is_alive:
         return 0.0
-    if a.scan_streak <= 2:
+    if a.scan_streak == 0:
         return 0.0
-    return -0.05 * min(a.scan_streak - 2, 6)
+    penalty = -0.03
+    if a.scan_streak > 2:
+        penalty -= 0.05 * min(a.scan_streak - 2, 6)
+    return penalty
 
 
 # ---------------------------------------------------------------------------
