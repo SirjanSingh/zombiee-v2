@@ -116,9 +116,12 @@ def parse_action(text: str, agent_id: int) -> Optional[dict]:
     # --- Strategy 3: last-resort word scan ---
     # Lowercase scan so "Move_up" / "MOVE_UP" still match. Sort by length
     # so "move_up" matches before "move" (no false-positive on "move").
+    # Word-boundary required: bare "scan" must NOT match inside "scan_target"
+    # (which would return a no-op scan with no target — the model exploited
+    # this to dodge the anti_camp rubric for ~50% of training actions).
     text_lower = text.lower()
     for atype in sorted(VALID_ACTION_TYPES, key=len, reverse=True):
-        if atype in text_lower:
+        if re.search(rf"\b{re.escape(atype)}\b", text_lower):
             return {"agent_id": agent_id, "action_type": atype}
 
     return None

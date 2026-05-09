@@ -399,6 +399,36 @@ def anti_camp_reward(state: "EpisodeState", agent_id: int) -> float:
 
 
 # ---------------------------------------------------------------------------
+# 14b. scan_economy_reward — penalise consecutive scans (anti-exploit)
+# ---------------------------------------------------------------------------
+
+def scan_economy_reward(state: "EpisodeState", agent_id: int) -> float:
+    """Penalise scan-spam to close the v1 exploit.
+
+    During the 100-step run, `scan` accounted for 49.5% of all actions.
+    It dodged every existing rubric guardrail: no movement (no
+    zombie_proximity penalty), the legacy logic reset waits_streak (no
+    anti_camp), no noise meter, only +1 thirst (silent until 7+).
+    Combined with the parse_action substring bug, "no-op scan" became
+    Pareto-better than `wait` for the policy. We close the loop by:
+
+      1. Reclassifying invalid-target scans as `wait` in game.py so they
+         can no longer dodge anti_camp.
+      2. Penalising consecutive valid scans past the second here.
+
+    Magnitude: -0.05 per scan beyond the second, capped at -0.30 (streak
+    of 8+). Same order as a single bad vote; far smaller than terminal
+    rubrics so it shapes behaviour without overwhelming social signals.
+    """
+    a = state.agents[agent_id]
+    if not a.is_alive:
+        return 0.0
+    if a.scan_streak <= 2:
+        return 0.0
+    return -0.05 * min(a.scan_streak - 2, 6)
+
+
+# ---------------------------------------------------------------------------
 # 14. infected_deception_reward — terminal bonus for starting infected
 # ---------------------------------------------------------------------------
 
@@ -473,6 +503,7 @@ _RUBRIC_FUNCS = (
     forage_shaping_reward,
     zombie_proximity_reward,
     anti_camp_reward,
+    scan_economy_reward,
     infected_deception_reward,
 )
 

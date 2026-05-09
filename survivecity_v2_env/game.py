@@ -80,6 +80,7 @@ class _AgentInternal:
     death_step: Optional[int] = None
     death_cause: Optional[str] = None
     waits_streak: int = 0   # consecutive wait/no-op actions, for anti-camp
+    scan_streak: int = 0    # consecutive valid scan actions, for scan-economy
 
     def reset_step_flags(self) -> None:
         self.ate_this_step = False
@@ -320,12 +321,37 @@ def apply_agent_action(
         _do_inject(agent, state, inject_target, item_slot)
     # Unknown action_type just falls through as a no-op
 
+    # Determine the EFFECTIVE action for streak-tracking.
+    # A `scan` with no/invalid/self/dead target is a literal no-op inside
+    # `_do_scan`; previously it still reset waits_streak, letting the model
+    # dodge anti_camp by spamming `{"action_type": "scan"}` with no
+    # scan_target. We reclassify these as `wait` for streak purposes so
+    # they stay subject to the anti_camp rubric.
+    effective_action = action_type
+    if action_type == "scan":
+        valid_target = (
+            scan_target is not None
+            and 0 <= scan_target < len(state.agents)
+            and scan_target != agent.agent_id
+            and state.agents[scan_target].is_alive
+        )
+        if not valid_target:
+            effective_action = "wait"
+
     # Track wait-streak for the anti-camp rubric. Any deliberate action
     # other than a `wait` resets the streak; a `wait` increments it.
-    if action_type == "wait":
+    if effective_action == "wait":
         agent.waits_streak += 1
     else:
         agent.waits_streak = 0
+
+    # Track scan-streak for the scan-economy rubric. Only valid scans
+    # count — invalid scans are already reclassified as wait above, so
+    # they cannot pad the scan-streak either.
+    if effective_action == "scan":
+        agent.scan_streak += 1
+    else:
+        agent.scan_streak = 0
 
     # Revealed biters bite at end of their turn
     if (
