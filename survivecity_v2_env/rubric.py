@@ -297,19 +297,26 @@ def _manhattan(a_row: int, a_col: int, cells) -> int:
 def forage_shaping_reward(state: "EpisodeState", agent_id: int) -> float:
     """Dense gradient toward food when hungry, water when thirsty, medicine when latent.
 
-    The eval transcripts showed ~75% of episodes ending in collective
-    starvation by step 50: with 8 food cells on a 15×15 grid and a 100-step
-    horizon, a random walk almost never reaches food before hunger kills
-    the agent. There was nothing in the original 10 rubrics that nudged
-    the policy toward food before the moment of eating. This rubric adds
-    a tiny per-step potential that only kicks in when the agent is
-    actually at risk (hunger>=7 or thirst>=7), so it doesn't bias play
-    away from social-deduction once basic survival is solved.
+    Run-2 history: the original threshold of >=7 meant this rubric never
+    fired at step 0 (hunger=1, thirst=1) so the model had no gradient
+    toward movement vs. scan. The action histogram showed movement at
+    3.0% and scan at 55.9% across 100 training steps. With single-action
+    GRPO the model's only chance to influence the rollout is its very
+    first action — if there's no reward differential between "move
+    toward food" and "stay put" at hunger=1, the model defaults to
+    scan-spam.
+
+    Now fires at hunger>=1 / thirst>=1 with magnitude scaled linearly
+    against urgency — so we keep the urgency-aware ramp (full magnitude
+    near death) without the dead zone for the first ~6 steps.
 
     Magnitudes per step:
-      * Hungry (hunger>=7): -0.003 * dist_to_nearest_food (clipped at 12)
-      * Thirsty (thirst>=7): -0.003 * dist_to_nearest_water
-      * Latent infected with medicine_used==0: -0.003 * dist_to_nearest_medicine
+      * Hunger>=1:  -0.003 * (min(hunger,12)/12) * dist_to_nearest_food
+                    -> at hunger=1 / d=5: -0.00125 (weak nudge)
+                    -> at hunger=12 / d=5: -0.015  (strong pull, ~death range)
+      * Thirst>=1:  -0.003 * (min(thirst,12)/12) * dist_to_nearest_water
+      * Latent infected (no medicine yet): -0.003 * dist_to_nearest_medicine
+        (always-on, no scale — the social asymmetry needs steady gradient)
     """
     a = state.agents[agent_id]
     if not a.is_alive:
@@ -317,16 +324,18 @@ def forage_shaping_reward(state: "EpisodeState", agent_id: int) -> float:
 
     r = 0.0
 
-    if a.hunger >= 7:
+    if a.hunger >= 1:
         # Live food cells only — depleted depots aren't reachable food yet
         live_food = [c for c in FOOD_CELLS if state.food_present.get(c, True)]
         d = _manhattan(a.row, a.col, live_food)
-        r -= 0.003 * min(d, 12)
+        scale = min(a.hunger, 12) / 12.0
+        r -= 0.003 * scale * min(d, 12)
 
-    if a.thirst >= 7:
+    if a.thirst >= 1:
         # Water depots are persistent (do not deplete) — always include all
         d = _manhattan(a.row, a.col, list(WATER_CELLS))
-        r -= 0.003 * min(d, 12)
+        scale = min(a.thirst, 12) / 12.0
+        r -= 0.003 * scale * min(d, 12)
 
     # Latent infected without a cure path — nudge toward medicine cells
     if a.infection_state == "latent" and a.medicine_used == 0 and "medicine" not in a.inventory:

@@ -373,15 +373,41 @@ def test_forage_shaping_rewards_proximity_to_food():
 
 
 def test_forage_shaping_off_when_not_hungry():
-    """Forage shaping should be zero when the agent isn't hungry/thirsty/latent."""
+    """Forage shaping is zero only when hunger AND thirst are 0 (latent agents always-on)."""
     from survivecity_v2_env.rubric import forage_shaping_reward
     ep = create_episode(seed=0)
     # Use a known-healthy agent (one of the three NOT in starting_infected)
     starters = {a.agent_id for a in ep.agents if a.infection_role}
     healthy_id = next(i for i in range(5) if i not in starters)
-    ep.agents[healthy_id].hunger = 2
-    ep.agents[healthy_id].thirst = 2
+    ep.agents[healthy_id].hunger = 0
+    ep.agents[healthy_id].thirst = 0
     assert forage_shaping_reward(ep, healthy_id) == 0.0
+
+
+def test_forage_shaping_scales_with_hunger():
+    """Magnitude scales linearly with hunger so the model has gradient even early.
+
+    Run-2 history: original threshold>=7 left a dead zone for hunger 1-6,
+    so model couldn't tell "move toward food" from "stay put" at step 0.
+    Now fires at hunger>=1 with magnitude scaled by hunger/12.
+    """
+    from survivecity_v2_env.rubric import forage_shaping_reward
+    ep = create_episode(seed=0)
+    starters = {a.agent_id for a in ep.agents if a.infection_role}
+    healthy_id = next(i for i in range(5) if i not in starters)
+    ep.agents[healthy_id].thirst = 0
+    # Pin position so distance is constant
+    ep.agents[healthy_id].row, ep.agents[healthy_id].col = 7, 7
+
+    ep.agents[healthy_id].hunger = 1
+    weak = forage_shaping_reward(ep, healthy_id)
+    ep.agents[healthy_id].hunger = 12
+    strong = forage_shaping_reward(ep, healthy_id)
+
+    assert weak < 0, f"hunger=1 should fire weak shaping, got {weak}"
+    assert strong < weak, f"hunger=12 should be more negative than hunger=1: {strong} vs {weak}"
+    # Strong should be ~12x weak (linear ramp 1/12 -> 12/12)
+    assert abs(strong / weak - 12.0) < 0.5, f"scaling not ~12x: {strong/weak}"
 
 
 def test_zombie_proximity_penalty_scales_with_distance():
