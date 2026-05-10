@@ -67,6 +67,19 @@ def parse_args():
     p.add_argument("--hub-model-id", default=None)
     p.add_argument("--max-steps-per-episode", type=int, default=600,
                    help="Safety cap on env.step calls per episode.")
+    p.add_argument("--prefix-actions", type=int, default=1,
+                   help="Match training's K-action plan mode. K=1 (default) "
+                        "uses single-action prompts; K>1 uses the multi-action "
+                        "prompt and queues K-1 followup actions per LLM call. "
+                        "Set this to the same K used at training time so the "
+                        "eval distribution matches training.")
+    p.add_argument("--trained-agent-id", type=int, default=None,
+                   help="If set, only this agent_id (e.g. 0) uses the trained "
+                        "model; others use forage_heuristic_action. Mirrors "
+                        "GRPO training where only A0 is model-controlled. "
+                        "Default (None) lets the LLM act for every agent — "
+                        "an OOD setup vs training, but the only option for "
+                        "models meant to be deployed multi-agent.")
     return p.parse_args()
 
 
@@ -497,9 +510,18 @@ def main():
 
     if model is not None:
         from training.inference import make_llm_action_fn
-        action_fn = make_llm_action_fn(model, tokenizer, max_new_tokens=args.max_new_tokens)
+        action_fn = make_llm_action_fn(
+            model, tokenizer,
+            max_new_tokens=args.max_new_tokens,
+            prefix_actions=args.prefix_actions,
+            trained_agent_id=args.trained_agent_id,
+        )
         trained_is_real = True
-        logger.info(f"Trained: {args.trained_episodes} episodes (LoRA: {args.lora_path})")
+        logger.info(
+            f"Trained: {args.trained_episodes} episodes (LoRA: {args.lora_path}) "
+            f"prefix_actions={args.prefix_actions} "
+            f"trained_agent_id={args.trained_agent_id}"
+        )
     else:
         action_fn = lambda aid, obs, _r=rng_trained: random_action(aid, obs, rng=_r)
         trained_is_real = False
@@ -543,6 +565,8 @@ def main():
             "seed": args.seed,
             "max_new_tokens": args.max_new_tokens,
             "trained_is_real": trained_is_real,
+            "prefix_actions": args.prefix_actions,
+            "trained_agent_id": args.trained_agent_id,
         },
         "baseline_aggregate": baseline_agg,
         "trained_aggregate": trained_agg,

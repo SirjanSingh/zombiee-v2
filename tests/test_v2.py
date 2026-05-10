@@ -688,6 +688,48 @@ def test_build_system_prompt_k5_uses_multi_template():
     assert '[{"action_type"' in p
 
 
+def test_make_llm_action_fn_trained_agent_id_dispatches_to_heuristic():
+    """When trained_agent_id=0, calling for agent 1 must NOT touch the model.
+
+    We pass sentinel objects for model/tokenizer that would raise if accessed,
+    proving the heuristic path is taken without ever hitting model.generate.
+    """
+    from training.inference import make_llm_action_fn
+
+    class _Boom:
+        device = "cpu"
+        def __getattr__(self, k):
+            raise AssertionError(f"model.{k} accessed for non-trained agent!")
+
+    class _BoomTok:
+        eos_token_id = 0
+        def apply_chat_template(self, *a, **kw):
+            raise AssertionError("tokenizer used for non-trained agent!")
+        def __call__(self, *a, **kw):
+            raise AssertionError("tokenizer used for non-trained agent!")
+        def decode(self, *a, **kw):
+            raise AssertionError("tokenizer used for non-trained agent!")
+
+    fn = make_llm_action_fn(
+        _Boom(), _BoomTok(),
+        prefix_actions=5,
+        trained_agent_id=0,
+    )
+    # Build a minimal obs that forage_heuristic can consume.
+    obs = {
+        "step_count": 5,
+        "agents": [
+            {"agent_id": 1, "row": 5, "col": 5, "hunger": 8, "thirst": 0, "is_alive": True},
+        ],
+        "description": "",
+    }
+    a = fn(agent_id=1, obs=obs)
+    assert a["agent_id"] == 1
+    assert a["action_type"] in {"move_up", "move_down", "move_left", "move_right",
+                                  "eat", "drink", "wait", "vote_lockout", "scan",
+                                  "pickup", "drop", "give", "inject", "broadcast"}
+
+
 # ---------------------------------------------------------------------------
 # v2.1 — metrics logger
 # ---------------------------------------------------------------------------

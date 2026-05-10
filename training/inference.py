@@ -351,56 +351,119 @@ def forage_heuristic_action(
     return {"agent_id": agent_id, "action_type": rng.choice(RANDOM_NON_VOTE_ACTIONS)}
 
 
-def make_llm_action_fn(model: Any, tokenizer: Any, max_new_tokens: int = 96) -> Callable:
+def make_llm_action_fn(
+    model: Any,
+    tokenizer: Any,
+    max_new_tokens: int = 96,
+    prefix_actions: int = 1,
+    trained_agent_id: Optional[int] = None,
+) -> Callable:
     """Build an action_fn that calls the LLM and parses output as JSON.
 
-    On parse failure, falls back to random_action (so an episode never stalls).
+    Modes:
+      - prefix_actions=1, trained_agent_id=None (default): legacy behaviour.
+        Every agent gets a single-action LLM call per turn. Used when the
+        model was trained with K=1 GRPO (run 1, 2, 3).
+      - prefix_actions=K (>1): model is queried with the multi-action prompt
+        and emits a JSON array of K actions. The first action is returned;
+        the remaining K-1 are queued and emitted on the agent's next K-1
+        turns. The cache resets at episode boundaries (detected by step==0).
+        Used when the model was trained with K>1 GRPO (run 4+) so the eval
+        distribution matches training.
+      - trained_agent_id=A (int): only agent A uses the LLM. The other
+        agents use forage_heuristic_action. Mirrors the GRPO training setup
+        where only A0 is model-controlled. Without this flag, all 5 agents
+        would be model-controlled — an OOD setup the model never trained on.
+
+    On parse failure, falls back to forage_heuristic_action (random_action
+    used to be the fallback but produced parse-failure-dominated baselines).
     """
     import torch
+    from collections import deque
     from survivecity_v2_env.prompts import build_system_prompt
 
-    def llm_action(agent_id: int, obs: dict) -> dict:
-        description = obs.get("description", "")
-        prompt = build_system_prompt(agent_id, description)
+    # Per-agent queue of remaining actions from a multi-action plan.
+    # Empty/missing → query the model fresh.
+    plans: dict[int, deque] = {}
+    # Track last observed step per agent so we can clear stale plans when a
+    # new episode starts (step_count drops to 0).
+    last_step_seen = {"value": -1}
+
+    def _generate(agent_id: int, description: str) -> str:
+        prompt = build_system_prompt(
+            agent_id, description, prefix_actions=prefix_actions,
+        )
         messages = [
             {"role": "system", "content": prompt},
-            {"role": "user", "content": "What is your next action? Respond with JSON only."},
+            {"role": "user",
+             "content": (
+                 "What is your next action? Respond with JSON only."
+                 if prefix_actions == 1
+                 else f"What is your {prefix_actions}-action plan? "
+                      "Respond with a JSON array only."
+             )},
         ]
-        try:
-            text = tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
+        text = tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
+        inputs = tokenizer(text, return_tensors="pt").to(model.device)
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=max_new_tokens,
+                temperature=0.7,
+                do_sample=True,
+                pad_token_id=tokenizer.eos_token_id,
             )
-            inputs = tokenizer(text, return_tensors="pt").to(model.device)
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=max_new_tokens,
-                    temperature=0.7,
-                    do_sample=True,
-                    pad_token_id=tokenizer.eos_token_id,
-                )
-            response = tokenizer.decode(
-                outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True
-            ).strip()
+        return tokenizer.decode(
+            outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True,
+        ).strip()
+
+    def _sanitize(action: dict) -> dict:
+        if action.get("action_type") == "broadcast":
+            msg = action.get("message")
+            if isinstance(msg, str):
+                action["message"] = msg[:40]
+            else:
+                action["message"] = "alert"
+        return action
+
+    def llm_action(agent_id: int, obs: dict) -> dict:
+        # Reset the per-episode plan cache when step rolls back to 0
+        # (env.reset() called between episodes).
+        step = obs.get("step_count", 0)
+        if step < last_step_seen["value"]:
+            plans.clear()
+        last_step_seen["value"] = step
+
+        # If only a specific agent is trained, others go straight to heuristic.
+        if trained_agent_id is not None and agent_id != trained_agent_id:
+            return forage_heuristic_action(agent_id, obs)
+
+        # Use a queued planned action if available.
+        if agent_id in plans and plans[agent_id]:
+            return _sanitize(plans[agent_id].popleft())
+
+        description = obs.get("description", "")
+        try:
+            response = _generate(agent_id, description)
         except Exception as e:
             logger.debug(f"llm generation error: {e}")
-            return random_action(agent_id, obs)
+            return forage_heuristic_action(agent_id, obs)
+
+        if prefix_actions > 1:
+            actions = parse_actions(
+                response, agent_id=agent_id, max_actions=prefix_actions,
+            )
+            if not actions:
+                return forage_heuristic_action(agent_id, obs)
+            # Queue remaining actions for the agent's next prefix_actions-1 turns.
+            plans[agent_id] = deque(actions[1:])
+            return _sanitize(actions[0])
 
         parsed = parse_action(response, agent_id=agent_id)
         if parsed is None:
-            # Fall back to the forage heuristic — random_action lets agents
-            # starve in 99% of episodes, so eval baselines are dominated by
-            # parse-failure deaths rather than the trained policy's choices.
             return forage_heuristic_action(agent_id, obs)
-
-        # Sanitise: ensure broadcast message is short
-        if parsed.get("action_type") == "broadcast":
-            msg = parsed.get("message")
-            if isinstance(msg, str):
-                parsed["message"] = msg[:40]
-            else:
-                parsed["message"] = "alert"
-
-        return parsed
+        return _sanitize(parsed)
 
     return llm_action
