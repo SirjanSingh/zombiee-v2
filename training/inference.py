@@ -204,12 +204,18 @@ def random_action(agent_id: int, obs: dict, rng: Optional[random.Random] = None)
 # Cell coordinates copied from layout.py to avoid circular imports during
 # training (training/ is a leaf package; survivecity_v2_env layout is fine
 # to import here, but inlining keeps this helper self-contained for tests).
+# Mirror of survivecity_v2_env.layout.FOOD_CELLS / WATER_CELLS. Inlined to
+# keep the heuristic self-contained for tests (training/ is a leaf package).
+# v2.2: added inner-ring food/water (rows 4-5 and 9-10, cols 4-5 and 9-10)
+# so safehouse-bound agents have nearby resupply within hunger budget.
 _FOOD_CELLS_TUPLE: tuple[tuple[int, int], ...] = (
     (1, 1), (1, 13), (13, 1), (13, 13),
     (1, 7), (13, 7), (7, 1), (7, 13),
+    (4, 5), (4, 9), (10, 5), (10, 9),
 )
 _WATER_CELLS_TUPLE: tuple[tuple[int, int], ...] = (
     (3, 3), (3, 11), (11, 3), (11, 11),
+    (5, 4), (5, 10), (9, 4), (9, 10),
 )
 _SAFEHOUSE_CELLS_TUPLE: tuple[tuple[int, int], ...] = tuple(
     (r, c) for r in range(6, 9) for c in range(6, 9)
@@ -264,20 +270,20 @@ def forage_heuristic_action(
       2. On food cell + hungry                    → eat (clears hunger)
       3. On food cell + inv space + not hungry    → pickup food (carry to safehouse)
       4. Vote phase                               → vote_lockout (random non-self)
-      5. In safehouse + has food + hungry         → eat from inventory
-      6. In safehouse + has water + thirsty       → drink from inventory
-      7. In safehouse + safe                      → wait (heal +1/turn, zombie-proof)
-      8. Critical thirst (>=10) or hunger (>=10)  → step toward nearest water/food
-      9. HP <= 1                                  → step toward safehouse (emergency)
-     10. Thirst >= 6                              → step toward water (was 4)
-     11. Hunger >= 6                              → step toward food (was 4)
-     12. Default                                  → step toward safehouse (was random)
+      5. In safehouse + has food + hunger>=4      → eat from inventory
+      6. In safehouse + has water + thirst>=4     → drink from inventory
+      7. HP <= 1                                  → step toward safehouse (emergency)
+      8. Thirst >= 4                              → step toward nearest water
+      9. Hunger >= 4                              → step toward nearest food
+     10. Default                                  → wait if in safehouse, else move to it
 
     Default-to-safehouse is the key v2.2 change — random fallback was a
-    silent killer. The forage thresholds (10) are higher than v2.1 (4) so
-    agents only break safehouse when truly necessary; the +1/turn safehouse
-    HP regen plus pickup-then-retreat gives episodes a real chance to last
-    past the first zombie wave at step 25.
+    silent killer of v2.1. Forage threshold 4 matters because latent
+    infected agents tick hunger at 1.5x rate (game.py line 261); waiting
+    until 10 inside the safehouse left infected teammates dead by
+    env-step 10. The inner-ring food/water (layout.py v2.2) makes the
+    threshold-4 forage trip survivable: ~3-4 cells from any safehouse
+    cell, ~6 round-trip rounds — within the hunger=4-to-15 budget.
     """
     rng = rng or random
     s = obs.get("step_count", 0)
@@ -327,53 +333,44 @@ def forage_heuristic_action(
             "vote_target": rng.choice(choices),
         }
 
-    # 5-7. In safehouse: use stockpiled items, otherwise wait and heal.
+    # 5-6. In safehouse: drain inventory before stepping out.
     if in_safehouse:
         if hunger >= 4 and has_food:
             return {"agent_id": agent_id, "action_type": "eat"}
         if thirst >= 4 and has_water:
             return {"agent_id": agent_id, "action_type": "drink"}
-        # Wait UNLESS resources are about to bite us (>=10 → starvation in
-        # 5 turns). At that point we have to break cover and forage.
-        if hunger < 10 and thirst < 10:
-            return {"agent_id": agent_id, "action_type": "wait"}
-        # Critical: drop to forage rules below.
 
-    # 8. Critical resource pressure — break cover and forage.
-    if thirst >= 10 and thirst >= hunger:
-        mv = _move_to(_WATER_CELLS_TUPLE)
-        if mv is not None:
-            return {"agent_id": agent_id, "action_type": mv}
-    if hunger >= 10:
-        mv = _move_to(_FOOD_CELLS_TUPLE)
-        if mv is not None:
-            return {"agent_id": agent_id, "action_type": mv}
-
-    # 9. Emergency HP — get inside safehouse RIGHT NOW.
+    # 7. Emergency HP — get inside safehouse before anything else.
     if hp <= 1:
+        if in_safehouse:
+            return {"agent_id": agent_id, "action_type": "wait"}
         mv = _move_to(_SAFEHOUSE_CELLS_TUPLE)
         if mv is not None:
             return {"agent_id": agent_id, "action_type": mv}
 
-    # 10-11. Moderate resource needs — forage but lazy threshold (was 4 → 6).
-    # The bump matters: at threshold 4 the agent leaves the safehouse early,
-    # gets hit by zombies in transit, returns at hp=2. At threshold 6 the
-    # agent only goes when actually getting hungry, so fewer zombie exposures.
-    if thirst >= 6 and thirst >= hunger:
+    # 8-9. Forage at threshold 4. CRITICAL — latent infected agents tick
+    # hunger at 1.5x rate (game.py line 261), so they hit hunger=15 starvation
+    # by env_step=10 if the heuristic waits. The earlier v2.2 attempt waited
+    # until hunger=10 inside the safehouse and watched infected teammates
+    # die. Threshold 4 (matches v2.1) gives agents 11 game-rounds to walk
+    # to a food cell — the inner ring is 3-4 steps from any safehouse cell,
+    # so a forage trip is comfortably inside the survival budget.
+    if thirst >= 4 and thirst >= hunger:
         mv = _move_to(_WATER_CELLS_TUPLE)
         if mv is not None:
             return {"agent_id": agent_id, "action_type": mv}
-    if hunger >= 6:
+    if hunger >= 4:
         mv = _move_to(_FOOD_CELLS_TUPLE)
         if mv is not None:
             return {"agent_id": agent_id, "action_type": mv}
 
-    # 12. Default: step toward the safehouse. NEVER random-walk — random
-    # motion is what got agents killed by zombies in v2.1's fallback.
-    if not in_safehouse:
-        mv = _move_to(_SAFEHOUSE_CELLS_TUPLE)
-        if mv is not None:
-            return {"agent_id": agent_id, "action_type": mv}
+    # 10. Default: wait in safehouse, otherwise step toward it. NEVER random-
+    # walk — random motion is what got agents killed by zombies in v2.1.
+    if in_safehouse:
+        return {"agent_id": agent_id, "action_type": "wait"}
+    mv = _move_to(_SAFEHOUSE_CELLS_TUPLE)
+    if mv is not None:
+        return {"agent_id": agent_id, "action_type": mv}
     return {"agent_id": agent_id, "action_type": "wait"}
 
 
