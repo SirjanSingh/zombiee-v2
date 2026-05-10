@@ -250,10 +250,17 @@ def aggregate(records: list[dict]) -> dict:
     parse_total = sum(r["actions_called"] for r in records)
     parse_failures = sum(r["parse_failures"] for r in records)
 
+    n_alive = [r["n_alive_final"] for r in records]
+    n_healthy = [r["n_healthy_alive_final"] for r in records]
+    pct_reached_step_30 = sum(1 for s in steps if s >= 30) / n
+
     return {
         "n_episodes": n,
         "survival_rate": survived / n,
         "n_survivors": survived,
+        "mean_n_alive_final": sum(n_alive) / n,
+        "mean_n_healthy_alive_final": sum(n_healthy) / n,
+        "pct_reached_step_30": pct_reached_step_30,
         "mean_total_reward": sum(rewards) / n,
         "min_total_reward": min(rewards),
         "max_total_reward": max(rewards),
@@ -595,12 +602,15 @@ def main():
     print(f"{'metric':<32} {'baseline':>15} {'trained':>15}")
     print("-" * 70)
     keys_to_print = [
-        ("survival_rate",      "Survival rate"),
-        ("mean_total_reward",  "Mean total reward"),
-        ("mean_episode_length","Mean episode length"),
+        ("survival_rate",              "Survival rate"),
+        ("mean_n_alive_final",         "Mean alive at end (/5)"),
+        ("mean_n_healthy_alive_final", "Mean healthy alive (/5)"),
+        ("pct_reached_step_30",        "Pct reached step 30"),
+        ("mean_total_reward",          "Mean total reward"),
+        ("mean_episode_length",        "Mean episode length"),
         ("infection_containment_rate", "Infection containment"),
         ("infection_isolation_rate",   "Infection isolation"),
-        ("parse_failure_rate", "Parse failure rate"),
+        ("parse_failure_rate",         "Parse failure rate"),
     ]
     for k, label in keys_to_print:
         bv = baseline_agg.get(k)
