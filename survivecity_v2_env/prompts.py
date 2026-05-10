@@ -7,7 +7,7 @@ vote-round information. Past failures (post-mortems) are prepended.
 from __future__ import annotations
 
 
-SYSTEM_PROMPT_TEMPLATE = """You are agent A{agent_id} in a 5-agent zombie-apocalypse simulation called SurviveCity v2.
+SYSTEM_PROMPT_TEMPLATE_SINGLE = """You are agent A{agent_id} in a 5-agent zombie-apocalypse simulation called SurviveCity v2.
 
 == WORLD RULES ==
 - 15x15 grid. 5 agents (A0..A4) share the map with zombies.
@@ -74,10 +74,72 @@ Respond with ONLY the JSON action on a single line, like the examples above. No 
 """
 
 
+# Multi-action variant. The model commits to a SHORT plan of K consecutive
+# actions; the env applies them in order at agent A0's turns. Used by
+# multi-action GRPO (--prefix-actions K) so the gradient sees the consequence
+# of a multi-step strategy, not just a single first move.
+SYSTEM_PROMPT_TEMPLATE_MULTI = """You are agent A{agent_id} in a 5-agent zombie-apocalypse simulation called SurviveCity v2.
+
+== WORLD RULES ==
+- 15x15 grid. 5 agents (A0..A4) share the map with zombies.
+- Safehouse (S) at the centre (rows 6-8, cols 6-8): heals 1 HP/step, blocks zombies.
+- Food (F): 8 cells. Use "eat" on cell to clear hunger, or "pickup" to carry.
+- Water (W): 4 cells, persistent. Use "drink" on cell to clear thirst, or "pickup" to carry.
+- Medicine (M): 2 cells, scarce. Use "pickup" to carry. Use "inject" to cure latent infection.
+- Walls (#): block movement.
+- Hunger and thirst tick +1 each step. >=15 deals 1 HP/step.
+- Inventory: 3 slots per agent. Items: food | water | medicine.
+
+== HIDDEN INFECTION ==
+- 2 of 5 agents start INFECTED: one BITER, one SABOTEUR.
+- BITER: revealed at step 25. Post-reveal, attacks adjacent agents with 35% bite chance.
+- SABOTEUR: revealed at step 60. Food they eat depletes 2x slower to respawn.
+- LATENT infection: hidden 15-step countdown. If bitten you receive a private "You were bitten" message.
+- You only see your OWN infection_state. Other agents inferred via noisy behavioural cues.
+
+== DAY / NIGHT + WAVES ==
+- Day: steps 0-24 and 50-74. Visibility full.
+- Night: steps 25-49 and 75-99. Visibility reduced (filtered description).
+- Zombie waves spawn at steps 25, 50, 75 (+2, +3, +3, capped at 12 total).
+
+== VOTING (3 ROUNDS) ==
+- vote_lockout is valid at exactly step 30, 50, 70, 90.
+- Voting wrong (locking out a healthy agent) hurts the team.
+
+== BROADCAST ECONOMY ==
+- "broadcast" sends a 40-char message to all agents.
+- Each broadcast adds +1 to the noise meter. Above threshold (3), zombies get a free extra step.
+
+== YOUR PLAN ==
+Output a JSON ARRAY of EXACTLY {prefix_k} actions you commit to take in order on your next {prefix_k} turns. The env applies them in sequence; you cannot revise mid-plan.
+
+Each element has the shape:
+{{"action_type": "<type>", "vote_target": <int>, "message": "<str>", "scan_target": <int>, "inject_target": <int>, "gift_target": <int>, "item_slot": <int>, "item_type": "<type>"}}
+
+Valid action_types:
+  v1: "move_up", "move_down", "move_left", "move_right", "eat", "wait", "vote_lockout", "broadcast"
+  v2 NEW: "drink", "scan", "pickup", "drop", "give", "inject"
+
+Field rules: same as single-action mode. Unused fields can be null/omitted.
+
+== EXAMPLES (copy this exact format) ==
+[{{"action_type": "move_up"}}, {{"action_type": "eat"}}, {{"action_type": "drink"}}]
+[{{"action_type": "move_left"}}, {{"action_type": "move_left"}}, {{"action_type": "pickup", "item_type": "medicine"}}]
+[{{"action_type": "vote_lockout", "vote_target": 2}}, {{"action_type": "wait"}}, {{"action_type": "wait"}}]
+
+{past_failures}
+== CURRENT SITUATION ==
+{situation}
+
+Respond with ONLY the JSON array on a single line, like the examples above. No explanation, no markdown, no commentary.
+"""
+
+
 def build_system_prompt(
     agent_id: int,
     situation: str,
     postmortem_buffer: dict[int, list[str]] | None = None,
+    prefix_actions: int = 1,
 ) -> str:
     """Build the system prompt for an agent.
 
@@ -97,11 +159,22 @@ def build_system_prompt(
             past_block = ""
     else:
         past_block = ""
-    return SYSTEM_PROMPT_TEMPLATE.format(
+    if prefix_actions > 1:
+        return SYSTEM_PROMPT_TEMPLATE_MULTI.format(
+            agent_id=agent_id,
+            past_failures=past_block,
+            situation=situation,
+            prefix_k=prefix_actions,
+        )
+    return SYSTEM_PROMPT_TEMPLATE_SINGLE.format(
         agent_id=agent_id,
         past_failures=past_block,
         situation=situation,
     )
+
+
+# Backward-compat alias for code that imports SYSTEM_PROMPT_TEMPLATE directly.
+SYSTEM_PROMPT_TEMPLATE = SYSTEM_PROMPT_TEMPLATE_SINGLE
 
 
 def format_observation_description(

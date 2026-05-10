@@ -276,7 +276,7 @@ def parse_args():
     return p.parse_args()
 
 
-def build_scenario_dataset(num_scenarios: int = 200, seed: int = 42):
+def build_scenario_dataset(num_scenarios: int = 200, seed: int = 42, prefix_actions: int = 1):
     """Build a GRPO scenario dataset from local v2 env resets.
 
     Each prompt embeds [SEED:N] so the reward function can recreate the exact
@@ -299,7 +299,9 @@ def build_scenario_dataset(num_scenarios: int = 200, seed: int = 42):
             env = SurviveCityV2Env()
             obs = env.reset(seed=ep_seed)
             desc = obs.get("description", "")
-            prompt = build_system_prompt(0, f"[SEED:{ep_seed}]\n{desc}")
+            prompt = build_system_prompt(
+                0, f"[SEED:{ep_seed}]\n{desc}", prefix_actions=prefix_actions,
+            )
             prompts.append({"prompt": prompt, "scenario_id": i})
         except Exception as e:
             logger.warning(f"Scenario {i} failed: {e}")
@@ -852,7 +854,9 @@ def main():
             tokenizer.add_special_tokens({"pad_token": "<|PAD_TOKEN|>"})
             model.resize_token_embeddings(len(tokenizer))
 
-    dataset = build_scenario_dataset(args.num_scenarios, args.seed)
+    dataset = build_scenario_dataset(
+        args.num_scenarios, args.seed, prefix_actions=args.prefix_actions,
+    )
 
     from trl import GRPOTrainer, GRPOConfig
 

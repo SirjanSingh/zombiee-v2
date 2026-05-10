@@ -671,6 +671,23 @@ def test_reward_fn_k1_parse_fail_returns_zero_step1_signal():
     assert isinstance(out[0], float)
 
 
+def test_build_system_prompt_k1_uses_single_template():
+    """K=1 prompt asks for ONE action, not an array."""
+    from survivecity_v2_env.prompts import build_system_prompt
+    p = build_system_prompt(0, "step 5 situation", prefix_actions=1)
+    assert "Output EXACTLY ONE action" in p
+    assert "JSON array of EXACTLY" not in p
+
+
+def test_build_system_prompt_k5_uses_multi_template():
+    """K=5 prompt asks for an array of 5 actions."""
+    from survivecity_v2_env.prompts import build_system_prompt
+    p = build_system_prompt(0, "step 5 situation", prefix_actions=5)
+    assert "JSON ARRAY of EXACTLY 5 actions" in p
+    # Examples should be array-shaped
+    assert '[{"action_type"' in p
+
+
 # ---------------------------------------------------------------------------
 # v2.1 — metrics logger
 # ---------------------------------------------------------------------------
