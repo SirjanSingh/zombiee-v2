@@ -545,6 +545,74 @@ def test_forage_heuristic_eats_on_food_cell():
 
 
 # ---------------------------------------------------------------------------
+# v2.2 — multi-action parsing (parse_actions)
+# ---------------------------------------------------------------------------
+
+def test_parse_actions_json_array():
+    """JSON array of K actions → returns K parsed dicts in order."""
+    from training.inference import parse_actions
+    text = '[{"action_type": "move_up"}, {"action_type": "eat"}, {"action_type": "drink"}]'
+    out = parse_actions(text, agent_id=0)
+    assert len(out) == 3
+    assert out[0]["action_type"] == "move_up"
+    assert out[1]["action_type"] == "eat"
+    assert out[2]["action_type"] == "drink"
+    # agent_id is filled in if missing
+    assert all(a["agent_id"] == 0 for a in out)
+
+
+def test_parse_actions_single_object_falls_back():
+    """Single JSON object → 1-element list (backward-compat path)."""
+    from training.inference import parse_actions
+    text = '{"action_type": "scan", "scan_target": 2}'
+    out = parse_actions(text, agent_id=0)
+    assert len(out) == 1
+    assert out[0]["action_type"] == "scan"
+    assert out[0]["scan_target"] == 2
+
+
+def test_parse_actions_max_actions_caps_length():
+    """max_actions caps the returned list."""
+    from training.inference import parse_actions
+    text = '[{"action_type": "wait"}] * 10'  # not actual repetition; build via py
+    arr = "[" + ",".join(['{"action_type":"wait"}'] * 10) + "]"
+    out = parse_actions(arr, agent_id=0, max_actions=3)
+    assert len(out) == 3
+
+
+def test_parse_actions_invalid_returns_empty():
+    """No valid action_type anywhere → returns empty list."""
+    from training.inference import parse_actions
+    out = parse_actions("blah blah blah", agent_id=0)
+    assert out == []
+
+
+def test_parse_actions_array_with_invalid_elements_skips_them():
+    """Array with mix of valid/invalid: only valid actions kept, in order."""
+    from training.inference import parse_actions
+    text = '[{"action_type": "move_up"}, {"foo": "bar"}, {"action_type": "eat"}]'
+    out = parse_actions(text, agent_id=0)
+    assert len(out) == 2
+    assert out[0]["action_type"] == "move_up"
+    assert out[1]["action_type"] == "eat"
+
+
+def test_parse_actions_handles_markdown_fences():
+    """Code-fenced JSON arrays still parse."""
+    from training.inference import parse_actions
+    text = '```json\n[{"action_type": "wait"}, {"action_type": "scan"}]\n```'
+    out = parse_actions(text, agent_id=0)
+    assert len(out) == 2
+
+
+def test_parse_actions_empty_array_falls_back_to_single():
+    """[] is not useful; falls back to single-action parse — which finds nothing here."""
+    from training.inference import parse_actions
+    out = parse_actions("[]", agent_id=0)
+    assert out == []
+
+
+# ---------------------------------------------------------------------------
 # v2.1 — metrics logger
 # ---------------------------------------------------------------------------
 

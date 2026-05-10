@@ -127,6 +127,67 @@ def parse_action(text: str, agent_id: int) -> Optional[dict]:
     return None
 
 
+def parse_actions(
+    text: str,
+    agent_id: int,
+    max_actions: int = 8,
+) -> list[dict]:
+    """Parse one or more actions from model output.
+
+    Two modes:
+      1. JSON array `[{...}, {...}, ...]` — each element treated as an action.
+         Each element runs through the same validation as `parse_action`.
+      2. Single object — falls back to `parse_action`. Returns a 1-element
+         list (or [] if nothing parseable).
+
+    Used by multi-action GRPO rollouts where the model emits K decisions
+    per completion. With max_actions=1 (or completion containing a single
+    object), behaves identically to wrapping `parse_action` in a list.
+
+    Caps output at `max_actions`. Returns [] when no valid actions found.
+    """
+    if not text:
+        return []
+    text = text.strip()
+
+    # Strip markdown code fences (same handling as parse_action).
+    fenced = text
+    if fenced.startswith("```"):
+        parts = fenced.split("```")
+        if len(parts) >= 2:
+            inner = parts[1]
+            if inner.startswith("json"):
+                inner = inner[4:]
+            fenced = inner.strip()
+
+    # Try to find a top-level JSON array first.
+    for start in range(len(fenced)):
+        if fenced[start] == "[":
+            for end in range(len(fenced), start, -1):
+                if fenced[end - 1] == "]":
+                    try:
+                        arr = json.loads(fenced[start:end])
+                    except (json.JSONDecodeError, TypeError):
+                        continue
+                    if not isinstance(arr, list):
+                        continue
+                    out: list[dict] = []
+                    for elem in arr[:max_actions]:
+                        if not isinstance(elem, dict):
+                            continue
+                        elem.setdefault("agent_id", agent_id)
+                        if elem.get("action_type") in VALID_ACTION_TYPES:
+                            out.append(elem)
+                    if out:
+                        return out
+                    # Empty array or array with no valid actions — keep searching
+                    # (could be a stray "[" earlier in the text).
+
+    # No valid array — fall back to single-action parse.
+    single = parse_action(text, agent_id=agent_id)
+    return [single] if single is not None else []
+
+
 def random_action(agent_id: int, obs: dict, rng: Optional[random.Random] = None) -> dict:
     """Random baseline action. Casts a random vote at vote-phase steps."""
     rng = rng or random
