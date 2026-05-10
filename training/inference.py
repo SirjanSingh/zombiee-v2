@@ -247,37 +247,37 @@ def forage_heuristic_action(
 ) -> dict:
     """A scripted forage policy used as the rollout opponent during GRPO.
 
-    Why this exists: the v2.0 reward_fn rolled out 30 random actions after
-    the model's single action. Random policy on a 15×15 grid with 8 food
-    cells and 100-step horizon almost never reaches food, so rollouts
-    universally end in starvation around step 18-25 — and every group's
-    cumulative reward floors at the same negative value, killing GRPO
-    variance. A simple forage heuristic raises the baseline survival from
-    ~step 18 to ~step 50, so the model's first action's downstream
-    consequences become visible in the cumulative reward.
+    v2.2 rewrite (2026-05-10) — fixes the early-game zombie deaths that
+    pinned eval episodes at ~17 steps regardless of the trained model.
+
+    Why the rewrite: under the v2.1 heuristic, agents at episode start had
+    hunger=0 / thirst=0 / hp=3, which fell through every threshold and hit
+    the random-action fallback. Random walking exposed agents to zombie
+    attacks for ~5 steps until hp dropped enough to trigger the safehouse
+    rule — by which time many were already dead. Eval baselines ran
+    ~16-18 steps regardless. The v2.2 priorities below default agents to
+    the safehouse from step 0 and only forage when resources are actually
+    needed.
 
     Decision rules (highest priority first):
-      1. On a water cell                         → drink
-      2. On a food cell (and hunger > 0)         → eat
-      3. Vote phase                              → vote_lockout (random non-self)
-      4. HP < 3 and resources OK                 → step toward safehouse (heal +1/turn)
-      5. Thirst >= 4 (and >= hunger)             → step toward nearest water
-      6. Hunger >= 4                             → step toward nearest food
-      7. Else                                    → random non-vote action
+      1. On water cell                            → drink (free, +1 thirst clear)
+      2. On food cell + hungry                    → eat (clears hunger)
+      3. On food cell + inv space + not hungry    → pickup food (carry to safehouse)
+      4. Vote phase                               → vote_lockout (random non-self)
+      5. In safehouse + has food + hungry         → eat from inventory
+      6. In safehouse + has water + thirsty       → drink from inventory
+      7. In safehouse + safe                      → wait (heal +1/turn, zombie-proof)
+      8. Critical thirst (>=10) or hunger (>=10)  → step toward nearest water/food
+      9. HP <= 1                                  → step toward safehouse (emergency)
+     10. Thirst >= 6                              → step toward water (was 4)
+     11. Hunger >= 6                              → step toward food (was 4)
+     12. Default                                  → step toward safehouse (was random)
 
-    The safehouse-return rule is what keeps the rollouts from dying at
-    step 11-13. Without it, agents leave the safehouse to forage and never
-    come back; their HP slowly attrits from zombie hits and they die
-    before any voting phase even starts. With it, agents top up at the
-    safehouse between forage trips, episodes routinely reach step 50+,
-    and the GRPO reward signal sees vote phases / late-game waves /
-    terminal rubrics — which is what we actually want to train on.
-
-    Thresholds default to 4 (out of 15-to-death) so agents start foraging
-    well before they're in danger. With 5 agents acting once per round and
-    hunger ticking +1/action, at hunger=4 the agent has ~10 actions before
-    starvation HP loss starts — enough time to walk 5-7 cells to food
-    even if they need to detour around walls.
+    Default-to-safehouse is the key v2.2 change — random fallback was a
+    silent killer. The forage thresholds (10) are higher than v2.1 (4) so
+    agents only break safehouse when truly necessary; the +1/turn safehouse
+    HP regen plus pickup-then-retreat gives episodes a real chance to last
+    past the first zombie wave at step 25.
     """
     rng = rng or random
     s = obs.get("step_count", 0)
@@ -295,20 +295,30 @@ def forage_heuristic_action(
     hunger = me.get("hunger", 0)
     thirst = me.get("thirst", 0)
     hp = me.get("hp", 3)
+    inv = me.get("inventory", []) or []
     on_water = (my_r, my_c) in _WATER_CELLS_TUPLE
     on_food = (my_r, my_c) in _FOOD_CELLS_TUPLE
     in_safehouse = (my_r, my_c) in _SAFEHOUSE_CELLS_TUPLE
+    has_food = "food" in inv
+    has_water = "water" in inv
+    inv_full = len(inv) >= 3
 
-    # Always drink/eat on the cell — there's no cost to doing so even if
-    # we're not yet hungry/thirsty (eat resets hunger to 0; the depot
-    # respawn is a future-step concern, not this rollout's problem).
+    def _move_to(cells):
+        target = _nearest_cell(my_r, my_c, cells)
+        if target is None:
+            return None
+        return _step_toward(my_r, my_c, target)
+
+    # 1-2. Always drink/eat on the cell — free and immediate.
     if on_water:
         return {"agent_id": agent_id, "action_type": "drink"}
     if on_food and hunger > 0:
         return {"agent_id": agent_id, "action_type": "eat"}
+    # 3. On food cell but not hungry: stash for the trip back to safehouse.
+    if on_food and not has_food and not inv_full:
+        return {"agent_id": agent_id, "action_type": "pickup", "item_type": "food"}
 
-    # Vote phase always takes precedence over forage routing — the rollout
-    # needs to actually exercise the vote rubric for the gradient to see it.
+    # 4. Vote phase always takes precedence over forage routing.
     if s in (30, 50, 70, 90):
         choices = [i for i in range(5) if i != agent_id]
         return {
@@ -317,38 +327,54 @@ def forage_heuristic_action(
             "vote_target": rng.choice(choices),
         }
 
-    # Damaged but not in immediate need? Head back to safehouse to heal.
-    # Inside the safehouse the env adds +1 HP per turn (capped at 3) and
-    # zombies can't path-find inside, so a few turns of waiting here is
-    # cheap insurance. Without this, agents drained by zombies in transit
-    # never recover and the rollout dies around step 13.
-    if hp < 3 and hunger < 6 and thirst < 6:
-        if in_safehouse:
+    # 5-7. In safehouse: use stockpiled items, otherwise wait and heal.
+    if in_safehouse:
+        if hunger >= 4 and has_food:
+            return {"agent_id": agent_id, "action_type": "eat"}
+        if thirst >= 4 and has_water:
+            return {"agent_id": agent_id, "action_type": "drink"}
+        # Wait UNLESS resources are about to bite us (>=10 → starvation in
+        # 5 turns). At that point we have to break cover and forage.
+        if hunger < 10 and thirst < 10:
             return {"agent_id": agent_id, "action_type": "wait"}
-        target = _nearest_cell(my_r, my_c, _SAFEHOUSE_CELLS_TUPLE)
-        if target is not None:
-            mv = _step_toward(my_r, my_c, target)
-            if mv is not None:
-                return {"agent_id": agent_id, "action_type": mv}
+        # Critical: drop to forage rules below.
 
-    # Whichever resource is more urgent gets routed first. Tie-break:
-    # whichever is higher absolute value. Threshold lowered to 4 so we
-    # start foraging early enough to actually arrive in time.
-    if thirst >= 4 and thirst >= hunger:
-        target = _nearest_cell(my_r, my_c, _WATER_CELLS_TUPLE)
-        if target is not None:
-            mv = _step_toward(my_r, my_c, target)
-            if mv is not None:
-                return {"agent_id": agent_id, "action_type": mv}
+    # 8. Critical resource pressure — break cover and forage.
+    if thirst >= 10 and thirst >= hunger:
+        mv = _move_to(_WATER_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
+    if hunger >= 10:
+        mv = _move_to(_FOOD_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
 
-    if hunger >= 4:
-        target = _nearest_cell(my_r, my_c, _FOOD_CELLS_TUPLE)
-        if target is not None:
-            mv = _step_toward(my_r, my_c, target)
-            if mv is not None:
-                return {"agent_id": agent_id, "action_type": mv}
+    # 9. Emergency HP — get inside safehouse RIGHT NOW.
+    if hp <= 1:
+        mv = _move_to(_SAFEHOUSE_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
 
-    return {"agent_id": agent_id, "action_type": rng.choice(RANDOM_NON_VOTE_ACTIONS)}
+    # 10-11. Moderate resource needs — forage but lazy threshold (was 4 → 6).
+    # The bump matters: at threshold 4 the agent leaves the safehouse early,
+    # gets hit by zombies in transit, returns at hp=2. At threshold 6 the
+    # agent only goes when actually getting hungry, so fewer zombie exposures.
+    if thirst >= 6 and thirst >= hunger:
+        mv = _move_to(_WATER_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
+    if hunger >= 6:
+        mv = _move_to(_FOOD_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
+
+    # 12. Default: step toward the safehouse. NEVER random-walk — random
+    # motion is what got agents killed by zombies in v2.1's fallback.
+    if not in_safehouse:
+        mv = _move_to(_SAFEHOUSE_CELLS_TUPLE)
+        if mv is not None:
+            return {"agent_id": agent_id, "action_type": mv}
+    return {"agent_id": agent_id, "action_type": "wait"}
 
 
 def make_llm_action_fn(

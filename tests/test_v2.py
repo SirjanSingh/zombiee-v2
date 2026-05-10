@@ -545,6 +545,115 @@ def test_forage_heuristic_eats_on_food_cell():
 
 
 # ---------------------------------------------------------------------------
+# v2.2 — heuristic rewrite (no random fallback, default-to-safehouse, pickup)
+# ---------------------------------------------------------------------------
+
+def test_forage_heuristic_step_zero_heads_to_safehouse_not_random():
+    """At step 0 with full HP / no hunger, the OLD heuristic returned random.
+    The new one should head to safehouse — random walk gets agents killed."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 0,
+        "agents": [
+            {"agent_id": 0, "row": 0, "col": 0, "hunger": 0, "thirst": 0,
+             "hp": 3, "is_alive": True, "inventory": []},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    # Safehouse is at rows 6-8 cols 6-8. From (0,0) the BFS step toward it
+    # is either move_down or move_right — never wait, never eat at start.
+    assert a["action_type"] in {"move_down", "move_right"}
+
+
+def test_forage_heuristic_waits_in_safehouse_when_safe():
+    """Inside safehouse with full HP and low needs: just wait (heal + safe)."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 5,
+        "agents": [
+            {"agent_id": 0, "row": 7, "col": 7, "hunger": 2, "thirst": 2,
+             "hp": 3, "is_alive": True, "inventory": []},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    assert a["action_type"] == "wait"
+
+
+def test_forage_heuristic_picks_up_food_when_not_hungry():
+    """On food cell with empty inventory but hunger=0: stash food for later."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 5,
+        "agents": [
+            # (1,1) is a food cell
+            {"agent_id": 0, "row": 1, "col": 1, "hunger": 0, "thirst": 0,
+             "hp": 3, "is_alive": True, "inventory": []},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    assert a["action_type"] == "pickup"
+    assert a.get("item_type") == "food"
+
+
+def test_forage_heuristic_eats_inventory_food_in_safehouse():
+    """In safehouse with food in inventory + hunger>=4: eat from inventory."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 10,
+        "agents": [
+            {"agent_id": 0, "row": 7, "col": 7, "hunger": 6, "thirst": 0,
+             "hp": 3, "is_alive": True, "inventory": ["food"]},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    assert a["action_type"] == "eat"
+
+
+def test_forage_heuristic_drinks_inventory_water_in_safehouse():
+    """In safehouse with water in inventory + thirst>=4: drink from inventory."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 10,
+        "agents": [
+            {"agent_id": 0, "row": 7, "col": 7, "hunger": 0, "thirst": 8,
+             "hp": 3, "is_alive": True, "inventory": ["water"]},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    assert a["action_type"] == "drink"
+
+
+def test_forage_heuristic_breaks_cover_at_critical_hunger_in_safehouse():
+    """In safehouse with hunger>=10 and no food in inventory: must forage."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 20,
+        "agents": [
+            {"agent_id": 0, "row": 7, "col": 7, "hunger": 12, "thirst": 0,
+             "hp": 3, "is_alive": True, "inventory": []},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    # Must leave safehouse to find food — any movement direction is OK
+    assert a["action_type"] in {"move_up", "move_down", "move_left", "move_right"}
+
+
+def test_forage_heuristic_emergency_hp_returns_to_safehouse():
+    """HP=1 anywhere outside safehouse: emergency return."""
+    from training.inference import forage_heuristic_action
+    obs = {
+        "step_count": 15,
+        "agents": [
+            {"agent_id": 0, "row": 12, "col": 12, "hunger": 3, "thirst": 3,
+             "hp": 1, "is_alive": True, "inventory": []},
+        ],
+    }
+    a = forage_heuristic_action(0, obs)
+    # Safehouse is centre-ish; from (12,12) we move up or left
+    assert a["action_type"] in {"move_up", "move_left"}
+
+
+# ---------------------------------------------------------------------------
 # v2.2 — multi-action parsing (parse_actions)
 # ---------------------------------------------------------------------------
 
