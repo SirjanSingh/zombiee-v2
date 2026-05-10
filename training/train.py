@@ -918,8 +918,14 @@ def main():
             logger.info(f"[progress] checkpoint saved at step {state_.global_step}")
         def on_log(self, args_, state_, control_, logs=None, **kw):
             if logs:
+                # Include reward_std, completion_length, and per-token KL so we
+                # can diagnose whether GRPO has within-group variance to learn
+                # from and whether the policy is actually diverging from ref.
+                # KL=0 across all steps with non-trivial reward_std would point
+                # at a beta/ref-model wiring issue.
                 snippet = {k: v for k, v in logs.items() if k in
-                           ("loss", "reward", "grad_norm", "learning_rate", "kl")}
+                           ("loss", "reward", "reward_std", "grad_norm",
+                            "learning_rate", "kl", "completion_length")}
                 if snippet:
                     logger.info(f"[metrics] step {state_.global_step}: {snippet}")
 
