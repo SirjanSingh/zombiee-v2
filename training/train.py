@@ -184,6 +184,13 @@ def parse_args():
     p.add_argument("--format-bonus", type=float, default=0.10,
                    help="Bonus added when parse_action returned a real action. Keeps "
                         "the within-group variance non-zero when env reward ties.")
+    p.add_argument("--prefix-actions", type=int, default=1,
+                   help="Number of model actions to apply at agent 0's turns "
+                        "before the heuristic takes over. K=1 (default) is the "
+                        "legacy single-action mode. K>1 expects a JSON array of "
+                        "K actions in the completion. With K>1 you should also "
+                        "drop --step1-weight (try 1.0) since the model contribution "
+                        "is now summed across K actions.")
     # ---- v2.1 metrics + safety-push flags -------------------------------
     p.add_argument(
         "--metrics-file", default=None,
@@ -309,6 +316,7 @@ def create_reward_fn(
     rollout_limit: int = 60,
     step1_weight: float = 5.0,
     format_bonus: float = 0.10,
+    prefix_actions: int = 1,
     metrics_logger=None,
     trainer_state_ref: Optional[dict] = None,
 ):
@@ -347,8 +355,12 @@ def create_reward_fn(
     from collections import Counter
     import statistics
     from survivecity_v2_env.env import SurviveCityV2Env
-    from training.inference import parse_action, forage_heuristic_action
+    from training.inference import parse_action, parse_actions, forage_heuristic_action
     from training.metrics import build_terminal_summary
+
+    # Clamp to >=1 — prefix_actions=0 would mean "model never acts" which is
+    # never what we want; treat anything <1 as the legacy 1-action mode.
+    prefix_actions = max(1, int(prefix_actions))
 
     try:
         from tqdm.auto import tqdm
@@ -383,39 +395,57 @@ def create_reward_fn(
                 env = SurviveCityV2Env()
                 obs = env.reset(seed=ep_seed)
 
-                parsed = parse_action(completion, agent_id=0)
-                parse_ok = parsed is not None
+                # parse_actions returns a list. With prefix_actions=1 it
+                # behaves like the old parse_action (single object → 1-elem
+                # list). With prefix_actions>1 the model is expected to emit
+                # a JSON array; if it emits a single object instead we still
+                # honour that as 1 action and fill the rest with wait.
+                parsed_list = parse_actions(
+                    completion, agent_id=0, max_actions=prefix_actions,
+                )
+                parse_ok = len(parsed_list) > 0
                 if parse_ok:
                     parse_ok_count += 1
-                    action = parsed
-                    action_types.append(parsed.get("action_type", "?"))
+                # Pad to exactly prefix_actions with wait so the rollout loop
+                # always has K candidates to apply for agent 0.
+                while len(parsed_list) < prefix_actions:
+                    parsed_list.append({"agent_id": 0, "action_type": "wait"})
+
+                # Track action types for the per-call histogram. We record
+                # all K planned model actions (or PARSE_FAIL when parse_ok=False
+                # for the K wait fillers) so the histogram reflects the full
+                # prefix the model is choosing.
+                if parse_ok:
+                    for a in parsed_list:
+                        action_types.append(a.get("action_type", "?"))
                 else:
-                    action = {"agent_id": 0, "action_type": "wait"}
-                    action_types.append("PARSE_FAIL")
+                    for _ in range(prefix_actions):
+                        action_types.append("PARSE_FAIL")
 
-                # Apply the model's action and capture its immediate reward.
-                # `raw_reward` here = rubric raw + drained pending for agent 0,
-                # which is the per-action signal the model is responsible for.
-                obs = env.step(action)
-                step1_raw = obs.get("metadata", {}).get("raw_reward", 0.0)
-                # Capture the per-rubric breakdown for the model's action so
-                # the metrics file can show which rubrics are firing positively
-                # vs negatively over training.
-                rb = obs.get("metadata", {}).get("rubric_breakdown") or {}
-                if rb:
-                    rubric_breakdowns.append(dict(rb))
-
-                # Heuristic rollout for the rest of the episode (capped).
-                # Same RNG seed -> same heuristic-policy trajectory ->
-                # the within-GRPO-group variance comes ONLY from the model's
-                # first action's downstream effect, which is exactly the
-                # variance GRPO needs to learn.
+                # Unified rollout loop. Model acts at agent 0's turns until
+                # we exhaust the K-action prefix; after that the heuristic
+                # takes over for everyone (including agent 0).
                 rollout_rng = random.Random(ep_seed + 7)
                 steps = 0
+                model_actions_used = 0
+                model_step_raws: list[float] = []
                 while not obs.get("done", False) and steps < rollout_limit:
                     aid = obs.get("metadata", {}).get("current_agent_id", 0)
-                    rand_act = forage_heuristic_action(aid, obs, rng=rollout_rng)
-                    obs = env.step(rand_act)
+                    if aid == 0 and model_actions_used < prefix_actions:
+                        act = parsed_list[model_actions_used]
+                        model_actions_used += 1
+                        obs = env.step(act)
+                        step_raw = obs.get("metadata", {}).get("raw_reward", 0.0)
+                        model_step_raws.append(step_raw)
+                        # Capture rubric breakdown of the FIRST model action only
+                        # so existing metrics dashboards stay comparable.
+                        if len(model_step_raws) == 1:
+                            rb = obs.get("metadata", {}).get("rubric_breakdown") or {}
+                            if rb:
+                                rubric_breakdowns.append(dict(rb))
+                    else:
+                        act = forage_heuristic_action(aid, obs, rng=rollout_rng)
+                        obs = env.step(act)
                     steps += 1
 
                 # Cumulative raw reward for agent 0 across the whole rollout
@@ -426,8 +456,12 @@ def create_reward_fn(
                 final_obs_for_terminal.append(obs)
 
                 # Final composite — signed, NOT clipped (GRPO normalises internally)
+                # step1_weight is applied to the SUM of model action raws so
+                # at prefix_actions=1 the formula matches the legacy single-
+                # action shape exactly. At prefix_actions=K, total signal is
+                # roughly Kx larger; recommend dropping --step1-weight to ~1.0.
                 composite = (
-                    step1_weight * step1_raw
+                    step1_weight * sum(model_step_raws)
                     + cum0
                     + (format_bonus if parse_ok else 0.0)
                 )
@@ -441,7 +475,10 @@ def create_reward_fn(
                         f"({type(e).__name__}): {e}"
                     )
                 rewards.append(0.0)
-                action_types.append("ERROR")
+                # Extend by prefix_actions so the histogram still has one
+                # entry per planned model action, matching the success path.
+                for _ in range(prefix_actions):
+                    action_types.append("ERROR")
                 rollout_lens.append(0)
 
         # Diagnostics — this is the line you tail in the log to see learning.
@@ -1063,6 +1100,7 @@ def main():
             rollout_limit=args.rollout_limit,
             step1_weight=args.step1_weight,
             format_bonus=args.format_bonus,
+            prefix_actions=args.prefix_actions,
             metrics_logger=metrics_logger,
             trainer_state_ref=trainer_state_ref,
         )],

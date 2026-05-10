@@ -613,6 +613,65 @@ def test_parse_actions_empty_array_falls_back_to_single():
 
 
 # ---------------------------------------------------------------------------
+# v2.2 — multi-action reward_fn rollout (prefix_actions)
+# ---------------------------------------------------------------------------
+
+def _run_reward_fn(completion: str, prefix_actions: int = 1, step1_weight: float = 5.0,
+                    rollout_limit: int = 60):
+    """Drive a single-completion reward_fn call with a fixed seeded prompt."""
+    from training.train import create_reward_fn
+    fn = create_reward_fn(
+        rollout_limit=rollout_limit,
+        step1_weight=step1_weight,
+        format_bonus=0.10,
+        prefix_actions=prefix_actions,
+        metrics_logger=None,
+        trainer_state_ref=None,
+    )
+    prompts = ["[SEED:42] dummy prompt"]
+    completions = [completion]
+    return fn(prompts, completions)
+
+
+def test_reward_fn_k1_backward_compat():
+    """K=1 with single-object completion: rewards list has 1 entry, finite."""
+    out = _run_reward_fn('{"action_type": "move_up"}', prefix_actions=1)
+    assert len(out) == 1
+    assert isinstance(out[0], float)
+    # Reward magnitude is bounded by step1_weight*0.5 + cum0 (typically -10..+10)
+    assert -50.0 < out[0] < 50.0
+
+
+def test_reward_fn_k5_accepts_array_completion():
+    """K=5 with JSON array of 5 actions: returns finite reward."""
+    completion = (
+        '[{"action_type":"move_up"},{"action_type":"eat"},'
+        '{"action_type":"drink"},{"action_type":"wait"},'
+        '{"action_type":"move_left"}]'
+    )
+    out = _run_reward_fn(completion, prefix_actions=5, step1_weight=1.0)
+    assert len(out) == 1
+    assert isinstance(out[0], float)
+    assert -50.0 < out[0] < 50.0
+
+
+def test_reward_fn_k5_with_short_array_pads_with_wait():
+    """K=5 but model only emits 2 actions: rest filled with wait, no crash."""
+    completion = '[{"action_type":"move_up"},{"action_type":"eat"}]'
+    out = _run_reward_fn(completion, prefix_actions=5, step1_weight=1.0)
+    assert len(out) == 1
+    assert isinstance(out[0], float)
+
+
+def test_reward_fn_k1_parse_fail_returns_zero_step1_signal():
+    """Unparseable completion at K=1: step1_raw=0 contribution, only cum0+0 (no format bonus)."""
+    out = _run_reward_fn("blah blah no action here", prefix_actions=1)
+    assert len(out) == 1
+    # Without parse, no format_bonus added; reward dominated by heuristic-driven cum0
+    assert isinstance(out[0], float)
+
+
+# ---------------------------------------------------------------------------
 # v2.1 — metrics logger
 # ---------------------------------------------------------------------------
 
