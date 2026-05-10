@@ -79,6 +79,26 @@ the v2.0 first pass:
   with magnitude scaled linearly by urgency. Eliminates the dead zone at episode start
   that let scan dominate when forage gradient was absent.
 
+**Post-run-3 fix — multi-action GRPO (commits `d64ebb7`, `48c0e4c`, `09a4717`, `6e8fc43`):**
+- **Root cause from runs 1–3:** all three runs hit **0% survival** in eval despite
+  improving training-time scan% from 49.5% → 40.6%. The reason: GRPO applied **one
+  model action** per rollout, then the forage heuristic took over for ~55 more steps.
+  The model never trained on steps 1, 5, 10, 15… so even a perfect step-0 policy
+  couldn't outrun a heuristic that dies at step 18.
+- **`--prefix-actions K` flag** (default `K=1`, backward-compat) — model emits a JSON
+  array of K actions in a single completion, applied at agent A0's next K turns; the
+  heuristic handles intermediate agent-1..4 turns and post-prefix steps. Run 4
+  recommendation: **K=5** with `--step1-weight 1.0` (composite is now summed across
+  K actions, so the legacy 5.0 would 5× over-weight).
+- **`parse_actions()`** in `training/inference.py` — JSON-array parser with single-object
+  fallback (so K=1 still parses any legacy completion).
+- **Multi-action prompt template** — `SYSTEM_PROMPT_TEMPLATE_MULTI` selected when
+  `prefix_actions > 1`; tells the model to commit to a K-step plan with array-shaped
+  examples.
+- **Enhanced metrics line** — `[metrics] step N: ...` now logs `reward_std`,
+  `completion_length`, and `kl` so we can diagnose run 3's `kl=0.000` anomaly
+  (was `kl=0.17` peak in run 1; cause TBD).
+
 Plus: `obs.metadata` now exposes `last_actor_id`, `cumulative_rewards`
 per agent, and `raw_reward` (un-clipped) so training code can pick the
 right field instead of the OpenEnv-clipped `obs.reward`.
@@ -450,16 +470,66 @@ Action histogram (steps 0–21):
 
 Also confirmed: vote schedule is `[30, 50, 70, 90]` (committed `b8c55eb`).
 
-**Status:** All fixes committed. Next step is to launch run 3 with the same hyperparams.
+---
+
+### Run 3 — single-action GRPO with rubric fixes (2026-05-10)
+
+**Hyperparams:** identical to run 1.
+
+**Action histogram trended down well:** scan 63% → 49% → 40.6% by step 40 (vs run 2 stuck at 66%).
+But survival in eval was still 0% across ckpt-25 (mean reward 0.719 vs baseline 0.891) and other
+checkpoints — episode length capped at ~18 steps in eval, same as runs 1/2.
+
+**Diagnosis confirmed:** the model's step-0 action was the only thing being trained. The
+`forage_heuristic_action` ran every step from 1 onward, dying at ~step 18 from starvation
+because the heuristic doesn't eat fast enough. Even a perfect step-0 model couldn't beat
+the heuristic ceiling.
+
+**KL anomaly:** `kl=0.000` across all 40 steps shown (run 1 had `kl=0.17` peak). Suspicious;
+new diagnostic logging added (`d64ebb7`) to confirm whether KL is rounding, the ref model
+is mis-wired, or the policy genuinely isn't diverging.
 
 ---
 
-### What to do next (run 3)
+### Run 4 — multi-action GRPO (planned)
 
-1. Launch training from scratch (same hyperparams as run 1/2).
-2. Watch: `scan%` in `metrics.jsonl` should drop below ~10% by step 20; `eat%` should rise above ~10%.
-3. If `movement%` is still ~2% at step 20, lower the `forage_shaping_reward` threshold further.
-4. Eval with `--max-steps-per-episode 150` (covers all four vote phases at t=30/50/70/90).
+**Launch command (DGX, after `git pull`):**
+```bash
+TS=$(date +%Y%m%d_%H%M%S)
+docker run --rm --gpus '"device=0"' --shm-size=16g \
+  -v "$PWD/checkpoints":/app/checkpoints \
+  -v "$PWD/training":/app/training \
+  -v "$PWD/survivecity_v2_env":/app/survivecity_v2_env \
+  -v "$HOME/.cache/huggingface":/root/.cache/huggingface \
+  -e HF_TOKEN="$HF_TOKEN" -e HUGGINGFACE_TOKEN="$HF_TOKEN" \
+  -e PYTHONUNBUFFERED=1 \
+  -e EXTRA_ARGS="--lr 5e-6 --beta 0.1 --no-4bit --optim adamw_torch --max-steps 60 --save-steps 5 --save-total-limit 12 --per-device-batch-size 8 --num-generations 8 --grad-accum-steps 4 --max-completion-length 512 --lora-r 32 --lora-alpha 64 --prefix-actions 5 --step1-weight 1.0" \
+  survivecity-v2-dgx \
+  2>&1 | tee logs/train100_${TS}.log
+```
+
+**Why these flags:**
+- `--prefix-actions 5` — model commits to a 5-action plan; gradient signal flows through 5 model
+  decisions, not just 1.
+- `--step1-weight 1.0` — composite is now `1.0 * sum(model_step_raws) + cum0 + bonus`. The legacy
+  5.0 would 5× over-weight when summing across 5 actions.
+- `--max-steps 60` — each step does ~5× more env work (5 model actions per rollout instead of 1),
+  keeps wallclock close to run 3's 6 h.
+- `--max-completion-length 512` — JSON array of 5 actions is ~150 tokens; 512 leaves headroom
+  for verbose plans.
+
+**Stop criteria / what to watch:**
+
+| step | signal | meaning |
+|------|--------|---------|
+| 5–10 | `eat%` and movement % rising | gradient is shaping survival behaviour |
+| 5+ | `kl > 0` in `[metrics]` | policy diverging from ref (run 3 was stuck at 0) |
+| 20 | episode length > 18 in eval | model is steering past heuristic ceiling — first real survival sign |
+
+**Eval after run 4:** standard `training.eval` still uses single-action mode (K=1).
+The trained LoRA weights should still help at eval-time even though training shaped a
+5-action policy. If eval survival is still 0%, multi-action eval is the next follow-up
+(reuses `parse_actions()` already on `master`).
 
 ---
 
@@ -481,7 +551,7 @@ Also confirmed: vote schedule is `[30, 50, 70, 90]` (committed `b8c55eb`).
 | Reward rubrics | 3 | **15** (10 from v2.0 + 4 from v2.1: forage_shaping, zombie_proximity, anti_camp, infected_deception + scan_economy from post-run-2 fix) |
 | Damage credit | dropped for non-acting victims | **`pending_reward` accumulator** drained into `cumulative_rewards` at end-of-round |
 | Terminal settlement | only last-actor saw `group_outcome` | **all agents** receive terminal-rubric credit on `done=True` |
-| GRPO rollout | random actions (rewards floor-pinned) | **forage heuristic** (`reward_std` ~0.5 vs ~0.014 in v1) |
+| GRPO rollout | random actions (rewards floor-pinned) | **forage heuristic** (`reward_std` ~0.5 vs ~0.014 in v1); v2.2 adds opt-in **K-action prefix** (`--prefix-actions K`) so the model trains on multi-step plans |
 
 A v1 LoRA loaded onto v2 will never emit the new action types but still
 produces parseable v2 actions — so zero-shot transfer is valid (just
