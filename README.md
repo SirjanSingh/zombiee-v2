@@ -33,7 +33,68 @@ the root path:
                                 (April 2026), preserved for reproducibility.
 -->
 
-# SurviveCity v2 (v2.1 reward-fix revision)
+# zombiee-v2 — Multi-Action GRPO on a 5-Agent Social Deduction Game
+
+> Fine-tuning **Qwen2.5-3B** with **GRPO + LoRA** on a custom 5-agent zombie-survival environment. Built for the **Meta × Hugging Face × PyTorch OpenEnv AI Hackathon** (Bangalore, April 2026).
+
+## Links
+
+| | |
+|---|---|
+| 🎮 Live demo (v1 — failure-replay learning) | https://zombiee-tau.vercel.app |
+| 📦 v1 repo (notebook prototype) | https://github.com/SirjanSingh/zombiee |
+| 📦 v2 repo (this — full GRPO training pipeline) | https://github.com/SirjanSingh/zombiee-v2 |
+| 🧪 Stack | TRL · PEFT · LoRA · Qwen2.5-3B · V100 fp16 · Docker on DGX |
+
+> v2 has **no hosted demo** — it's a training pipeline, not a playable artifact. The v1 link above is a working failure-replay learning demo that gave this project its name.
+
+## TL;DR
+
+I fine-tuned Qwen2.5-3B on a 5-agent zombie social-deduction survival game using GRPO. **Across 4 documented training runs (~90 hours on a V100 DGX), the trained policy moved `mean alive at end` from 0.15 (random baseline) to 0.60 — a 4× improvement on the partial-credit metric.** Survival rate (binary: ≥1 healthy alive) stayed at 0% — but `mean alive at end`, `mean reward`, and action diversity all moved in the right direction. The full postmortem (including what I'd do differently) is below.
+
+## Results — 4 runs across 90 hours
+
+| run | change | trained alive/5 | trained reward | notes |
+|---|---|---|---|---|
+| 1 | initial GRPO (single-action, 100-step) | — | 0.879 | scan-spam (49.5%), 0% survival |
+| 2 | scan-streak rubric (aborted @ 21) | — | — | scan-streak threshold of 2 unreachable in 1-action rollouts |
+| 3 | flat per-scan penalty + forage-shaping at hunger≥1 | — | 0.719 | scan dropped 49% → 41%, still 0% survival |
+| 4 | **multi-action GRPO (`--prefix-actions 5`)** | **0.60** vs 0.15 baseline | **1.109** vs 1.028 baseline | first measurable training win |
+
+Pure-heuristic baseline (no LLM) at run 4 with the layout + heuristic fixes: `mean alive at end` 0.00 → 0.80, episode length lifted past the starvation cliff.
+
+Action histogram trend across run 4 (run-1 → final):
+
+| action | run 1 (step 100) | run 4 (step 60) |
+|---|---|---|
+| scan | 49.5% | **13.1%** |
+| movement (L+R+U+D) | ~3% | **26.7%** |
+| eat | <1% | 3.2% |
+| vote_lockout | 1% | 11.4% |
+
+## Key contributions
+
+1. **Multi-action GRPO prefix rollouts** — TRL by default does one model action per completion; I extended it so the model emits a K-action JSON array applied across K env steps before heuristic takeover. Backward-compatible at K=1 (byte-identical to legacy); 4 new tests pin the invariant. Commits: `09a4717`, `48c0e4c`, `6e8fc43`.
+
+2. **Reward-hacking forensics** — found and closed 3 distinct exploits across runs (scan-spam, vote-spam, idle-wait), each with a minimal rubric patch committed separately for clean revert (`1e814d4`, `4f34535`, `95b3d57`).
+
+3. **Pure-heuristic baseline as an RL debugging methodology** — when survival stuck at 0% for three runs, I ran the env with no LLM at all and discovered the real bottleneck was starvation, not the policy. Layout expansion + heuristic threshold-4 forage fix moved baseline `mean alive at end` from 0.00 → 0.80 (`741f4b6`, `33e1df9`). The methodology generalizes: **always check the env+heuristic baseline before blaming the model**.
+
+4. **Honest negative-result writeup** — documented why GRPO + 3B + single-agent + 15-component rubric hits a ceiling. The diagnosis (KL collapse, heuristic-driven A1-A4 dying regardless of A0's policy, sparse healthy-survival signal) is the contribution. The full memory directory is in `.claude/projects/.../memory/`.
+
+## Postmortem — what I'd do differently
+
+Three compounding limits made the survival ceiling hard to break:
+
+- **GRPO isn't designed for 60-step trajectories.** It's a completion-level optimizer (math, code, RLHF preferences). Aggregating step-rewards into one scalar loses per-step credit assignment. **KL stayed at 0.000 across all 60 steps in run 4** — the smoking gun that the policy isn't even diverging from the reference. PPO with a value head is the right tool for trajectory RL.
+- **The model controls only ~8% of actions.** Multi-action prefix bumped this to ~25% but the heuristic still dominates. Self-play multi-agent training would close this gap.
+- **3B is small for social deduction.** Theory of mind + planning + temporal awareness in <100 GRPO steps from a 3B base is a stretch. **SFT warmstart from heuristic trajectories**, then GRPO from that warm start, is the recipe I'd try next.
+
+The pipeline itself works — it needs a different recipe, not a different codebase.
+
+---
+
+# SurviveCity v2 — technical reference (v2.1 reward-fix revision)
 
 5-agent multi-resource zombie survival env with **bite transmission**,
 **spawn waves**, **iterated voting (3 rounds)**, **broadcast economy**,
