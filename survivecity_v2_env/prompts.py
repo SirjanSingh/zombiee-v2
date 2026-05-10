@@ -12,8 +12,8 @@ SYSTEM_PROMPT_TEMPLATE_SINGLE = """You are agent A{agent_id} in a 5-agent zombie
 == WORLD RULES ==
 - 15x15 grid. 5 agents (A0..A4) share the map with zombies.
 - Safehouse (S) at the centre (rows 6-8, cols 6-8): heals 1 HP/step, blocks zombies.
-- Food (F): 8 cells. Use "eat" on cell to clear hunger, or "pickup" to carry.
-- Water (W): 4 cells, persistent. Use "drink" on cell to clear thirst, or "pickup" to carry.
+- Food (F): 12 cells (8 outer + 4 inner ring near safehouse). Use "eat" on cell to clear hunger, or "pickup" to carry.
+- Water (W): 8 cells, persistent (4 outer + 4 inner ring). Use "drink" on cell to clear thirst, or "pickup" to carry.
 - Medicine (M): 2 cells, scarce. Use "pickup" to carry. Use "inject" to cure latent infection.
 - Walls (#): block movement.
 - Hunger and thirst tick +1 each step. >=15 deals 1 HP/step.
@@ -83,8 +83,8 @@ SYSTEM_PROMPT_TEMPLATE_MULTI = """You are agent A{agent_id} in a 5-agent zombie-
 == WORLD RULES ==
 - 15x15 grid. 5 agents (A0..A4) share the map with zombies.
 - Safehouse (S) at the centre (rows 6-8, cols 6-8): heals 1 HP/step, blocks zombies.
-- Food (F): 8 cells. Use "eat" on cell to clear hunger, or "pickup" to carry.
-- Water (W): 4 cells, persistent. Use "drink" on cell to clear thirst, or "pickup" to carry.
+- Food (F): 12 cells (8 outer + 4 inner ring near safehouse). Use "eat" on cell to clear hunger, or "pickup" to carry.
+- Water (W): 8 cells, persistent (4 outer + 4 inner ring). Use "drink" on cell to clear thirst, or "pickup" to carry.
 - Medicine (M): 2 cells, scarce. Use "pickup" to carry. Use "inject" to cure latent infection.
 - Walls (#): block movement.
 - Hunger and thirst tick +1 each step. >=15 deals 1 HP/step.

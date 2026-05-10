@@ -23,18 +23,35 @@ SAFEHOUSE_CELLS: set[tuple[int, int]] = {
     (r, c) for r in range(6, 9) for c in range(6, 9)
 }
 
-# Food depots — 8 cells, two in each quadrant
+# Food depots — 12 cells. The outer 8 (corners + cardinal mid-edges) are
+# the original v2.1 layout for the deep-forage trips. The inner 4 ring
+# (rows 4 & 10, cols 5 & 9) are added in v2.2 to make survival viable
+# under the new heuristic: with only the outer ring, every food trip is
+# a 6-cell one-way walk, and agents starve in the safehouse before the
+# trip can pay off (hunger ticks +1/turn, starvation damage at hunger=15).
+# The inner ring puts food 3-4 cells from any safehouse cell, so a
+# forage trip is ~6 rounds total — within the survival budget.
 FOOD_CELLS: set[tuple[int, int]] = {
+    # Outer ring (v2.1 — preserved for backward layout compat)
     (1, 1), (1, 13),
     (13, 1), (13, 13),
     (1, 7), (13, 7),
     (7, 1), (7, 13),
+    # Inner ring (v2.2 — close-quarters resupply)
+    (4, 5), (4, 9),
+    (10, 5), (10, 9),
 }
 
-# Water depots — 4 cells, persistent (do not respawn-deplete)
+# Water depots — 8 cells, persistent (do not respawn-deplete). Added an
+# inner 4 ring in v2.2 for the same reason as food: outer-ring-only made
+# water trips too long to survive on a single visit.
 WATER_CELLS: set[tuple[int, int]] = {
+    # Outer ring (v2.1)
     (3, 3), (3, 11),
     (11, 3), (11, 11),
+    # Inner ring (v2.2)
+    (5, 4), (5, 10),
+    (9, 4), (9, 10),
 }
 
 # Medicine depots — 2 cells, scarce. Respawn 25 steps after pickup.
