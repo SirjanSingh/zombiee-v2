@@ -1,27 +1,37 @@
-"""GRPO training pipeline for SurviveCity v2 — 24 GB-VRAM tuned.
+"""GRPO training pipeline for SurviveCity v2 — Phase 1 (plan 11) defaults.
 
-Defaults are now sized for a single 24 GB GPU (HF Spaces A10G / Kaggle 2×T4
-with one GPU active / a 24 GB consumer card). Override flags exist for
-30 GB DGX runs — see ``--num-generations 12 --max-completion-length 512``
-in the v2 plan files.
+Phase 1 of `.planning2/11_RESEARCH_FINDINGS_AND_REVISED_PLAN.md` aligns our
+hyperparameters with the published GiGPO Qwen2.5-3B recipes (verl-agent
+run_alfworld_lora.sh + run_sokoban.sh, arxiv 2505.10978). Runs 1-4 were
+miscalibrated by 5-10x on LR/beta and 2-4x on duration/batch.
 
-Default hyperparameters:
+Default hyperparameters (v2.3 / Phase 1, May 2026):
     --model-name              Qwen/Qwen2.5-3B-Instruct
-    --max-steps               15         (every step → checkpoint)
-    --save-steps              1
+    --max-steps               60         (paper target 150; fits 6h DGX session)
+    --save-steps              10         (6 ckpts at max_steps=60)
     --save-total-limit        15
-    --num-generations         8          (24 GB-safe; raise to 12 on 30 GB)
-    --grad-accum-steps        4          (4 prompts × 8 gens = 32 evals/step)
-    --max-completion-length   384        (24 GB-safe; raise to 512 on 30 GB)
-    --rollout-limit           60         (heuristic-rollout horizon)
-    --lora-r                  32
-    --lora-alpha              64
+    --num-generations         8
+    --grad-accum-steps        8          (8 prompts × 8 gens = 64 evals/step)
+    --max-completion-length   512        (was 384; K=5 plans need headroom)
+    --rollout-limit           60
+    --lora-r                  64         (was 32; matches GiGPO ALFWorld-LoRA)
+    --lora-alpha              128        (kept at 2*r)
+    --lr                      3e-6       (was 1e-5)
+    --beta                    0.01       (was 0.04)
+    --format-bonus            0.0        (was 0.10; uniform offset → zero gradient)
+    --invalid-action-penalty  0.10       (NEW; negative side of the parse signal)
     --max-seq-length          4096
     4-bit nf4 quant ENABLED by default (pass --no-4bit on >=30 GB cards)
 
-Time budget on 24 GB A10G: ~30 min/step (4-bit base, num_gen=8,
-max_compl=384) → 15 steps ≈ 7.5 h. On a 30 GB A100 with --no-4bit and the
-old DGX flags (num_gen=12, max_compl=512) it stays ~24 min/step → 6 h.
+Time budget at Phase 1 defaults on V100 32G:
+  ~5-7 min/step (grad_accum=8, num_gen=8, max_compl=512, lora_r=64)
+  → 60 steps ≈ 5-7 h. Pass --max-steps 150 for the full paper recipe
+  (~12-17 h, multi-session via --resume-from-checkpoint).
+
+To recover the runs 1-4 budget exactly on 24 GB A10G, pass:
+  --lr 1e-5 --beta 0.04 --max-steps 15 --save-steps 1 --grad-accum-steps 4
+  --max-completion-length 384 --lora-r 32 --lora-alpha 64
+  --format-bonus 0.10 --invalid-action-penalty 0.0
 
 Memory strategy: 4-bit base model (NF4 + double-quant) by default —
 combined with gradient checkpointing this fits 8 generations × 384
