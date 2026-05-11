@@ -242,6 +242,30 @@ def parse_args():
                         "K actions in the completion. With K>1 you should also "
                         "drop --step1-weight (try 1.0) since the model contribution "
                         "is now summed across K actions.")
+    # ---- Phase 2 (plan 11): GiGPO advantage estimator -------------------
+    p.add_argument(
+        "--adv-estimator", choices=["grpo", "gigpo"], default="grpo",
+        help="Advantage estimator. 'grpo' (default) = stock TRL GRPOTrainer; "
+             "'gigpo' = GRPOTrainer + step-level advantage from anchor-state "
+             "clustering (verl-agent/gigpo, arxiv 2505.10978). GiGPO is the "
+             "Phase 2 follow-up to the Phase 1 hyperparam fix; only switch when "
+             "Phase 1 has been run and the kl-stays-at-0 / mean_alive < 1.9 "
+             "criteria from plan 11 are met.")
+    p.add_argument(
+        "--step-advantage-w", type=float, default=1.0,
+        help="GiGPO step-advantage weight. Paper-default 1.0; insensitive "
+             "in [0.4, 1.2]. Pass 0.0 + --adv-estimator gigpo to ablation-test "
+             "the trainer plumbing without the step term.")
+    p.add_argument(
+        "--gigpo-remove-std", action="store_true", default=True,
+        help="GiGPO step normalisation mode. True (default, paper mean_norm) "
+             "subtracts cluster mean only. Pass --gigpo-zscore to z-score "
+             "step rewards inside the cluster (paper's mean_std_norm).")
+    p.add_argument(
+        "--gigpo-zscore", dest="gigpo_remove_std", action="store_false",
+        help="Use mean_std_norm (z-score) for step advantage instead of "
+             "mean_norm. The paper notes this is task-dependent; mean_norm "
+             "tends to be safer.")
     # ---- v2.1 metrics + safety-push flags -------------------------------
     p.add_argument(
         "--metrics-file", default=None,
@@ -385,6 +409,7 @@ def create_reward_fn(
     prefix_actions: int = 1,
     metrics_logger=None,
     trainer_state_ref: Optional[dict] = None,
+    gigpo_side_channel: Optional[list] = None,
 ):
     """GRPO reward function — v2.1 heuristic-rollout edition.
 
@@ -423,6 +448,7 @@ def create_reward_fn(
     from survivecity_v2_env.env import SurviveCityV2Env
     from training.inference import parse_action, parse_actions, forage_heuristic_action
     from training.metrics import build_terminal_summary
+    from training.gigpo import anchor_key_for_agent0
 
     # Clamp to >=1 — prefix_actions=0 would mean "model never acts" which is
     # never what we want; treat anything <1 as the legacy 1-action mode.
@@ -445,6 +471,14 @@ def create_reward_fn(
         final_obs_for_terminal: list[dict] = []
         parse_ok_count = 0
 
+        # GiGPO side channel: trainer's _prepare_inputs reads this AFTER our
+        # return to compute step-level advantages. We MUST append exactly
+        # one (anchor_key, step_reward) per (prompt, completion) in the same
+        # order as `rewards`, even on the exception path, or the trainer
+        # will skip the step injection for this call (size-mismatch guard).
+        # The trainer itself clears the list at the top of its method, so
+        # we just need to append.
+
         n = len(prompts)
         iterator = tqdm(
             list(zip(prompts, completions)),
@@ -460,6 +494,12 @@ def create_reward_fn(
                 )
                 env = SurviveCityV2Env()
                 obs = env.reset(seed=ep_seed)
+                # Snapshot the anchor key BEFORE any model action so step-level
+                # clustering can compare "8 ways the model handled the same
+                # starting situation" within a GRPO group. With same-seed
+                # prompts across the group's 8 generations, this anchor is
+                # identical for all 8 → cluster size 8 → strongest GiGPO signal.
+                first_anchor = anchor_key_for_agent0(obs)
 
                 # parse_actions returns a list. With prefix_actions=1 it
                 # behaves like the old parse_action (single object → 1-elem
@@ -540,6 +580,15 @@ def create_reward_fn(
                 )
                 rewards.append(float(composite))
                 rollout_lens.append(steps)
+                # GiGPO side-channel: anchor key from the pre-first-action
+                # state, step reward = the immediate reward of the first
+                # model action. If the model didn't get to act (done at
+                # reset, vanishingly rare), step reward defaults to 0.0
+                # which puts this generation at the cluster mean and
+                # contributes 0 advantage either way.
+                if gigpo_side_channel is not None:
+                    step_r = float(model_step_raws[0]) if model_step_raws else 0.0
+                    gigpo_side_channel.append((first_anchor, step_r))
             except Exception as e:
                 state["errors"] += 1
                 if state["errors"] <= 5 or state["errors"] % 50 == 0:
@@ -553,6 +602,12 @@ def create_reward_fn(
                 for _ in range(prefix_actions):
                     action_types.append("ERROR")
                 rollout_lens.append(0)
+                # Keep the side channel size-aligned even on the error path.
+                # Sentinel anchor "ERROR" keeps this entry in its own
+                # singleton cluster → 0 step advantage, which is what we
+                # want for an undefined trajectory.
+                if gigpo_side_channel is not None:
+                    gigpo_side_channel.append(("ERROR", 0.0))
 
         # Diagnostics — this is the line you tail in the log to see learning.
         # Guard against empty `rewards` (TRL shouldn't call us with n=0 but we
@@ -1168,22 +1223,54 @@ def main():
             )
         )
 
-    trainer = GRPOTrainer(
-        model=model,
-        args=config,
-        reward_funcs=[create_reward_fn(
-            rollout_limit=args.rollout_limit,
-            step1_weight=args.step1_weight,
-            format_bonus=args.format_bonus,
-            invalid_action_penalty=args.invalid_action_penalty,
-            prefix_actions=args.prefix_actions,
-            metrics_logger=metrics_logger,
-            trainer_state_ref=trainer_state_ref,
-        )],
-        train_dataset=dataset,
-        processing_class=tokenizer,
-        callbacks=callbacks,
+    # GiGPO side channel: a single mutable list shared between the reward
+    # function (writer) and the trainer (reader). Only used when
+    # --adv-estimator gigpo. When None, the reward fn no-ops the
+    # appends and the trainer falls back to vanilla GRPO behaviour.
+    gigpo_side_channel: Optional[list] = (
+        [] if args.adv_estimator == "gigpo" else None
     )
+
+    reward_fn = create_reward_fn(
+        rollout_limit=args.rollout_limit,
+        step1_weight=args.step1_weight,
+        format_bonus=args.format_bonus,
+        invalid_action_penalty=args.invalid_action_penalty,
+        prefix_actions=args.prefix_actions,
+        metrics_logger=metrics_logger,
+        trainer_state_ref=trainer_state_ref,
+        gigpo_side_channel=gigpo_side_channel,
+    )
+
+    if args.adv_estimator == "gigpo":
+        from training.gigpo_trainer import make_gigpo_trainer_class
+        GiGPOTrainerCls = make_gigpo_trainer_class()
+        logger.info(
+            f"[adv-estimator] gigpo: GiGPOTrainer with "
+            f"step_advantage_w={args.step_advantage_w} "
+            f"remove_std={args.gigpo_remove_std}"
+        )
+        trainer = GiGPOTrainerCls(
+            model=model,
+            args=config,
+            reward_funcs=[reward_fn],
+            train_dataset=dataset,
+            processing_class=tokenizer,
+            callbacks=callbacks,
+            gigpo_side_channel=gigpo_side_channel,
+            step_advantage_w=args.step_advantage_w,
+            gigpo_remove_std=args.gigpo_remove_std,
+        )
+    else:
+        logger.info("[adv-estimator] grpo: stock TRL GRPOTrainer")
+        trainer = GRPOTrainer(
+            model=model,
+            args=config,
+            reward_funcs=[reward_fn],
+            train_dataset=dataset,
+            processing_class=tokenizer,
+            callbacks=callbacks,
+        )
 
     resume = _resolve_resume(args.resume_from_checkpoint, args.output_dir)
     if resume is not None:
