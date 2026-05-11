@@ -164,7 +164,12 @@ def parse_args():
     p.add_argument("--model-name", default="Qwen/Qwen2.5-3B-Instruct")
     p.add_argument("--max-steps", type=int, default=15)
     p.add_argument("--save-steps", type=int, default=1)
-    p.add_argument("--lr", type=float, default=1e-5)
+    p.add_argument("--lr", type=float, default=3e-6,
+                   help="Actor LR. Was 1e-5 in runs 1-4; dropped to 3e-6 per the "
+                        "GiGPO ALFWorld-LoRA recipe (arxiv 2505.10978). The web-agent "
+                        "diagnosis paper (arxiv 2507.04103) also converges on 1e-6 for "
+                        "Qwen2.5-7B. 1e-5 was a likely cause of the runs 1-4 entropy "
+                        "collapse / KL=0 failure mode.")
     p.add_argument("--num-generations", type=int, default=8,
                    help="GRPO group size. 8 fits a 24 GB GPU; raise to 12 on 30 GB DGX.")
     p.add_argument("--output-dir", default="./checkpoints")
@@ -214,7 +219,13 @@ def parse_args():
         "--no-auto-plots", dest="auto_plots", action="store_false",
         help="Skip auto-plot generation at end of training.")
     p.add_argument("--temperature", type=float, default=1.0)
-    p.add_argument("--beta", type=float, default=0.04)
+    p.add_argument("--beta", type=float, default=0.01,
+                   help="KL coefficient to reference policy. Was 0.04 in runs 1-4; "
+                        "dropped to 0.01 to match the GiGPO Sokoban/WebShop recipe "
+                        "(verl-agent run_sokoban.sh, run_webshop.sh — both use "
+                        "kl_loss_coef=0.01). RAGEN/StarPO-S uses beta=0.001 with a "
+                        "different KL estimator. 0.04 was too restrictive for our "
+                        "exploration window and may have pinned KL at ~0 throughout.")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--num-scenarios", type=int, default=200)
     p.add_argument("--report-to", default="tensorboard")
