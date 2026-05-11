@@ -210,9 +210,21 @@ def parse_args():
                    help="Weight on the model's first-action raw_reward in the GRPO "
                         "composite. The 1 model action would otherwise be drowned by "
                         "the rollout cumulative; default 5.0 balances them.")
-    p.add_argument("--format-bonus", type=float, default=0.10,
-                   help="Bonus added when parse_action returned a real action. Keeps "
-                        "the within-group variance non-zero when env reward ties.")
+    p.add_argument("--format-bonus", type=float, default=0.0,
+                   help="Bonus added when parse_action returned a real action. Default "
+                        "changed from +0.10 (runs 1-4) to 0.0: inside the GRPO "
+                        "group-normalized advantage, a uniform +0.10 across all "
+                        "parseable members cancels in the mean and contributes "
+                        "zero gradient. The new --invalid-action-penalty captures "
+                        "the actual signal we want (punish parse failures) by "
+                        "putting them BELOW the group mean.")
+    p.add_argument("--invalid-action-penalty", type=float, default=0.10,
+                   help="Penalty subtracted when parse_action returns None. The GiGPO "
+                        "ALFWorld/Sokoban scripts use exactly this knob "
+                        "(use_invalid_action_penalty=True, invalid_action_penalty_coef=0.1 "
+                        "in verl-agent run_alfworld_lora.sh). Inside the GRPO group, "
+                        "an unparseable trajectory now lands BELOW the group mean and "
+                        "gets a negative advantage, which is the gradient we want.")
     p.add_argument("--prefix-actions", type=int, default=1,
                    help="Number of model actions to apply at agent 0's turns "
                         "before the heuristic takes over. K=1 (default) is the "
@@ -358,7 +370,8 @@ REWARD_FN_VERSION = "v2.1-heuristic-rollout-2026-04-26"
 def create_reward_fn(
     rollout_limit: int = 60,
     step1_weight: float = 5.0,
-    format_bonus: float = 0.10,
+    format_bonus: float = 0.0,
+    invalid_action_penalty: float = 0.10,
     prefix_actions: int = 1,
     metrics_logger=None,
     trainer_state_ref: Optional[dict] = None,
@@ -503,10 +516,17 @@ def create_reward_fn(
                 # at prefix_actions=1 the formula matches the legacy single-
                 # action shape exactly. At prefix_actions=K, total signal is
                 # roughly Kx larger; recommend dropping --step1-weight to ~1.0.
+                # Composite reward. Inside a GRPO group, a uniform additive
+                # offset across all members cancels in the mean — so a +0.10
+                # bonus for parseable trajectories (the runs 1-4 design) gave
+                # ZERO gradient when most of the group parsed. Per the GiGPO
+                # ALFWorld recipe (use_invalid_action_penalty=True, coef=0.1),
+                # we instead subtract a penalty from UNPARSEABLE trajectories so
+                # they land below the group mean and pull a negative advantage.
                 composite = (
                     step1_weight * sum(model_step_raws)
                     + cum0
-                    + (format_bonus if parse_ok else 0.0)
+                    + (format_bonus if parse_ok else -invalid_action_penalty)
                 )
                 rewards.append(float(composite))
                 rollout_lens.append(steps)
@@ -1145,6 +1165,7 @@ def main():
             rollout_limit=args.rollout_limit,
             step1_weight=args.step1_weight,
             format_bonus=args.format_bonus,
+            invalid_action_penalty=args.invalid_action_penalty,
             prefix_actions=args.prefix_actions,
             metrics_logger=metrics_logger,
             trainer_state_ref=trainer_state_ref,
