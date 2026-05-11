@@ -592,6 +592,70 @@ The trained LoRA weights should still help at eval-time even though training sha
 5-action policy. If eval survival is still 0%, multi-action eval is the next follow-up
 (reuses `parse_actions()` already on `master`).
 
+### Run 5 — Phase 1 hyperparameter recalibration (planned, May 2026)
+
+After runs 1-4 all hit 0% survival, a 2025-literature sweep (see
+`.planning2/11_RESEARCH_FINDINGS_AND_REVISED_PLAN.md`) found our
+hyperparameters were miscalibrated by **5-10× vs the published GiGPO
+Qwen2.5-3B recipes** (verl-agent run_alfworld_lora.sh, arxiv 2505.10978).
+Run 5 fixes the calibration first, before any algorithm change.
+
+**Launch command (DGX, after `git pull`):**
+```bash
+TS=$(date +%Y%m%d_%H%M%S)
+docker run --rm --gpus '"device=0"' --shm-size=16g \
+  -v "$PWD/checkpoints":/app/checkpoints \
+  -v "$PWD/training":/app/training \
+  -v "$PWD/survivecity_v2_env":/app/survivecity_v2_env \
+  -v "$HOME/.cache/huggingface":/root/.cache/huggingface \
+  -e HF_TOKEN="$HF_TOKEN" -e HUGGINGFACE_TOKEN="$HF_TOKEN" \
+  -e PYTHONUNBUFFERED=1 \
+  -e EXTRA_ARGS="--no-4bit --optim adamw_torch --prefix-actions 5 --step1-weight 1.0 --push-to-hub" \
+  survivecity-v2-dgx \
+  2>&1 | tee logs/train_run5_${TS}.log
+```
+
+All Phase 1 hyperparameter changes (LR 1e-5 → 3e-6, beta 0.04 → 0.01,
+max-steps → 60, grad-accum → 8, max-completion → 512, LoRA r → 64,
+invalid-action-penalty 0.10) are now **defaults** in `training/train.py`,
+so the EXTRA_ARGS only carries DGX-specific knobs (no-4bit, optim) and
+the v2.2 multi-action toggles. To reproduce runs 1-4 exactly, see the
+"recover the runs 1-4 budget" stanza in `training/train.py`'s docstring.
+
+**Why these defaults (vs run 4):**
+
+| knob | run 4 | run 5 | source |
+|------|------|-------|--------|
+| LR | 5e-6 | **3e-6** | GiGPO ALFWorld LoRA |
+| beta | 0.1 | **0.01** | GiGPO Sokoban (kl_loss_coef=0.01) |
+| max-steps | 60 | 60 (paper target 150) | GiGPO total_epochs=150 |
+| grad-accum | 4 | **8** | GiGPO train_batch=16 |
+| LoRA r/alpha | 32/64 | **64/128** | GiGPO ALFWorld LoRA |
+| max-completion | 512 | 512 | unchanged |
+| format reward | `+0.10 if parse_ok` | **`-0.10 if parse_fail`** | GiGPO use_invalid_action_penalty |
+
+The format-reward sign flip is the subtle one: inside a GRPO group whose
+members all parse correctly, a uniform +0.10 cancels in the group mean
+→ zero gradient toward format. The penalty puts unparseable trajectories
+BELOW the mean and yields a real negative advantage.
+
+**Stop criteria / what to watch (same as run 4 plus one new line):**
+
+| step | signal | meaning |
+|------|--------|---------|
+| 1 | `r_std > 0.1` in `reward_fn` log line | within-group variance survived the hyperparam change |
+| 5+ | `kl > 0` in `[metrics]` line | **the key Phase 1 success signal** — runs 1-4 had kl=0 |
+| 5-10 | `parse_ok` rate climbing | invalid-action-penalty is shaping format |
+| 20 | episode length > 18 in eval | beyond heuristic ceiling |
+
+**Eval after run 5:** standard
+`python -m training.eval --lora-path ./checkpoints/checkpoint-60 --eval-step 60`.
+
+**Go/no-go after run 5 (per plan 11 §5/Phase 1):**
+- ✅ Phase 1 wins if `mean_alive_at_end ≥ 1.9` (heuristic + 0.3) on 30 eval episodes.
+- ❌ Continue to Phase 2 (GiGPO algorithm port) if < 1.9 OR if kl stays
+  pinned at 0 across all 60 steps.
+
 ---
 
 ## What changed vs v1
