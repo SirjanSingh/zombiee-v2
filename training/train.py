@@ -184,12 +184,25 @@ def parse_args():
     p.add_argument("--num-generations", type=int, default=8,
                    help="GRPO group size. 8 fits a 24 GB GPU; raise to 12 on 30 GB DGX.")
     p.add_argument("--output-dir", default="./checkpoints")
-    p.add_argument("--lora-r", type=int, default=32)
-    p.add_argument("--lora-alpha", type=int, default=64)
+    p.add_argument("--lora-r", type=int, default=64,
+                   help="LoRA rank. Was 32 in runs 1-4. GiGPO ALFWorld-LoRA recipe "
+                        "uses 64 (verl-agent's run_alfworld_lora.sh: "
+                        "actor_rollout_ref.model.lora_rank=64). Doubling the rank "
+                        "doubles trainable adapter params (~9M -> ~18M for Qwen2.5-3B) "
+                        "but keeps the gradient checkpoint footprint roughly the same.")
+    p.add_argument("--lora-alpha", type=int, default=128,
+                   help="LoRA alpha. Kept at 2x lora_r so the effective scaling "
+                        "(alpha/r=2) matches the runs 1-4 setup (32/64 -> 64/128). "
+                        "Bumped from 64 alongside the lora_r change.")
     p.add_argument("--max-seq-length", type=int, default=4096)
     p.add_argument("--max-prompt-length", type=int, default=1536)
-    p.add_argument("--max-completion-length", type=int, default=384,
-                   help="Completion token budget. 384 fits 24 GB; bump to 512 on 30 GB.")
+    p.add_argument("--max-completion-length", type=int, default=512,
+                   help="Completion token budget. Was 384 in runs 1-4 (sized for 24GB "
+                        "A10G). Bumped to 512 to match the GiGPO recipes (Sokoban "
+                        "and ALFWorld both use max_response_length=512). 384 was a "
+                        "tight fit for the K=5 multi-action prompts and may have "
+                        "caused mid-JSON-array truncation in run 4. On a 24GB GPU pass "
+                        "--max-completion-length 384 to keep the old budget.")
     p.add_argument("--rollout-limit", type=int, default=60,
                    help="Max heuristic-rollout steps after the model's first action. "
                         "Higher = denser cumulative-reward signal but slower training step.")
