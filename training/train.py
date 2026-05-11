@@ -162,8 +162,19 @@ def _start_mem_watchdog(interval_s: int = 30) -> None:
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--model-name", default="Qwen/Qwen2.5-3B-Instruct")
-    p.add_argument("--max-steps", type=int, default=15)
-    p.add_argument("--save-steps", type=int, default=1)
+    p.add_argument("--max-steps", type=int, default=60,
+                   help="Total GRPO outer steps. Was 15 (later 40-100) in runs 1-4. "
+                        "60 is 4x the original default and fits a single ~6h DGX "
+                        "session at grad_accum=8. The paper-target ceiling is 150 "
+                        "(verl-agent's trainer.total_epochs for ALFWorld/Sokoban — "
+                        "arxiv 2505.10978); pass --max-steps 150 if you have a "
+                        "longer session available, with --save-steps 10 keeping the "
+                        "checkpoint trail reasonable.")
+    p.add_argument("--save-steps", type=int, default=10,
+                   help="Save every N steps. Was 1; with max_steps=150 that would "
+                        "produce 150 ~30MB adapters, churning Hub pushes. Save every "
+                        "10 gives 15 checkpoints across the run — enough for a "
+                        "smooth eval-history plot, fits save_total_limit=15.")
     p.add_argument("--lr", type=float, default=3e-6,
                    help="Actor LR. Was 1e-5 in runs 1-4; dropped to 3e-6 per the "
                         "GiGPO ALFWorld-LoRA recipe (arxiv 2505.10978). The web-agent "
@@ -230,7 +241,13 @@ def parse_args():
     p.add_argument("--num-scenarios", type=int, default=200)
     p.add_argument("--report-to", default="tensorboard")
     p.add_argument("--per-device-batch-size", type=int, default=1)
-    p.add_argument("--grad-accum-steps", type=int, default=4)
+    p.add_argument("--grad-accum-steps", type=int, default=8,
+                   help="Gradient accumulation. Was 4 in runs 1-4 (effective batch = "
+                        "4 prompts/step). GiGPO recipes use train_batch_size 16-32. "
+                        "We set 8 here as the realistic V100 sweet-spot: 8 prompts * "
+                        "8 generations = 64 evals/step (2x runs 1-4) without blowing "
+                        "the per-step time budget at 150 max_steps. Bump to 16+ on a "
+                        "30-GB+ A100 if a longer DGX session is acceptable.")
     # Resume / hub flags
     p.add_argument(
         "--resume-from-checkpoint", default=None,
