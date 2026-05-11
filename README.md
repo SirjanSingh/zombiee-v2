@@ -656,6 +656,62 @@ BELOW the mean and yields a real negative advantage.
 - ❌ Continue to Phase 2 (GiGPO algorithm port) if < 1.9 OR if kl stays
   pinned at 0 across all 60 steps.
 
+### Run 6 — Phase 2 GiGPO step-level advantage (implemented, on `claude/phase-2-gigpo`)
+
+GiGPO (arxiv 2505.10978) keeps GRPO's group-relative normalization
+intact and ADDS a step-level advantage from "anchor state" clustering:
+generations that landed in the same coarse state get their step rewards
+mean-subtracted within the cluster. The PPO clipped objective then sees:
+
+```
+advantage = (r - group_mean) / (group_std + 1e-4)        # GRPO part
+          + step_advantage_w * step_norm_within_cluster(r_step)
+```
+
+No critic, no value head, no PPO trajectory loop. +12% over GRPO on
+ALFWorld in the paper (Qwen2.5-3B, our model).
+
+**Files added:**
+- `training/gigpo.py` — `anchor_key_for_agent0`, `build_step_group`,
+  `step_norm_reward`, `compose_gigpo_advantages`. 200 lines, 18 unit
+  tests (`pytest tests/test_gigpo.py` runs in <10s).
+- `training/gigpo_trainer.py` — `GiGPOTrainer`, a `trl.GRPOTrainer`
+  subclass that overrides `_prepare_inputs` to inject the step advantage.
+  Single-GPU only (multi-GPU asserts).
+
+**Launch command (DGX, after `git pull` of `claude/phase-2-gigpo`):**
+```bash
+TS=$(date +%Y%m%d_%H%M%S)
+docker run --rm --gpus '"device=0"' --shm-size=16g \
+  -v "$PWD/checkpoints":/app/checkpoints \
+  -v "$PWD/training":/app/training \
+  -v "$PWD/survivecity_v2_env":/app/survivecity_v2_env \
+  -v "$HOME/.cache/huggingface":/root/.cache/huggingface \
+  -e HF_TOKEN="$HF_TOKEN" -e HUGGINGFACE_TOKEN="$HF_TOKEN" \
+  -e PYTHONUNBUFFERED=1 \
+  -e EXTRA_ARGS="--no-4bit --optim adamw_torch --prefix-actions 5 --step1-weight 1.0 --adv-estimator gigpo --step-advantage-w 1.0 --push-to-hub" \
+  survivecity-v2-dgx \
+  2>&1 | tee logs/train_run6_${TS}.log
+```
+
+**What the new `[gigpo]` log line tells you:**
+
+```
+[gigpo] step=5 n_clusters=8 mean_size=8.0 singleton_frac=0.0 step_adv_std=0.42
+```
+
+- `mean_size` close to `num_generations` (8) early on means same-seed
+  prompts cluster together → strongest step signal.
+- `singleton_frac` rising mid-training means the trained policy is
+  diverging away from a shared state → less step signal, more
+  episode signal. Both are healthy.
+- `step_adv_std` close to 0 across consecutive steps would mean the
+  step term is silent — bump `--step-advantage-w` up.
+
+**Go/no-go after run 6 (plan 11 §5/Phase 2):**
+- ✅ Phase 2 wins if `mean_alive_at_end ≥ 2.2` (heuristic + 0.6).
+- ❌ Continue to Phase 3 (SFT bootstrap from heuristic) if < 2.2.
+
 ---
 
 ## What changed vs v1
