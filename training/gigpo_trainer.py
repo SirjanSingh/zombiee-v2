@@ -63,7 +63,7 @@ from typing import Any, Optional, Union
 import torch
 import torch.nn as nn
 
-from training.gigpo import compose_gigpo_advantages
+from training.gigpo import compose_gigpo_advantages_multistep
 
 logger = logging.getLogger("survivecity_v2.gigpo_trainer")
 
@@ -325,20 +325,22 @@ def make_gigpo_trainer_class():
                 and self.step_advantage_w > 0
                 and len(self.gigpo_side_channel) == n_local
             ):
-                anchor_keys = [t[0] for t in self.gigpo_side_channel]
-                step_rewards = torch.tensor(
-                    [t[1] for t in self.gigpo_side_channel],
-                    dtype=advantages.dtype, device=advantages.device,
-                )
+                # Each side-channel entry is a LIST of (anchor, step_reward)
+                # tuples — one per model action that generation took. The
+                # multistep compose pools ALL (generation, step) entries and
+                # clusters them by (prompt, anchor) so the same state visited at
+                # different turns across different trajectories forms one
+                # step-level group (GiGPO's core mechanism), then reduces the
+                # per-step advantages back to one scalar per generation.
+                per_gen_steps = list(self.gigpo_side_channel)
                 # Prompt index: which GRPO group this generation belongs to.
                 # In GRPOTrainer, completions are laid out as
                 # [p0_g0, p0_g1, ..., p0_g{G-1}, p1_g0, ...], so
                 # prompt_idx[i] = i // num_generations.
                 prompt_index = [i // self.num_generations for i in range(n_local)]
-                combined, diag = compose_gigpo_advantages(
+                combined, diag = compose_gigpo_advantages_multistep(
                     episode_advantages=advantages,
-                    step_rewards=step_rewards,
-                    anchor_keys=anchor_keys,
+                    per_gen_steps=per_gen_steps,
                     prompt_index=prompt_index,
                     step_advantage_w=self.step_advantage_w,
                     remove_std=self.gigpo_remove_std,
@@ -349,8 +351,10 @@ def make_gigpo_trainer_class():
                     self._metrics.setdefault("gigpo/mean_cluster_size", []).append(diag["mean_size"])
                     self._metrics.setdefault("gigpo/singleton_frac", []).append(diag["singleton_frac"])
                     self._metrics.setdefault("gigpo/step_adv_std", []).append(diag["step_adv_std"])
+                    self._metrics.setdefault("gigpo/n_step_entries", []).append(diag["n_step_entries"])
                     logger.info(
                         f"[gigpo] step={self.state.global_step} "
+                        f"n_step_entries={diag['n_step_entries']} "
                         f"n_clusters={diag['n_clusters']} "
                         f"mean_size={diag['mean_size']} "
                         f"singleton_frac={diag['singleton_frac']} "

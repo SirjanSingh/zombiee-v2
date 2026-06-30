@@ -264,8 +264,11 @@ def parse_args():
     p.add_argument(
         "--gigpo-zscore", dest="gigpo_remove_std", action="store_false",
         help="Use mean_std_norm (z-score) for step advantage instead of "
-             "mean_norm. The paper notes this is task-dependent; mean_norm "
-             "tends to be safer.")
+             "mean_norm. RECOMMENDED for SurviveCity v2: a CPU probe showed "
+             "this env's per-step raw_reward is tiny, so mean_norm yields a "
+             "step advantage ~0.001 (negligible vs GRPO's unit-scale episode "
+             "advantage), while z-score yields ~0.83 (comparable). Without "
+             "this flag the GiGPO step term is effectively off on this env.")
     # ---- v2.1 metrics + safety-push flags -------------------------------
     p.add_argument(
         "--metrics-file", default=None,
@@ -494,12 +497,12 @@ def create_reward_fn(
                 )
                 env = SurviveCityV2Env()
                 obs = env.reset(seed=ep_seed)
-                # Snapshot the anchor key BEFORE any model action so step-level
-                # clustering can compare "8 ways the model handled the same
-                # starting situation" within a GRPO group. With same-seed
-                # prompts across the group's 8 generations, this anchor is
-                # identical for all 8 → cluster size 8 → strongest GiGPO signal.
-                first_anchor = anchor_key_for_agent0(obs)
+                # NOTE: the GiGPO anchor is captured per model step inside the
+                # rollout loop below (at each action's pre-state), NOT here at
+                # reset. The reset state is constant across a same-seed GRPO
+                # group, so a reset-only anchor collapses every group into one
+                # cluster and reduces GiGPO to GRPO. See memory
+                # `gigpo-anchor-inert-finding`.
 
                 # parse_actions returns a list. With prefix_actions=1 it
                 # behaves like the old parse_action (single object → 1-elem
@@ -535,14 +538,24 @@ def create_reward_fn(
                 steps = 0
                 model_actions_used = 0
                 model_step_raws: list[float] = []
+                # GiGPO per-step entries: one (anchor_key, step_reward) per model
+                # action, where the anchor is snapshotted at the PRE-action state
+                # of that step. This is what enables cross-time anchor-state
+                # grouping — two trajectories that act from the same state at
+                # different turns get compared. Capturing only the reset anchor
+                # (the old design) collapsed every GRPO group into one cluster.
+                model_step_entries: list[tuple] = []
                 while not obs.get("done", False) and steps < rollout_limit:
                     aid = obs.get("metadata", {}).get("current_agent_id", 0)
                     if aid == 0 and model_actions_used < prefix_actions:
+                        # Snapshot the anchor BEFORE applying this model action.
+                        pre_anchor = anchor_key_for_agent0(obs)
                         act = parsed_list[model_actions_used]
                         model_actions_used += 1
                         obs = env.step(act)
                         step_raw = obs.get("metadata", {}).get("raw_reward", 0.0)
                         model_step_raws.append(step_raw)
+                        model_step_entries.append((pre_anchor, float(step_raw)))
                         # Capture rubric breakdown of the FIRST model action only
                         # so existing metrics dashboards stay comparable.
                         if len(model_step_raws) == 1:
@@ -580,15 +593,14 @@ def create_reward_fn(
                 )
                 rewards.append(float(composite))
                 rollout_lens.append(steps)
-                # GiGPO side-channel: anchor key from the pre-first-action
-                # state, step reward = the immediate reward of the first
-                # model action. If the model didn't get to act (done at
-                # reset, vanishingly rare), step reward defaults to 0.0
-                # which puts this generation at the cluster mean and
-                # contributes 0 advantage either way.
+                # GiGPO side-channel: the FULL list of this generation's
+                # (anchor, step_reward) entries — one per model action taken.
+                # The trainer pools these across all generations and clusters
+                # by (prompt, anchor) for cross-time step-level advantages
+                # (see compose_gigpo_advantages_multistep). An empty list (the
+                # model never got to act) contributes 0 step advantage.
                 if gigpo_side_channel is not None:
-                    step_r = float(model_step_raws[0]) if model_step_raws else 0.0
-                    gigpo_side_channel.append((first_anchor, step_r))
+                    gigpo_side_channel.append(list(model_step_entries))
             except Exception as e:
                 state["errors"] += 1
                 if state["errors"] <= 5 or state["errors"] % 50 == 0:
@@ -603,11 +615,10 @@ def create_reward_fn(
                     action_types.append("ERROR")
                 rollout_lens.append(0)
                 # Keep the side channel size-aligned even on the error path.
-                # Sentinel anchor "ERROR" keeps this entry in its own
-                # singleton cluster → 0 step advantage, which is what we
-                # want for an undefined trajectory.
+                # An empty step list contributes 0 step advantage, which is
+                # what we want for an undefined/errored trajectory.
                 if gigpo_side_channel is not None:
-                    gigpo_side_channel.append(("ERROR", 0.0))
+                    gigpo_side_channel.append([])
 
         # Diagnostics — this is the line you tail in the log to see learning.
         # Guard against empty `rewards` (TRL shouldn't call us with n=0 but we
@@ -1230,6 +1241,15 @@ def main():
     gigpo_side_channel: Optional[list] = (
         [] if args.adv_estimator == "gigpo" else None
     )
+    if args.adv_estimator == "gigpo" and args.prefix_actions <= 1:
+        logger.warning(
+            "[adv-estimator] gigpo with --prefix-actions=1 is INERT: there is "
+            "only one model step per trajectory and its anchor is the constant "
+            "reset state, so every GRPO group collapses to one cluster and "
+            "GiGPO reduces to GRPO. Use --prefix-actions 5 (or more) to give "
+            "GiGPO a step sequence with cross-time anchor matching. See memory "
+            "gigpo-anchor-inert-finding."
+        )
 
     reward_fn = create_reward_fn(
         rollout_limit=args.rollout_limit,
