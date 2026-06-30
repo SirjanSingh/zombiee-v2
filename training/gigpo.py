@@ -45,24 +45,34 @@ logger = logging.getLogger("survivecity_v2.gigpo")
 # ---------------------------------------------------------------------------
 
 def anchor_key_for_agent0(obs: dict) -> str:
-    """Build a coarse, hashable key describing agent-0's state.
+    """Build a hashable key describing agent-0's state for step-level grouping.
 
-    The full observation text is too unique — every grid configuration is
-    a slightly different string and no two trajectories cluster. We
-    discretise into the dimensions that actually matter for credit
-    assignment:
+    Design (revised 2026-06 — see memory `gigpo-anchor-inert-finding`):
 
-        - step bucket (5-step granularity — fine enough to separate "before
-          first wave" from "after first wave" without exploding cardinality)
-        - agent-0 quadrant on the 15x15 grid (2x2 quadrants)
-        - HP (already 0-3)
-        - hunger bucket (4 buckets of size 4: 0-3, 4-7, 8-11, 12-15)
-        - thirst bucket (same scheme)
+    The original key was too COARSE (2x2 quadrant, hunger//4) AND keyed on a
+    step bucket. Combined with the reward fn snapshotting the anchor only at
+    env.reset() (a constant spawn state), every generation in a GRPO group fell
+    into ONE cluster and GiGPO degenerated to GRPO. A CPU probe over the real
+    env showed that an *exploring* policy diverges to 4-6 distinct fine states
+    by model-turn 4, but the coarse key collapsed them to 2-3. So we refine:
+
+        - agent-0 EXACT (row, col)   — captures the movement that actually
+          differs between trajectories in the early game.
+        - HP (0-3)
+        - hunger half-bucket (//2)   — finer than the old //4.
+        - thirst half-bucket (//2)
         - inside-safehouse boolean
         - day/night phase
 
-    Total cardinality ≤ 20 * 4 * 4 * 4 * 4 * 2 * 2 ≈ 20k. Empirically the
-    cluster average we want is ~2-3 (paper reports 2.4 on ALFWorld).
+    Crucially there is **no step bucket**. Two trajectories that visit the same
+    cell with the same survival stats at *different* timesteps now land in the
+    same step-level group — that cross-time matching is the core of GiGPO's
+    "anchor state grouping". Genuinely different situations are still separated
+    because hunger/thirst (which monotonically rise with time) are in the key.
+
+    This key is only meaningful when the reward fn captures it at EACH model
+    step's pre-action state (not once at reset) and the run uses
+    `--prefix-actions K>1`. See `compose_gigpo_advantages_multistep`.
 
     Args:
         obs: env observation dict (output of env.reset() or env.step()).
@@ -80,19 +90,16 @@ def anchor_key_for_agent0(obs: dict) -> str:
         # Defensive: if A0 isn't in obs (dead, mid-respawn), bucket as a sentinel.
         return "NO_A0"
 
-    step = obs.get("step_count", 0)
-    step_bucket = step // 5
     row, col = a0.get("row", 0), a0.get("col", 0)
-    quadrant = (row // 8, col // 8)  # 0..1, 0..1 → 4 quadrants
     hp = a0.get("hp", 3)
-    hunger_bucket = min(a0.get("hunger", 0) // 4, 3)
-    thirst_bucket = min(a0.get("thirst", 0) // 4, 3)
+    hunger_bucket = min(a0.get("hunger", 0) // 2, 7)
+    thirst_bucket = min(a0.get("thirst", 0) // 2, 7)
     in_safe = (6 <= row <= 8) and (6 <= col <= 8)
     metadata = obs.get("metadata") or {}
     day_phase = metadata.get("day_phase", "day")
 
     return (
-        f"sb={step_bucket}|q={quadrant[0]}{quadrant[1]}|hp={hp}"
+        f"r={row}|c={col}|hp={hp}"
         f"|h={hunger_bucket}|t={thirst_bucket}|s={int(in_safe)}|d={day_phase[0]}"
     )
 
@@ -256,4 +263,107 @@ def compose_gigpo_advantages(
     diag["step_adv_mean"] = float(step_adv.mean().item())
     diag["step_adv_std"] = float(step_adv.std(unbiased=False).item()) if step_adv.numel() > 1 else 0.0
     diag["step_advantage_w"] = step_advantage_w
+    return combined, diag
+
+
+# ---------------------------------------------------------------------------
+# Multi-step entry point — the one that actually implements GiGPO's mechanism
+# ---------------------------------------------------------------------------
+
+def compose_gigpo_advantages_multistep(
+    episode_advantages: torch.Tensor,
+    per_gen_steps: Sequence[Sequence[tuple]],
+    prompt_index: Sequence[int],
+    step_advantage_w: float = 1.0,
+    remove_std: bool = True,
+    step_reduce: str = "sum",
+) -> tuple[torch.Tensor, dict]:
+    """GiGPO step-level advantage over MULTIPLE model steps per generation.
+
+    This is the faithful version of GiGPO's "anchor state grouping": every
+    (generation, model-step) pair is one entry, ALL entries are pooled, and
+    entries that share a (prompt, anchor) land in the same step-level group —
+    so an action taken from state X at step 2 of trajectory i is compared
+    against an action taken from the *same* state X at step 4 of trajectory j.
+    That cross-time, cross-trajectory comparison is the whole point, and it is
+    impossible with the single-anchor-at-reset shape of
+    `compose_gigpo_advantages` (which degenerates to GRPO when every
+    generation in a group shares the same reset anchor).
+
+    The per-(gen,step) step advantages are then reduced back to ONE scalar per
+    generation (our completions carry a single GRPO advantage each, since the
+    whole K-action plan is one completion), and added to the episode advantage.
+
+    Args:
+        episode_advantages: shape (N,) — TRL's within-group normalised reward.
+        per_gen_steps: length-N sequence; entry i is a list of
+            (anchor_key, step_reward) tuples, one per model action that
+            generation i actually took. May be empty (generation errored or
+            never got to act) — such a generation gets step advantage 0.
+        prompt_index: length-N — which GRPO prompt group each generation is in.
+        step_advantage_w: weight on the aggregated step term. Paper default 1.0.
+        remove_std: passed to `step_norm_reward` (mean-subtract vs z-score).
+        step_reduce: how to collapse a generation's per-step advantages into a
+            single scalar — "sum" (default; more steps → more signal) or
+            "mean" (length-normalised, stops long survivors dominating).
+
+    Returns:
+        (combined_advantages, diagnostics).
+    """
+    n = episode_advantages.shape[0]
+    assert len(per_gen_steps) == n, (
+        f"per_gen_steps ({len(per_gen_steps)}) must match episode_advantages ({n})"
+    )
+    assert len(prompt_index) == n, (
+        f"prompt_index ({len(prompt_index)}) must match episode_advantages ({n})"
+    )
+    assert step_reduce in ("sum", "mean"), f"bad step_reduce={step_reduce}"
+
+    # Flatten every (generation, model-step) into a pooled entry list.
+    flat_anchor: list[str] = []
+    flat_reward: list[float] = []
+    flat_owner: list[int] = []   # which generation each flat entry belongs to
+    for gi, steps in enumerate(per_gen_steps):
+        for entry in steps:
+            anchor, step_r = entry
+            flat_anchor.append(anchor)
+            flat_reward.append(float(step_r))
+            flat_owner.append(gi)
+
+    per_gen_step_adv = torch.zeros(
+        n, dtype=episode_advantages.dtype, device=episode_advantages.device,
+    )
+
+    if flat_anchor:
+        flat_prompt = [prompt_index[o] for o in flat_owner]
+        cluster_ids = build_step_group(flat_anchor, flat_prompt)
+        flat_step_adv = step_norm_reward(
+            torch.tensor(flat_reward, dtype=torch.float32),
+            cluster_ids,
+            remove_std=remove_std,
+        ).to(dtype=episode_advantages.dtype, device=episode_advantages.device)
+
+        # Reduce per-(gen,step) advantages back to one scalar per generation.
+        counts = torch.zeros(n, device=episode_advantages.device)
+        for adv_val, gi in zip(flat_step_adv, flat_owner):
+            per_gen_step_adv[gi] += adv_val
+            counts[gi] += 1
+        if step_reduce == "mean":
+            per_gen_step_adv = per_gen_step_adv / counts.clamp(min=1.0)
+
+        diag = cluster_size_summary(cluster_ids)
+        diag["n_step_entries"] = len(flat_anchor)
+        diag["step_adv_std"] = (
+            float(flat_step_adv.std(unbiased=False).item())
+            if flat_step_adv.numel() > 1 else 0.0
+        )
+    else:
+        diag = cluster_size_summary([])
+        diag["n_step_entries"] = 0
+        diag["step_adv_std"] = 0.0
+
+    combined = episode_advantages + step_advantage_w * per_gen_step_adv
+    diag["step_adv_mean"] = float(per_gen_step_adv.mean().item())
+    diag["step_advantage_w"] = step_advantage_w
+    diag["step_reduce"] = step_reduce
     return combined, diag

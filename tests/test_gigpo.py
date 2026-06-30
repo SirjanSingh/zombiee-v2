@@ -15,6 +15,7 @@ from training.gigpo import (
     build_step_group,
     cluster_size_summary,
     compose_gigpo_advantages,
+    compose_gigpo_advantages_multistep,
     step_norm_reward,
 )
 
@@ -47,17 +48,17 @@ def test_anchor_key_is_deterministic():
     assert anchor_key_for_agent0(obs) == anchor_key_for_agent0(obs)
 
 
-def test_anchor_key_differs_on_step_bucket_change():
-    # Step 0 and step 4 same bucket; step 5 different bucket.
-    assert anchor_key_for_agent0(_mk_obs(step=0)) == anchor_key_for_agent0(_mk_obs(step=4))
-    assert anchor_key_for_agent0(_mk_obs(step=0)) != anchor_key_for_agent0(_mk_obs(step=5))
+def test_anchor_key_ignores_step():
+    # Revised design: NO step bucket. The same position/stats at different
+    # timesteps yield the SAME key — this is what enables GiGPO's cross-time
+    # anchor-state matching (same state visited at different turns clusters).
+    assert anchor_key_for_agent0(_mk_obs(step=0)) == anchor_key_for_agent0(_mk_obs(step=9))
 
 
-def test_anchor_key_differs_on_quadrant_change():
-    # Quadrant is row//8, col//8 — rows 0-7 vs 8-14.
-    k_top = anchor_key_for_agent0(_mk_obs(row=3, col=3))
-    k_bot = anchor_key_for_agent0(_mk_obs(row=10, col=3))
-    assert k_top != k_bot
+def test_anchor_key_differs_on_position():
+    # Exact position now: even a one-cell move changes the key.
+    assert anchor_key_for_agent0(_mk_obs(row=3, col=3)) != anchor_key_for_agent0(_mk_obs(row=10, col=3))
+    assert anchor_key_for_agent0(_mk_obs(row=3, col=3)) != anchor_key_for_agent0(_mk_obs(row=3, col=4))
 
 
 def test_anchor_key_handles_missing_agent0():
@@ -67,10 +68,10 @@ def test_anchor_key_handles_missing_agent0():
 
 
 def test_anchor_key_buckets_hunger():
-    # Hunger 0, 3 → bucket 0. Hunger 4, 7 → bucket 1. Hunger 12, 15 → bucket 3.
-    assert anchor_key_for_agent0(_mk_obs(hunger=0)) == anchor_key_for_agent0(_mk_obs(hunger=3))
-    assert anchor_key_for_agent0(_mk_obs(hunger=4)) == anchor_key_for_agent0(_mk_obs(hunger=7))
-    assert anchor_key_for_agent0(_mk_obs(hunger=0)) != anchor_key_for_agent0(_mk_obs(hunger=4))
+    # Revised: hunger //2 buckets. 0,1 → bucket 0. 2,3 → bucket 1.
+    assert anchor_key_for_agent0(_mk_obs(hunger=0)) == anchor_key_for_agent0(_mk_obs(hunger=1))
+    assert anchor_key_for_agent0(_mk_obs(hunger=2)) == anchor_key_for_agent0(_mk_obs(hunger=3))
+    assert anchor_key_for_agent0(_mk_obs(hunger=0)) != anchor_key_for_agent0(_mk_obs(hunger=2))
 
 
 # ---------------------------------------------------------------------------
@@ -208,5 +209,81 @@ def test_compose_gigpo_dtype_device_preserved():
     step_r = torch.tensor([1.0, 3.0])
     out, _ = compose_gigpo_advantages(
         ep_adv, step_r, ["A", "A"], [0, 0], step_advantage_w=1.0,
+    )
+    assert out.dtype == torch.float64
+
+
+# ---------------------------------------------------------------------------
+# compose_gigpo_advantages_multistep — the real GiGPO mechanism
+# ---------------------------------------------------------------------------
+
+def test_multistep_all_empty_is_pure_episode():
+    # No model steps recorded (e.g. errored gens) → step advantage 0.
+    ep = torch.tensor([0.5, -0.3])
+    out, diag = compose_gigpo_advantages_multistep(
+        ep, [[], []], [0, 0], step_advantage_w=1.0,
+    )
+    assert torch.allclose(out, ep)
+    assert diag["n_step_entries"] == 0
+
+
+def test_multistep_zero_weight_is_pure_episode():
+    ep = torch.tensor([0.5, -0.3])
+    per_gen = [[("X", 1.0)], [("X", 5.0)]]
+    out, _ = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 0], step_advantage_w=0.0,
+    )
+    assert torch.allclose(out, ep)
+
+
+def test_multistep_cross_time_clustering():
+    # The core property: anchor X appears at step 0 of gen0 AND step 1 of gen1.
+    # They must land in the SAME step-level cluster despite different turns.
+    #   X cluster rewards [1.0(gen0), 3.0(gen1)] → mean 2 → advs [-1, +1]
+    #   Y cluster rewards [2.0(gen0), 4.0(gen1)] → mean 3 → advs [-1, +1]
+    #   per-gen sum: gen0 = -1 + -1 = -2 ; gen1 = +1 + +1 = +2
+    ep = torch.zeros(2)
+    per_gen = [[("X", 1.0), ("Y", 2.0)], [("Y", 4.0), ("X", 3.0)]]
+    out, diag = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 0], step_advantage_w=1.0,
+    )
+    assert torch.allclose(out, torch.tensor([-2.0, 2.0]))
+    assert diag["n_clusters"] == 2
+    assert diag["n_step_entries"] == 4
+    assert diag["mean_size"] == 2.0
+
+
+def test_multistep_different_prompts_dont_cluster():
+    # Same anchor X but different GRPO prompts → singletons → 0 advantage.
+    ep = torch.zeros(2)
+    per_gen = [[("X", 1.0)], [("X", 5.0)]]
+    out, _ = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 1], step_advantage_w=1.0,
+    )
+    assert torch.allclose(out, torch.zeros(2))
+
+
+def test_multistep_sum_vs_mean_reduce():
+    # gen0 contributes to BOTH the X and Y clusters (2 steps); gens 1,2 one each.
+    #   X cluster [0.0(g0), 4.0(g1)] → mean 2 → [-2, +2]
+    #   Y cluster [0.0(g0), 4.0(g2)] → mean 2 → [-2, +2]
+    #   gen0 per-step advs = [-2(X), -2(Y)] ; sum=-4, mean=-2
+    ep = torch.zeros(3)
+    per_gen = [[("X", 0.0), ("Y", 0.0)], [("X", 4.0)], [("Y", 4.0)]]
+    out_sum, _ = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 0, 0], step_advantage_w=1.0, step_reduce="sum",
+    )
+    out_mean, _ = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 0, 0], step_advantage_w=1.0, step_reduce="mean",
+    )
+    assert torch.allclose(out_sum, torch.tensor([-4.0, 2.0, 2.0]))
+    assert torch.allclose(out_mean, torch.tensor([-2.0, 2.0, 2.0]))
+
+
+def test_multistep_dtype_preserved():
+    ep = torch.zeros(2, dtype=torch.float64)
+    per_gen = [[("X", 1.0)], [("X", 3.0)]]
+    out, _ = compose_gigpo_advantages_multistep(
+        ep, per_gen, [0, 0], step_advantage_w=1.0,
     )
     assert out.dtype == torch.float64
