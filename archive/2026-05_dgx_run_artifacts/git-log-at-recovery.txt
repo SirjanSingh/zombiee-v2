@@ -1,0 +1,44 @@
+628b093 2026-07-01 12:29:35 +0100 docs: session notes — GiGPO anchor fix (12_GIGPO_ANCHOR_FIX_SESSION.md)
+5c8b8bf 2026-06-30 16:46:34 +0100 train: wire per-step GiGPO capture + consume multistep advantage
+08a20a5 2026-06-30 16:46:10 +0100 gigpo: real step-level credit assignment (per-step anchors + multistep compose)
+0193abb 2026-05-11 23:53:08 +0530 docs: README — Phase 2 / Run 6 GiGPO launch section
+a86f5b4 2026-05-11 23:50:50 +0530 train: wire --adv-estimator gigpo (side channel + trainer swap)
+3db47b5 2026-05-11 23:47:37 +0530 gigpo: GiGPOTrainer subclass with step-advantage hook
+dcc1739 2026-05-11 23:45:02 +0530 gigpo: port advantage math from verl-agent/gigpo/core_gigpo.py
+5c82365 2026-05-11 23:36:31 +0530 docs: README — add Run 5 / Phase 1 launch section
+c0029a2 2026-05-11 23:34:07 +0530 docs: refresh train.py module docstring with Phase 1 / v2.3 defaults
+33d657a 2026-05-11 23:33:22 +0530 reward: add invalid_action_penalty, flip format_bonus default to 0
+2e1bcd1 2026-05-11 23:32:14 +0530 hyperparams: bump LoRA r 32->64, alpha 64->128, max_compl 384->512
+e0f871b 2026-05-11 23:31:40 +0530 hyperparams: bump max_steps 15->60, save_steps 1->10, grad_accum 4->8
+318f094 2026-05-11 23:30:09 +0530 hyperparams: drop LR 1e-5 -> 3e-6 and beta 0.04 -> 0.01
+6b2ae2b 2026-05-11 23:29:25 +0530 plan: research-backed pivot from PPO to GiGPO + hyperparam fix
+7ee589d 2026-05-11 04:36:50 +0530 docs: README — recruiter-friendly TL;DR + 4-run results + postmortem at top
+66ae656 2026-05-10 17:47:30 +0530 eval: surface partial-credit metrics (mean_alive, pct_reached_step_30)
+33e1df9 2026-05-10 17:34:46 +0530 heuristic: forage at threshold 4 + mirror inner-ring cells
+741f4b6 2026-05-10 17:34:30 +0530 layout: add inner-ring food/water (12 food, 8 water)
+a91ce77 2026-05-10 17:02:27 +0530 heuristic: rewrite forage_heuristic_action — no random walk, default to safehouse
+36b6cbd 2026-05-10 16:37:58 +0530 eval: support multi-action policy + heuristic-others mode
+01b7c16 2026-05-10 13:00:12 +0530 docs: README — v2.2 multi-action GRPO + run 3 results + run 4 plan
+6e8fc43 2026-05-10 12:52:20 +0530 prompts: array-format template when prefix_actions>1
+09a4717 2026-05-10 12:50:14 +0530 train: K-action prefix rollout via --prefix-actions (default K=1)
+48c0e4c 2026-05-10 12:46:17 +0530 inference: add parse_actions for multi-action JSON arrays
+d64ebb7 2026-05-10 12:32:28 +0530 metrics: log reward_std + completion_length + kl in [metrics] line
+41074ec 2026-05-10 04:43:36 +0530 fix: update README with post-run-2 fixes for parse_action and scan_economy_reward
+95b3d57 2026-05-10 02:06:04 +0530 rubric: forage_shaping fires at hunger>=1, scales linearly with urgency
+4f34535 2026-05-09 17:13:12 +0530 rubric: flat per-scan cost so scan_economy fires under single-action GRPO
+1e814d4 2026-05-09 15:41:13 +0530 env+training: close scan-spam exploit and parse_action substring bug
+2761f58 2026-04-30 12:29:21 +0530 eval: add tqdm + per-episode + heartbeat logging for trained policy
+d99b65c 2026-04-30 11:54:14 +0530 added 100train plots
+702b022 2026-04-30 11:38:06 +0530 added 100train logs
+b8c55eb 2026-04-30 01:54:12 +0530 env: change vote phases from 30/60/90 to 30/50/70/90
+1255675 2026-04-28 18:42:09 +0530 added val results dgx
+11970e8 2026-04-28 15:00:03 +0530 env: throttle [v2 STEP] logging to ~10 lines/episode
+bdac2cb 2026-04-28 08:59:10 +0530 logs 2
+e75ade3 2026-04-28 01:54:00 +0530 created log files
+2cc3226 2026-04-28 00:43:39 +0530 Add per-device batch size option to Dockerfile
+2c3a232 2026-04-27 08:15:50 +0530 Update save steps and total limit in Dockerfile
+06d530f 2026-04-26 23:40:11 +0530 fix(spaces): training Dockerfile must live at repo root
+2f2b995 2026-04-26 22:03:00 +0530 Merge initial HF Space commit (preserve .gitattributes)
+245dd3f 2026-04-26 21:52:17 +0530 v2.1: reward-fix revision + metrics/plots/HF-Spaces deployment
+d5e5409 2026-04-26 16:44:56 +0530 initialcommit
+2ed1628 2026-04-26 09:35:28 +0000 initial commit

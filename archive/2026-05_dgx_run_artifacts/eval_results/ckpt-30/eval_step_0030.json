@@ -1,0 +1,993 @@
+{
+  "version": "v2",
+  "eval_step": 30,
+  "timestamp_utc": "2026-04-30T08:23:24.586000+00:00",
+  "config": {
+    "model_name": "Qwen/Qwen2.5-3B-Instruct",
+    "lora_path": "/app/checkpoints/checkpoint-30",
+    "revision": null,
+    "baseline_episodes": 20,
+    "trained_episodes": 5,
+    "seed": 42,
+    "max_new_tokens": 96,
+    "trained_is_real": true
+  },
+  "baseline_aggregate": {
+    "n_episodes": 20,
+    "survival_rate": 0.0,
+    "n_survivors": 0,
+    "mean_total_reward": 1.0635000000000008,
+    "min_total_reward": 0.9720000000000006,
+    "max_total_reward": 1.1200000000000008,
+    "std_total_reward": 0.04123807642662814,
+    "mean_episode_length": 16.85,
+    "std_episode_length": 1.1821033884786187,
+    "vote_phase_accuracy": {
+      "30": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "50": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "70": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "90": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      }
+    },
+    "medication_roi": null,
+    "n_inject_total": 0,
+    "n_inject_correct": 0,
+    "infection_containment_rate": 1.0,
+    "infection_isolation_rate": 0.85,
+    "parse_failure_rate": 0.0,
+    "actions_called_total": 1406,
+    "mean_broadcasts_per_episode": 0.0
+  },
+  "trained_aggregate": {
+    "n_episodes": 5,
+    "survival_rate": 0.0,
+    "n_survivors": 0,
+    "mean_total_reward": 0.8688000000000006,
+    "min_total_reward": 0.8400000000000005,
+    "max_total_reward": 0.8840000000000006,
+    "std_total_reward": 0.0179220534537759,
+    "mean_episode_length": 18.0,
+    "std_episode_length": 0.0,
+    "vote_phase_accuracy": {
+      "30": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "50": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "70": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      },
+      "90": {
+        "mean": null,
+        "n_episodes_with_votes": 0
+      }
+    },
+    "medication_roi": null,
+    "n_inject_total": 0,
+    "n_inject_correct": 0,
+    "infection_containment_rate": 1.0,
+    "infection_isolation_rate": 1.0,
+    "parse_failure_rate": 0.0,
+    "actions_called_total": 340,
+    "mean_broadcasts_per_episode": 0.0
+  },
+  "baseline_records": [
+    {
+      "seed": 670487,
+      "steps": 15,
+      "actions_called": 69,
+      "parse_failures": 0,
+      "total_reward": 1.0500000000000007,
+      "done": true,
+      "n_alive_final": 1,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        4
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": false,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 4,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 240174,
+      "steps": 14,
+      "actions_called": 61,
+      "parse_failures": 0,
+      "total_reward": 0.9720000000000006,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 920659,
+      "steps": 16,
+      "actions_called": 65,
+      "parse_failures": 0,
+      "total_reward": 1.0100000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 261941,
+      "steps": 17,
+      "actions_called": 72,
+      "parse_failures": 0,
+      "total_reward": 1.0800000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        4
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 874244,
+      "steps": 16,
+      "actions_called": 73,
+      "parse_failures": 0,
+      "total_reward": 1.0900000000000007,
+      "done": true,
+      "n_alive_final": 1,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        2,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": false,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 4,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 417821,
+      "steps": 18,
+      "actions_called": 68,
+      "parse_failures": 0,
+      "total_reward": 1.0400000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 256736,
+      "steps": 17,
+      "actions_called": 71,
+      "parse_failures": 0,
+      "total_reward": 1.0700000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        3,
+        4
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 457007,
+      "steps": 18,
+      "actions_called": 74,
+      "parse_failures": 0,
+      "total_reward": 1.1040000000000008,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 454582,
+      "steps": 18,
+      "actions_called": 71,
+      "parse_failures": 0,
+      "total_reward": 1.0700000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        1
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 238533,
+      "steps": 17,
+      "actions_called": 71,
+      "parse_failures": 0,
+      "total_reward": 1.0700000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        2,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 952538,
+      "steps": 17,
+      "actions_called": 67,
+      "parse_failures": 0,
+      "total_reward": 1.0300000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        2
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 459398,
+      "steps": 18,
+      "actions_called": 75,
+      "parse_failures": 0,
+      "total_reward": 1.1100000000000008,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        1
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 657246,
+      "steps": 16,
+      "actions_called": 63,
+      "parse_failures": 0,
+      "total_reward": 0.9900000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        2
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 954851,
+      "steps": 17,
+      "actions_called": 73,
+      "parse_failures": 0,
+      "total_reward": 1.0900000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        1
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 874190,
+      "steps": 15,
+      "actions_called": 68,
+      "parse_failures": 0,
+      "total_reward": 1.0400000000000007,
+      "done": true,
+      "n_alive_final": 1,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        2
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": false,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 4,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 719425,
+      "steps": 18,
+      "actions_called": 72,
+      "parse_failures": 0,
+      "total_reward": 1.0840000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        2
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 6402,
+      "steps": 18,
+      "actions_called": 68,
+      "parse_failures": 0,
+      "total_reward": 1.0400000000000007,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 743963,
+      "steps": 18,
+      "actions_called": 76,
+      "parse_failures": 0,
+      "total_reward": 1.1200000000000008,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        3,
+        4
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 259778,
+      "steps": 17,
+      "actions_called": 75,
+      "parse_failures": 0,
+      "total_reward": 1.1100000000000008,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 856572,
+      "steps": 17,
+      "actions_called": 74,
+      "parse_failures": 0,
+      "total_reward": 1.1000000000000008,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        2,
+        4
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    }
+  ],
+  "trained_records": [
+    {
+      "seed": 70132,
+      "steps": 18,
+      "actions_called": 68,
+      "parse_failures": 0,
+      "total_reward": 0.8840000000000006,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        1
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 361056,
+      "steps": 18,
+      "actions_called": 69,
+      "parse_failures": 0,
+      "total_reward": 0.8740000000000006,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 433316,
+      "steps": 18,
+      "actions_called": 68,
+      "parse_failures": 0,
+      "total_reward": 0.8640000000000005,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        2,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 978659,
+      "steps": 18,
+      "actions_called": 65,
+      "parse_failures": 0,
+      "total_reward": 0.8400000000000005,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        0,
+        3
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    },
+    {
+      "seed": 115872,
+      "steps": 18,
+      "actions_called": 70,
+      "parse_failures": 0,
+      "total_reward": 0.8820000000000006,
+      "done": true,
+      "n_alive_final": 0,
+      "n_healthy_alive_final": 0,
+      "n_zombies_final": 3,
+      "starting_infected": [
+        1,
+        2
+      ],
+      "currently_infected_final": 2,
+      "infection_chain_length": 0,
+      "starting_infected_neutralised": true,
+      "lockout_results": {},
+      "vote_phase_accuracy": {
+        "30": null,
+        "50": null,
+        "70": null,
+        "90": null
+      },
+      "n_inject_actions": 0,
+      "n_inject_correct": 0,
+      "medication_roi": null,
+      "n_broadcasts": 0,
+      "n_postmortems": 5,
+      "survived": false,
+      "wave_survivors": {
+        "25": null,
+        "50": null,
+        "75": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-05-09 18:28:02,044 INFO Baseline: 20 episodes (random policy)
+2026-05-09 18:28:02,044 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-05-09 18:28:02,072 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-6.484
+2026-05-09 18:28:02,073 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-05-09 18:28:02,097 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.465
+2026-05-09 18:28:02,097 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-05-09 18:28:02,123 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.575
+2026-05-09 18:28:02,124 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-05-09 18:28:02,152 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-8.233
+2026-05-09 18:28:02,152 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-05-09 18:28:02,181 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-6.222
+2026-05-09 18:28:02,182 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-05-09 18:28:02,208 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.566
+2026-05-09 18:28:02,209 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-05-09 18:28:02,236 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.480
+2026-05-09 18:28:02,236 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-05-09 18:28:02,267 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.584
+2026-05-09 18:28:02,268 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-05-09 18:28:02,295 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.415
+2026-05-09 18:28:02,296 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-05-09 18:28:02,324 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.716
+2026-05-09 18:28:02,325 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-05-09 18:28:02,351 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.477
+2026-05-09 18:28:02,351 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-05-09 18:28:02,381 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.530
+2026-05-09 18:28:02,381 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-05-09 18:28:02,406 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.454
+2026-05-09 18:28:02,407 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-05-09 18:28:02,436 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.678
+2026-05-09 18:28:02,437 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-05-09 18:28:02,463 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.680
+2026-05-09 18:28:02,463 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-05-09 18:28:02,495 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.814
+2026-05-09 18:28:02,495 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-05-09 18:28:02,522 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.294
+2026-05-09 18:28:02,522 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-05-09 18:28:02,552 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.894
+2026-05-09 18:28:02,553 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-05-09 18:28:02,583 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.867
+2026-05-09 18:28:02,583 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-05-09 18:28:02,612 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.697
+2026-05-09 18:28:02,612 INFO   baseline survival=0.00% reward=1.064 len=16.9
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Downloading shards:  50%|█████     | 1/2 [00:41<00:41, 41.95s/it]Downloading shards: 100%|██████████| 2/2 [01:01<00:00, 28.99s/it]Downloading shards: 100%|██████████| 2/2 [01:01<00:00, 30.94s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.93s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.14s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.26s/it]
+trained eps:   0%|          | 0/10 [00:00<?, ?ep/s]trained eps:  10%|█         | 1/10 [02:35<23:15, 155.04s/ep]trained eps:  20%|██        | 2/10 [05:20<21:27, 160.96s/ep]trained eps:  30%|███       | 3/10 [07:59<18:42, 160.31s/ep]trained eps:  40%|████      | 4/10 [10:38<15:59, 159.92s/ep]trained eps:  50%|█████     | 5/10 [13:17<13:16, 159.36s/ep]trained eps:  60%|██████    | 6/10 [15:49<10:28, 157.06s/ep]trained eps:  70%|███████   | 7/10 [18:27<07:52, 157.37s/ep]trained eps:  80%|████████  | 8/10 [21:04<05:14, 157.09s/ep]trained eps:  90%|█████████ | 9/10 [23:52<02:40, 160.39s/ep]trained eps: 100%|██████████| 10/10 [26:27<00:00, 158.89s/ep]trained eps: 100%|██████████| 10/10 [26:27<00:00, 158.76s/ep]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/training/eval.py", line 594, in <module>
+    main()
+  File "/app/training/eval.py", line 552, in main
+    with open(out_json, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/app/eval_results/ckpt-25/eval_step_0025.json'

@@ -1,0 +1,127 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-04-30 06:51:00,639 INFO Baseline: 30 episodes (random policy)
+2026-04-30 06:51:00,639 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-04-30 06:51:00,666 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-6.484
+2026-04-30 06:51:00,667 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-04-30 06:51:00,689 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.465
+2026-04-30 06:51:00,689 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-04-30 06:51:00,713 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.575
+2026-04-30 06:51:00,713 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-04-30 06:51:00,739 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-8.233
+2026-04-30 06:51:00,739 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-04-30 06:51:00,765 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-6.222
+2026-04-30 06:51:00,766 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-04-30 06:51:00,790 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.566
+2026-04-30 06:51:00,791 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-04-30 06:51:00,815 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.480
+2026-04-30 06:51:00,816 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-04-30 06:51:00,846 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.584
+2026-04-30 06:51:00,846 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-04-30 06:51:00,871 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.415
+2026-04-30 06:51:00,872 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-04-30 06:51:00,898 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.716
+2026-04-30 06:51:00,899 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-04-30 06:51:00,922 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.477
+2026-04-30 06:51:00,922 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-04-30 06:51:00,949 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.530
+2026-04-30 06:51:00,950 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-04-30 06:51:00,973 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.454
+2026-04-30 06:51:00,973 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-04-30 06:51:01,000 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.678
+2026-04-30 06:51:01,000 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-04-30 06:51:01,025 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.680
+2026-04-30 06:51:01,026 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-04-30 06:51:01,052 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.814
+2026-04-30 06:51:01,053 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-04-30 06:51:01,077 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.294
+2026-04-30 06:51:01,078 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-04-30 06:51:01,105 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.894
+2026-04-30 06:51:01,105 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-04-30 06:51:01,132 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.867
+2026-04-30 06:51:01,133 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-04-30 06:51:01,159 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.697
+2026-04-30 06:51:01,159 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=409420
+2026-04-30 06:51:01,187 INFO [v2 END] ep=1 steps=19 alive=0/5 cum_reward=-7.698
+2026-04-30 06:51:01,187 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=78686
+2026-04-30 06:51:01,213 INFO [v2 END] ep=1 steps=15 alive=2/5 cum_reward=-6.597
+2026-04-30 06:51:01,213 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=863333
+2026-04-30 06:51:01,239 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.822
+2026-04-30 06:51:01,239 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=280464
+2026-04-30 06:51:01,264 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-7.941
+2026-04-30 06:51:01,265 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=412042
+2026-04-30 06:51:01,291 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.655
+2026-04-30 06:51:01,292 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=783641
+2026-04-30 06:51:01,315 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.671
+2026-04-30 06:51:01,316 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=420304
+2026-04-30 06:51:01,338 INFO [v2 END] ep=1 steps=13 alive=2/5 cum_reward=-4.966
+2026-04-30 06:51:01,339 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (4, 'saboteur')] seed=415182
+2026-04-30 06:51:01,362 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-5.993
+2026-04-30 06:51:01,363 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=248411
+2026-04-30 06:51:01,386 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.559
+2026-04-30 06:51:01,386 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (4, 'biter')] seed=488899
+2026-04-30 06:51:01,416 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.470
+2026-04-30 06:51:01,417 INFO   baseline survival=0.00% reward=1.060 len=16.7
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Cancellation requested; stopping current tasks.
+Downloading shards:   0%|          | 0/2 [00:18<?, ?it/s]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/file_download.py", line 633, in xet_get
+    download_files(
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/training/eval.py", line 571, in <module>
+    main()
+  File "/app/training/eval.py", line 481, in main
+    model, tokenizer = load_trained_model(args.model_name, args.lora_path, args.revision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/training/eval.py", line 306, in load_trained_model
+    base = AutoModelForCausalLM.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/models/auto/auto_factory.py", line 564, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/modeling_utils.py", line 3974, in from_pretrained
+    resolved_archive_file, sharded_metadata = get_checkpoint_shard_files(
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py", line 1098, in get_checkpoint_shard_files
+    cached_filename = cached_file(
+                      ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py", line 403, in cached_file
+    resolved_file = hf_hub_download(
+                    ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/file_download.py", line 1014, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/file_download.py", line 1175, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/file_download.py", line 1727, in _download_to_tmp_and_move
+    xet_get(
+  File "/usr/local/lib/python3.11/dist-packages/huggingface_hub/file_download.py", line 628, in xet_get
+    with progress_cm as progress:
+  File "/usr/local/lib/python3.11/dist-packages/tqdm/std.py", line 1138, in __exit__
+    def __exit__(self, exc_type, exc_value, traceback):
+
+KeyboardInterrupt

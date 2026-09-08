@@ -1,0 +1,55 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/training/eval.py", line 571, in <module>
+    main()
+  File "/app/training/eval.py", line 458, in main
+    from survivecity_v2_env.env import SurviveCityV2Env
+  File "/app/survivecity_v2_env/__init__.py", line 3, in <module>
+    from survivecity_v2_env.models import (
+  File "/app/survivecity_v2_env/models.py", line 11, in <module>
+    from pydantic import BaseModel, Field, ConfigDict
+  File "<frozen importlib._bootstrap>", line 1231, in _handle_fromlist
+  File "/usr/local/lib/python3.11/dist-packages/pydantic/__init__.py", line 421, in __getattr__
+    module = import_module(module_name, package=package)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/pydantic/main.py", line 29, in <module>
+    import pydantic_core
+  File "/usr/local/lib/python3.11/dist-packages/pydantic_core/__init__.py", line 30, in <module>
+    from .core_schema import CoreConfig, CoreSchema, CoreSchemaType, ErrorType
+  File "/usr/local/lib/python3.11/dist-packages/pydantic_core/core_schema.py", line 1809, in <module>
+    class GeneratorSchema(TypedDict, total=False):
+  File "/usr/local/lib/python3.11/dist-packages/typing_extensions.py", line 1138, in __new__
+    own_checked_annotations = {
+                              ^
+  File "/usr/local/lib/python3.11/dist-packages/typing_extensions.py", line 1139, in <dictcomp>
+    n: typing._type_check(tp, msg, module=tp_dict.__module__)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/typing.py", line 186, in _type_check
+    arg = _type_convert(arg, module=module, allow_special_forms=allow_special_forms)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/typing.py", line 164, in _type_convert
+    return ForwardRef(arg, module=module, is_class=allow_special_forms)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/typing.py", line 844, in __init__
+    code = compile(arg_to_compile, '<string>', 'eval')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

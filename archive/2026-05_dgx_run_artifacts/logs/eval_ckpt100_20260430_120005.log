@@ -1,0 +1,153 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-04-30 06:30:06,493 INFO Baseline: 30 episodes (random policy)
+2026-04-30 06:30:06,494 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-04-30 06:30:06,523 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-6.484
+2026-04-30 06:30:06,524 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-04-30 06:30:06,547 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.465
+2026-04-30 06:30:06,548 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-04-30 06:30:06,573 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.575
+2026-04-30 06:30:06,573 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-04-30 06:30:06,600 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-8.233
+2026-04-30 06:30:06,601 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-04-30 06:30:06,629 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-6.222
+2026-04-30 06:30:06,630 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-04-30 06:30:06,656 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.566
+2026-04-30 06:30:06,657 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-04-30 06:30:06,683 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.480
+2026-04-30 06:30:06,684 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-04-30 06:30:06,713 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.584
+2026-04-30 06:30:06,714 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-04-30 06:30:06,742 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.415
+2026-04-30 06:30:06,742 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-04-30 06:30:06,770 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.716
+2026-04-30 06:30:06,771 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-04-30 06:30:06,795 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.477
+2026-04-30 06:30:06,796 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-04-30 06:30:06,825 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.530
+2026-04-30 06:30:06,826 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-04-30 06:30:06,851 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.454
+2026-04-30 06:30:06,851 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-04-30 06:30:06,880 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.678
+2026-04-30 06:30:06,881 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-04-30 06:30:06,906 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.680
+2026-04-30 06:30:06,906 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-04-30 06:30:06,935 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.814
+2026-04-30 06:30:06,936 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-04-30 06:30:06,962 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.294
+2026-04-30 06:30:06,962 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-04-30 06:30:06,992 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.894
+2026-04-30 06:30:06,993 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-04-30 06:30:07,023 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.867
+2026-04-30 06:30:07,023 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-04-30 06:30:07,053 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.697
+2026-04-30 06:30:07,053 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=409420
+2026-04-30 06:30:07,086 INFO [v2 END] ep=1 steps=19 alive=0/5 cum_reward=-7.698
+2026-04-30 06:30:07,086 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=78686
+2026-04-30 06:30:07,115 INFO [v2 END] ep=1 steps=15 alive=2/5 cum_reward=-6.597
+2026-04-30 06:30:07,116 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=863333
+2026-04-30 06:30:07,144 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.822
+2026-04-30 06:30:07,144 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=280464
+2026-04-30 06:30:07,170 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-7.941
+2026-04-30 06:30:07,171 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=412042
+2026-04-30 06:30:07,199 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.655
+2026-04-30 06:30:07,200 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=783641
+2026-04-30 06:30:07,225 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.671
+2026-04-30 06:30:07,226 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=420304
+2026-04-30 06:30:07,250 INFO [v2 END] ep=1 steps=13 alive=2/5 cum_reward=-4.966
+2026-04-30 06:30:07,251 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (4, 'saboteur')] seed=415182
+2026-04-30 06:30:07,277 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-5.993
+2026-04-30 06:30:07,277 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=248411
+2026-04-30 06:30:07,301 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.559
+2026-04-30 06:30:07,302 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (4, 'biter')] seed=488899
+2026-04-30 06:30:07,329 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.470
+2026-04-30 06:30:07,329 INFO   baseline survival=0.00% reward=1.060 len=16.7
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Downloading shards:  50%|█████     | 1/2 [00:33<00:33, 33.60s/it]Downloading shards: 100%|██████████| 2/2 [00:53<00:00, 25.36s/it]Downloading shards: 100%|██████████| 2/2 [00:53<00:00, 26.60s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.44s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.83s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.92s/it]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/training/eval.py", line 571, in <module>
+    main()
+  File "/app/training/eval.py", line 499, in main
+    rec = run_one_episode(env, seed, action_fn, max_steps=args.max_steps_per_episode)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/training/eval.py", line 99, in run_one_episode
+    action = action_fn(agent_id, obs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/training/inference.py", line 311, in llm_action
+    outputs = model.generate(
+              ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/peft/peft_model.py", line 1704, in generate
+    outputs = self.base_model.generate(*args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/generation/utils.py", line 2215, in generate
+    result = self._sample(
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/generation/utils.py", line 3206, in _sample
+    outputs = self(**model_inputs, return_dict=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/models/qwen2/modeling_qwen2.py", line 1164, in forward
+    outputs = self.model(
+              ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/models/qwen2/modeling_qwen2.py", line 895, in forward
+    layer_outputs = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/models/qwen2/modeling_qwen2.py", line 638, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/transformers/models/qwen2/modeling_qwen2.py", line 223, in forward
+    return self.down_proj(self.act_fn(self.gate_proj(hidden_state)) * self.up_proj(hidden_state))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

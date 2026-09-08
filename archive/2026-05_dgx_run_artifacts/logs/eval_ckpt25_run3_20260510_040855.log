@@ -1,0 +1,77 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-05-09 22:38:56,762 INFO Baseline: 20 episodes (random policy)
+2026-05-09 22:38:56,762 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-05-09 22:38:56,790 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-6.590
+2026-05-09 22:38:56,791 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-05-09 22:38:56,814 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.573
+2026-05-09 22:38:56,815 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-05-09 22:38:56,840 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.686
+2026-05-09 22:38:56,840 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-05-09 22:38:56,867 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-8.335
+2026-05-09 22:38:56,868 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-05-09 22:38:56,897 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-6.314
+2026-05-09 22:38:56,898 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-05-09 22:38:56,923 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.656
+2026-05-09 22:38:56,924 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-05-09 22:38:56,950 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.579
+2026-05-09 22:38:56,950 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-05-09 22:38:56,980 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.696
+2026-05-09 22:38:56,981 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-05-09 22:38:57,007 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.534
+2026-05-09 22:38:57,008 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-05-09 22:38:57,035 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.819
+2026-05-09 22:38:57,036 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-05-09 22:38:57,061 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.588
+2026-05-09 22:38:57,062 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-05-09 22:38:57,091 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.631
+2026-05-09 22:38:57,092 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-05-09 22:38:57,116 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.566
+2026-05-09 22:38:57,117 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-05-09 22:38:57,145 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.777
+2026-05-09 22:38:57,145 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-05-09 22:38:57,171 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.787
+2026-05-09 22:38:57,172 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-05-09 22:38:57,201 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.927
+2026-05-09 22:38:57,202 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-05-09 22:38:57,228 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.383
+2026-05-09 22:38:57,228 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-05-09 22:38:57,257 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-8.006
+2026-05-09 22:38:57,258 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-05-09 22:38:57,287 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.982
+2026-05-09 22:38:57,288 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-05-09 22:38:57,315 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.793
+2026-05-09 22:38:57,316 INFO   baseline survival=0.00% reward=0.891 len=16.9
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Downloading shards:  50%|█████     | 1/2 [00:33<00:33, 33.34s/it]Downloading shards: 100%|██████████| 2/2 [00:52<00:00, 25.22s/it]Downloading shards: 100%|██████████| 2/2 [00:52<00:00, 26.44s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.82s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.15s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.25s/it]
+trained eps:   0%|          | 0/10 [00:00<?, ?ep/s]trained eps:  10%|█         | 1/10 [02:11<19:46, 131.83s/ep]trained eps:  20%|██        | 2/10 [04:30<18:05, 135.63s/ep]trained eps:  30%|███       | 3/10 [06:51<16:07, 138.17s/ep]trained eps:  40%|████      | 4/10 [09:11<13:54, 139.11s/ep]trained eps:  50%|█████     | 5/10 [11:31<11:36, 139.21s/ep]trained eps:  60%|██████    | 6/10 [13:51<09:17, 139.40s/ep]trained eps:  70%|███████   | 7/10 [16:13<07:01, 140.33s/ep]trained eps:  80%|████████  | 8/10 [18:29<04:38, 139.13s/ep]trained eps:  90%|█████████ | 9/10 [20:49<02:19, 139.31s/ep]trained eps: 100%|██████████| 10/10 [23:03<00:00, 137.81s/ep]trained eps: 100%|██████████| 10/10 [23:03<00:00, 138.40s/ep]
+======================================================================
+v2 eval @ step 25  (2026-05-09T23:03:09.915821+00:00)
+======================================================================
+metric                                  baseline         trained
+----------------------------------------------------------------------
+Survival rate                             0.0000          0.0000
+Mean total reward                         0.8908          0.7190
+Mean episode length                      16.8500         18.0000
+Infection containment                     1.0000          1.0000
+Infection isolation                       0.8500          1.0000
+Parse failure rate                        0.0000          0.0000
+======================================================================
+Trained policy: REAL LoRA
+Files: /app/eval_results/ckpt-25-run3/eval_step_0025.json, /app/eval_results/ckpt-25-run3/eval_step_0025_bars.png, /app/eval_results/ckpt-25-run3/eval_history.png
+======================================================================

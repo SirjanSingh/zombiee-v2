@@ -1,0 +1,157 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-05-10 13:51:12,092 INFO Baseline: 20 episodes (random policy)
+2026-05-10 13:51:12,093 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-05-10 13:51:12,118 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.757
+2026-05-10 13:51:12,119 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-05-10 13:51:12,140 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.058
+2026-05-10 13:51:12,141 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-05-10 13:51:12,164 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.185
+2026-05-10 13:51:12,165 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-05-10 13:51:12,190 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.625
+2026-05-10 13:51:12,190 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-05-10 13:51:12,217 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-5.653
+2026-05-10 13:51:12,217 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-05-10 13:51:12,241 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.199
+2026-05-10 13:51:12,242 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-05-10 13:51:12,266 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-5.971
+2026-05-10 13:51:12,266 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-05-10 13:51:12,294 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.116
+2026-05-10 13:51:12,294 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-05-10 13:51:12,319 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-5.997
+2026-05-10 13:51:12,319 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-05-10 13:51:12,345 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.134
+2026-05-10 13:51:12,345 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-05-10 13:51:12,368 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.013
+2026-05-10 13:51:12,369 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-05-10 13:51:12,398 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.013
+2026-05-10 13:51:12,399 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-05-10 13:51:12,422 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.072
+2026-05-10 13:51:12,423 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-05-10 13:51:12,450 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.139
+2026-05-10 13:51:12,451 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-05-10 13:51:12,475 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-4.997
+2026-05-10 13:51:12,476 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-05-10 13:51:12,504 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.431
+2026-05-10 13:51:12,504 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-05-10 13:51:12,529 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.826
+2026-05-10 13:51:12,530 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-05-10 13:51:12,558 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.347
+2026-05-10 13:51:12,558 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-05-10 13:51:12,587 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.256
+2026-05-10 13:51:12,588 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-05-10 13:51:12,615 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.145
+2026-05-10 13:51:12,616 INFO   baseline survival=0.00% reward=1.028 len=16.9
+/usr/local/lib/python3.11/dist-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-05-10 13:51:16,154 INFO Loading base: Qwen/Qwen2.5-3B-Instruct
+Downloading shards:   0%|          | 0/2 [00:00<?, ?it/s]Downloading shards:  50%|█████     | 1/2 [00:35<00:35, 35.99s/it]Downloading shards: 100%|██████████| 2/2 [00:56<00:00, 27.04s/it]Downloading shards: 100%|██████████| 2/2 [00:56<00:00, 28.38s/it]
+2026-05-10 13:52:17,081 INFO We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.36s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.86s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.93s/it]
+2026-05-10 13:52:21,389 INFO Loading LoRA from: /app/checkpoints/checkpoint-60
+2026-05-10 13:52:23,467 INFO Trained: 10 episodes (LoRA: /app/checkpoints/checkpoint-60) prefix_actions=5 trained_agent_id=0
+trained eps:   0%|          | 0/10 [00:00<?, ?ep/s]2026-05-10 13:52:23,468 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (1, 'biter')] seed=70132
+2026-05-10 13:52:29,018 INFO [v2 STEP] ep=1 step=2 agent=A0 action=inject reward=0.0100 raw=-0.0010 done=False
+2026-05-10 13:52:29,023 INFO   [ep1/10] step=25 alive=5/5 cum_r=0.47
+2026-05-10 13:52:34,218 INFO   [ep1/10] step=50 alive=5/5 cum_r=0.89
+2026-05-10 13:52:38,771 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-5.751
+2026-05-10 13:52:38,771 INFO   trained ep 1/10: steps=17 survived=False reward=1.09 parse_fail=0
+trained eps:  10%|█         | 1/10 [00:15<02:17, 15.30s/ep]2026-05-10 13:52:38,772 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=361056
+2026-05-10 13:52:43,992 INFO [v2 STEP] ep=1 step=2 agent=A0 action=inject reward=0.0100 raw=-0.0010 done=False
+2026-05-10 13:52:43,995 INFO [v2 STEP] ep=1 step=4 agent=A0 action=vote_lockout reward=0.0100 raw=-0.0060 done=False
+2026-05-10 13:52:43,998 INFO   [ep2/10] step=25 alive=5/5 cum_r=0.48
+2026-05-10 13:52:48,036 INFO   [ep2/10] step=50 alive=5/5 cum_r=0.90
+2026-05-10 13:52:53,018 INFO [v2 STEP] ep=1 step=11 agent=A0 action=scan reward=0.0100 raw=-0.2550 done=False
+2026-05-10 13:52:53,024 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.506
+2026-05-10 13:52:53,025 INFO   trained ep 2/10: steps=17 survived=False reward=1.12 parse_fail=0
+trained eps:  20%|██        | 2/10 [00:29<01:57, 14.69s/ep]2026-05-10 13:52:53,026 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=433316
+2026-05-10 13:52:56,993 INFO   [ep3/10] step=25 alive=5/5 cum_r=0.48
+2026-05-10 13:53:02,660 INFO [v2 STEP] ep=1 step=8 agent=A0 action=scan reward=0.0100 raw=-0.0693 done=False
+2026-05-10 13:53:02,663 INFO   [ep3/10] step=50 alive=5/5 cum_r=0.91
+2026-05-10 13:53:06,646 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-5.232
+2026-05-10 13:53:06,647 INFO   trained ep 3/10: steps=16 survived=False reward=1.13 parse_fail=0
+trained eps:  30%|███       | 3/10 [00:43<01:39, 14.20s/ep]2026-05-10 13:53:06,647 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=978659
+2026-05-10 13:53:11,154 INFO [v2 STEP] ep=1 step=2 agent=A0 action=inject reward=0.0100 raw=-0.0010 done=False
+2026-05-10 13:53:11,160 INFO   [ep4/10] step=25 alive=5/5 cum_r=0.48
+2026-05-10 13:53:15,635 INFO [v2 STEP] ep=1 step=8 agent=A0 action=scan reward=0.0100 raw=-0.1475 done=False
+2026-05-10 13:53:15,639 INFO   [ep4/10] step=50 alive=5/5 cum_r=0.91
+2026-05-10 13:53:20,163 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.387
+2026-05-10 13:53:20,164 INFO   trained ep 4/10: steps=17 survived=False reward=1.15 parse_fail=0
+trained eps:  40%|████      | 4/10 [00:56<01:23, 13.93s/ep]2026-05-10 13:53:20,164 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=115872
+2026-05-10 13:53:24,874 INFO [v2 STEP] ep=1 step=3 agent=A0 action=vote_lockout reward=0.0260 raw=+0.0260 done=False
+2026-05-10 13:53:24,878 INFO   [ep5/10] step=25 alive=5/5 cum_r=0.47
+2026-05-10 13:53:29,496 INFO [v2 STEP] ep=1 step=9 agent=A0 action=vote_lockout reward=0.0100 raw=-0.0925 done=False
+2026-05-10 13:53:29,498 INFO   [ep5/10] step=50 alive=5/5 cum_r=0.92
+2026-05-10 13:53:34,621 INFO [v2 STEP] ep=1 step=12 agent=A0 action=scan reward=0.0100 raw=-0.1410 done=False
+2026-05-10 13:53:34,623 INFO [v2 STEP] ep=1 step=13 agent=A0 action=scan reward=0.0100 raw=-0.2110 done=False
+2026-05-10 13:53:34,626 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-5.826
+2026-05-10 13:53:34,626 INFO   trained ep 5/10: steps=17 survived=False reward=1.14 parse_fail=0
+trained eps:  50%|█████     | 5/10 [01:11<01:10, 14.12s/ep]2026-05-10 13:53:34,627 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=339209
+2026-05-10 13:53:39,181 INFO [v2 STEP] ep=1 step=2 agent=A0 action=inject reward=0.0100 raw=-0.0020 done=False
+2026-05-10 13:53:39,186 INFO   [ep6/10] step=25 alive=5/5 cum_r=0.47
+2026-05-10 13:53:43,652 INFO [v2 STEP] ep=1 step=9 agent=A0 action=inject reward=0.0100 raw=-0.2235 done=False
+2026-05-10 13:53:43,654 INFO   [ep6/10] step=50 alive=5/5 cum_r=0.89
+2026-05-10 13:53:47,724 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.018
+2026-05-10 13:53:47,725 INFO   trained ep 6/10: steps=17 survived=False reward=1.10 parse_fail=0
+trained eps:  60%|██████    | 6/10 [01:24<00:55, 13.77s/ep]2026-05-10 13:53:47,725 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=788646
+2026-05-10 13:53:52,207 INFO [v2 STEP] ep=1 step=3 agent=A0 action=scan reward=0.0100 raw=-0.0045 done=False
+2026-05-10 13:53:52,211 INFO   [ep7/10] step=25 alive=5/5 cum_r=0.46
+2026-05-10 13:53:57,304 INFO [v2 STEP] ep=1 step=7 agent=A0 action=scan reward=0.0100 raw=-0.0685 done=False
+2026-05-10 13:53:57,309 INFO   [ep7/10] step=50 alive=5/5 cum_r=0.88
+2026-05-10 13:54:02,377 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-4.977
+2026-05-10 13:54:02,378 INFO   trained ep 7/10: steps=16 survived=False reward=1.10 parse_fail=0
+trained eps:  70%|███████   | 7/10 [01:38<00:42, 14.06s/ep]2026-05-10 13:54:02,378 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=581283
+2026-05-10 13:54:07,528 INFO   [ep8/10] step=25 alive=5/5 cum_r=0.49
+2026-05-10 13:54:12,667 INFO   [ep8/10] step=50 alive=5/5 cum_r=0.92
+2026-05-10 13:54:17,135 INFO [v2 END] ep=1 steps=15 alive=2/5 cum_reward=-3.735
+2026-05-10 13:54:17,135 INFO   trained ep 8/10: steps=15 survived=False reward=1.13 parse_fail=0
+trained eps:  80%|████████  | 8/10 [01:53<00:28, 14.28s/ep]2026-05-10 13:54:17,136 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=536121
+2026-05-10 13:54:22,334 INFO [v2 STEP] ep=1 step=4 agent=A0 action=vote_lockout reward=0.0250 raw=+0.0250 done=False
+2026-05-10 13:54:22,336 INFO   [ep9/10] step=25 alive=5/5 cum_r=0.48
+2026-05-10 13:54:26,881 INFO   [ep9/10] step=50 alive=5/5 cum_r=0.92
+2026-05-10 13:54:31,325 INFO [v2 STEP] ep=1 step=13 agent=A0 action=scan reward=0.0100 raw=-0.0990 done=False
+2026-05-10 13:54:35,270 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-4.986
+2026-05-10 13:54:35,270 INFO   trained ep 9/10: steps=16 survived=False reward=1.16 parse_fail=0
+trained eps:  90%|█████████ | 9/10 [02:11<00:15, 15.49s/ep]2026-05-10 13:54:35,271 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=846977
+2026-05-10 13:54:40,398 INFO [v2 STEP] ep=1 step=2 agent=A0 action=inject reward=0.0100 raw=-0.0020 done=False
+2026-05-10 13:54:40,403 INFO   [ep10/10] step=25 alive=5/5 cum_r=0.48
+2026-05-10 13:54:44,382 INFO   [ep10/10] step=50 alive=5/5 cum_r=0.91
+2026-05-10 13:54:48,428 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.109
+2026-05-10 13:54:48,428 INFO   trained ep 10/10: steps=17 survived=False reward=1.14 parse_fail=0
+trained eps: 100%|██████████| 10/10 [02:24<00:00, 14.77s/ep]trained eps: 100%|██████████| 10/10 [02:24<00:00, 14.50s/ep]
+2026-05-10 13:54:48,429 INFO   trained survival=0.00% reward=1.128 len=16.5
+2026-05-10 13:54:48,431 INFO Wrote /app/eval_results/ckpt-60-run4-best/eval_step_0060.json
+2026-05-10 13:54:48,650 INFO generated new fontManager
+2026-05-10 13:54:49,320 INFO Saved /app/eval_results/ckpt-60-run4-best/eval_step_0060_bars.png
+2026-05-10 13:54:49,781 INFO Saved /app/eval_results/ckpt-60-run4-best/eval_history.png
+======================================================================
+v2 eval @ step 60  (2026-05-10T13:54:48.429449+00:00)
+======================================================================
+metric                                  baseline         trained
+----------------------------------------------------------------------
+Survival rate                             0.0000          0.0000
+Mean alive at end (/5)                    0.1500          0.5000
+Mean healthy alive (/5)                   0.0000          0.0000
+Pct reached step 30                       0.0000          0.0000
+Mean total reward                         1.0279          1.1277
+Mean episode length                      16.8500         16.5000
+Infection containment                     1.0000          1.0000
+Infection isolation                       0.8500          0.6000
+Parse failure rate                        0.0000          0.0000
+======================================================================
+Trained policy: REAL LoRA
+Files: /app/eval_results/ckpt-60-run4-best/eval_step_0060.json, /app/eval_results/ckpt-60-run4-best/eval_step_0060_bars.png, /app/eval_results/ckpt-60-run4-best/eval_history.png
+======================================================================

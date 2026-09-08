@@ -1,0 +1,57 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+2026-05-09 18:01:05,111 INFO Baseline: 20 episodes (random policy)
+2026-05-09 18:01:05,111 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (4, 'biter')] seed=670487
+2026-05-09 18:01:05,138 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-6.484
+2026-05-09 18:01:05,139 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=240174
+2026-05-09 18:01:05,160 INFO [v2 END] ep=1 steps=14 alive=0/5 cum_reward=-6.465
+2026-05-09 18:01:05,161 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=920659
+2026-05-09 18:01:05,186 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.575
+2026-05-09 18:01:05,187 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (4, 'biter')] seed=261941
+2026-05-09 18:01:05,220 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-8.233
+2026-05-09 18:01:05,220 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (3, 'saboteur')] seed=874244
+2026-05-09 18:01:05,250 INFO [v2 END] ep=1 steps=16 alive=1/5 cum_reward=-6.222
+2026-05-09 18:01:05,250 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=417821
+2026-05-09 18:01:05,277 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.566
+2026-05-09 18:01:05,278 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=256736
+2026-05-09 18:01:05,305 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.480
+2026-05-09 18:01:05,305 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (3, 'biter')] seed=457007
+2026-05-09 18:01:05,336 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.584
+2026-05-09 18:01:05,336 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=454582
+2026-05-09 18:01:05,364 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.415
+2026-05-09 18:01:05,364 INFO [v2 START] episode=1 starting_infected=[(2, 'saboteur'), (3, 'biter')] seed=238533
+2026-05-09 18:01:05,393 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.716
+2026-05-09 18:01:05,393 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (2, 'biter')] seed=952538
+2026-05-09 18:01:05,419 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-6.477
+2026-05-09 18:01:05,419 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=459398
+2026-05-09 18:01:05,449 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.530
+2026-05-09 18:01:05,449 INFO [v2 START] episode=1 starting_infected=[(0, 'saboteur'), (2, 'biter')] seed=657246
+2026-05-09 18:01:05,474 INFO [v2 END] ep=1 steps=16 alive=0/5 cum_reward=-6.454
+2026-05-09 18:01:05,474 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (1, 'saboteur')] seed=954851
+2026-05-09 18:01:05,501 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.678
+2026-05-09 18:01:05,502 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=874190
+2026-05-09 18:01:05,526 INFO [v2 END] ep=1 steps=15 alive=1/5 cum_reward=-5.680
+2026-05-09 18:01:05,526 INFO [v2 START] episode=1 starting_infected=[(1, 'biter'), (2, 'saboteur')] seed=719425
+2026-05-09 18:01:05,555 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-6.814
+2026-05-09 18:01:05,555 INFO [v2 START] episode=1 starting_infected=[(1, 'saboteur'), (3, 'biter')] seed=6402
+2026-05-09 18:01:05,579 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.294
+2026-05-09 18:01:05,580 INFO [v2 START] episode=1 starting_infected=[(3, 'saboteur'), (4, 'biter')] seed=743963
+2026-05-09 18:01:05,606 INFO [v2 END] ep=1 steps=18 alive=0/5 cum_reward=-7.894
+2026-05-09 18:01:05,607 INFO [v2 START] episode=1 starting_infected=[(0, 'biter'), (3, 'saboteur')] seed=259778
+2026-05-09 18:01:05,633 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.867
+2026-05-09 18:01:05,634 INFO [v2 START] episode=1 starting_infected=[(2, 'biter'), (4, 'saboteur')] seed=856572
+2026-05-09 18:01:05,659 INFO [v2 END] ep=1 steps=17 alive=0/5 cum_reward=-7.697
+2026-05-09 18:01:05,660 INFO   baseline survival=0.00% reward=1.064 len=16.9
