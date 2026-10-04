@@ -36,3 +36,15 @@ mid-episode states.
 
 Data: `data/2026-10-04_ceiling_probe_v2.json`, `experiments.jsonl` rows with
 `experiment=ceiling_probe_v2_balance`.
+
+---
+
+## 2026-10-04 — Balance knobs pulled into one config (worker session, W1)
+
+**What:** every difficulty number (hunger/thirst clocks, zombie chase, waves, respawns, bite and
+reveal timing) moved from scattered constants into `BalanceConfig` (`survivecity_v2_env/balance.py`).
+The original tuning is preset `v2.2`. This is plumbing so W2/W3 can sweep difficulty.
+
+**Check it changed nothing:** hashed every step of 40 seeded episodes under the heuristic, random and
+oracle policies before and after. All three hashes identical; probe numbers identical (heuristic ep
+length 16.02, oracle 66.76, both 0% survival). A golden-hash test now guards the `v2.2` preset.

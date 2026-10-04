@@ -15,11 +15,15 @@ Rules
 
 ## Worker queue
 
-- [ ] **W1 — Balance config.** Move env balance constants (hunger/thirst thresholds and tick
+- [x] **W1 — Balance config.** Move env balance constants (hunger/thirst thresholds and tick
   rates, infected hunger multiplier, zombie chase behaviour, wave schedule, MAX_ZOMBIES, food
   respawn delay, P_BITE, LATENT_DURATION, safehouse heal) into one `BalanceConfig` dataclass
   (e.g. `survivecity_v2_env/balance.py`). Defaults = today's values, so behaviour is identical.
   Prove it: `tools/probes/baseline.py` and `oracle.py` numbers unchanged; tests pass.
+  - Done 2026-10-04 (142e45c, ccd8397): `survivecity_v2_env/balance.py` (`BalanceConfig`, preset `v2.2`,
+    `get_balance`, fractional `meter_tick`). Env/game/spawn/infection/rubric read `state.balance`.
+    Identity: sha256 of full heuristic/random/oracle trajectories (40 seeds each) identical before/after;
+    baseline.py 16.02/12.98 and oracle.py 66.76/49.04 unchanged; golden-hash test pins v2.2. 97 tests pass.
 - [ ] **W2 — Calibration script.** `tools/calibrate.py`: runs random, current heuristic,
   camp planner, oracle for N=100 eps under a given BalanceConfig and prints one table
   (ep_len, A0 lifetime, healthy alive at end, survival, reached-t100, death causes).
