@@ -29,6 +29,7 @@ from survivecity_v2_env.layout import (
     build_grid,
 )
 from survivecity_v2_env import inventory as inv
+from survivecity_v2_env.balance import BalanceConfig, get_balance, meter_tick
 from survivecity_v2_env import spawn as spawn_mod
 from survivecity_v2_env import infection as infection_mod
 
@@ -104,6 +105,9 @@ class EpisodeState:
     zombies: list[_ZombieInternal]
     base_grid: list[list[str]]
 
+    # Balance knobs for this episode (see balance.py)
+    balance: BalanceConfig = field(default_factory=get_balance)
+
     # Episode meta
     step_count: int = 0
     max_steps: int = 100
@@ -159,13 +163,17 @@ class EpisodeState:
 # Episode construction
 # ---------------------------------------------------------------------------
 
-def create_episode(seed: Optional[int] = None) -> EpisodeState:
+def create_episode(
+    seed: Optional[int] = None,
+    balance: "BalanceConfig | str | None" = None,
+) -> EpisodeState:
     """Initialise a fresh episode. Picks the two starting infected agents."""
     seed_int = int(seed) if seed is not None else 0
     rng = random.Random(seed_int)
+    cfg = get_balance(balance)
 
     agents = [
-        _AgentInternal(agent_id=i, row=r, col=c)
+        _AgentInternal(agent_id=i, row=r, col=c, hp=cfg.hp_max)
         for i, (r, c) in enumerate(AGENT_SPAWNS)
     ]
     zombies = [
@@ -187,6 +195,10 @@ def create_episode(seed: Optional[int] = None) -> EpisodeState:
         agents=agents,
         zombies=zombies,
         base_grid=build_grid(),
+        balance=cfg,
+        max_steps=cfg.max_steps,
+        noise_threshold=cfg.noise_threshold,
+        noise_decay_period=cfg.noise_decay_period,
         episode_seed=seed_int,
         rng=rng,
     )
@@ -255,21 +267,20 @@ def apply_agent_action(
     # Clear last_inject_result for this agent (rubric reads it for THIS step only)
     state.last_inject_result.pop(agent_id, None)
 
-    # Hunger / thirst tick — infected (latent or revealed) eat 1.5x faster
+    # Hunger / thirst tick — infected (latent or revealed) eat faster
+    cfg = state.balance
     is_infected = agent.infection_state in {"latent", "revealed"}
-    if is_infected:
-        agent.hunger += 2 if (state.step_count % 2 == 0) else 1
-    else:
-        agent.hunger += 1
-    agent.thirst += 1
+    hunger_rate = cfg.hunger_rate * (cfg.infected_hunger_mult if is_infected else 1.0)
+    agent.hunger += meter_tick(state.step_count, hunger_rate)
+    agent.thirst += meter_tick(state.step_count, cfg.thirst_rate)
 
     # Damage from starvation / dehydration
-    if agent.hunger >= 15:
+    if agent.hunger >= cfg.starve_threshold:
         agent.hp -= 1
         agent.damage_this_step += 1
         if agent.hp <= 0:
             _kill_agent(agent, state, "hunger")
-    if agent.is_alive and agent.thirst >= 15:
+    if agent.is_alive and agent.thirst >= cfg.dehydrate_threshold:
         agent.hp -= 1
         agent.damage_this_step += 1
         if agent.hp <= 0:
@@ -367,7 +378,7 @@ def apply_agent_action(
         and _is_in_safehouse(agent.row, agent.col)
         and not agent.locked_out
     ):
-        agent.hp = min(3, agent.hp + 1)
+        agent.hp = min(cfg.hp_max, agent.hp + cfg.safehouse_heal)
 
 
 # ---------------------------------------------------------------------------
@@ -392,7 +403,8 @@ def _do_eat(agent: _AgentInternal, state: EpisodeState) -> None:
         agent.ate_this_step = True
         agent.food_eaten += 1
         state.food_present[cell] = False
-        delay = 20 if is_revealed_saboteur else 10
+        cfg = state.balance
+        delay = cfg.saboteur_food_respawn_delay if is_revealed_saboteur else cfg.food_respawn_delay
         state.food_respawn_at[cell] = state.step_count + delay
         return
 
@@ -468,8 +480,7 @@ def _do_scan(
     target = state.agents[scan_target]
     if not target.is_alive:
         return
-    # Cost: +1 thirst
-    agent.thirst += 1
+    agent.thirst += state.balance.scan_thirst_cost
     # Noisy result: 70% accurate, 30% reversed
     h = infection_mod._hash01(
         "scan",
@@ -519,11 +530,11 @@ def _do_pickup(
         inv.add_item(agent.inventory, "medicine")
         agent.medicine_picked_up += 1
         state.medicine_present[cell] = False
-        state.medicine_respawn_at[cell] = state.step_count + 25
+        state.medicine_respawn_at[cell] = state.step_count + state.balance.medicine_respawn_delay
     elif chosen == "food":
         inv.add_item(agent.inventory, "food")
         state.food_present[cell] = False
-        state.food_respawn_at[cell] = state.step_count + 10
+        state.food_respawn_at[cell] = state.step_count + state.balance.food_respawn_delay
     elif chosen == "water":
         inv.add_item(agent.inventory, "water")  # depot persists
 
@@ -640,14 +651,15 @@ def _maybe_bite(biter: _AgentInternal, state: EpisodeState) -> None:
     victim = min(candidates, key=lambda a: a.agent_id)
 
     if not infection_mod.should_bite(
-        state.episode_seed, state.step_count, biter.agent_id, victim.agent_id
+        state.episode_seed, state.step_count, biter.agent_id, victim.agent_id,
+        p_bite=state.balance.p_bite,
     ):
         return
 
     # Bite lands. Damage + infection — but credit the cost to the victim's
     # pending_reward (out-of-turn event from victim's perspective) instead
     # of damage_this_step which would be wiped on victim's next reset.
-    victim.hp -= 1
+    victim.hp -= state.balance.bite_damage
     victim.pending_reward += -0.10
     if victim.hp <= 0:
         _kill_agent(victim, state, "infected_attack", in_turn=False)
@@ -717,7 +729,7 @@ def advance_zombies(state: EpisodeState) -> None:
             if not agent.is_alive:
                 continue
             if agent.row == zombie.row and agent.col == zombie.col:
-                agent.hp -= 1
+                agent.hp -= state.balance.zombie_contact_damage
                 agent.pending_reward += -0.10
                 if agent.hp <= 0:
                     _kill_agent(agent, state, "zombie_attack", in_turn=False)
@@ -728,12 +740,15 @@ def _find_nearest_agent_for_zombie(
 ) -> Optional[tuple[int, int]]:
     best = None
     best_dist = float("inf")
+    radius = state.balance.zombie_chase_radius
     for agent in state.agents:
         if not agent.is_alive:
             continue
         if _is_in_safehouse(agent.row, agent.col):
             continue
         d = abs(agent.row - zombie.row) + abs(agent.col - zombie.col)
+        if radius is not None and d > radius:
+            continue
         if d < best_dist:
             best_dist = d
             best = (agent.row, agent.col)
@@ -805,11 +820,13 @@ def _occupied_cells(state: EpisodeState) -> list[tuple[int, int]]:
 def _spawn_wave(state: EpisodeState) -> None:
     """Spawn the wave for the current step (if any)."""
     s = state.step_count
-    if not spawn_mod.is_wave_step(s) or s in state.waves_triggered:
+    waves = state.balance.waves
+    if not spawn_mod.is_wave_step(s, waves) or s in state.waves_triggered:
         return
     state.waves_triggered.add(s)
     cells = spawn_mod.pick_wave_spawn_cells(
-        s, state.rng, _occupied_cells(state), len(state.zombies)
+        s, state.rng, _occupied_cells(state), len(state.zombies),
+        schedule=waves, max_zombies=state.balance.max_zombies,
     )
     next_id = (max((z.zombie_id for z in state.zombies), default=-1) + 1)
     for (r, c) in cells:
@@ -825,23 +842,24 @@ def _decay_noise(state: EpisodeState) -> None:
 def _check_reveals(state: EpisodeState) -> None:
     """Flip latent → revealed for any agent whose countdown expired this step."""
     state.latent_revealed_this_step = {}
+    cfg = state.balance
     for a in state.agents:
         if not a.is_alive or a.infection_state != "latent":
             continue
         # Starting infected: scheduled reveal
         if a.bite_at_step == 0 and a.infection_role == "biter":
-            if state.step_count >= infection_mod.BITER_REVEAL_STEP:
+            if state.step_count >= cfg.biter_reveal_step:
                 a.infection_state = "revealed"
                 state.latent_revealed_this_step[a.agent_id] = True
             continue
         if a.bite_at_step == 0 and a.infection_role == "saboteur":
-            if state.step_count >= infection_mod.SABOTEUR_REVEAL_STEP:
+            if state.step_count >= cfg.saboteur_reveal_step:
                 a.infection_state = "revealed"
                 state.latent_revealed_this_step[a.agent_id] = True
             continue
         # Bitten agents: countdown
         if a.bite_at_step is not None:
-            if state.step_count >= a.bite_at_step + infection_mod.LATENT_DURATION:
+            if state.step_count >= a.bite_at_step + cfg.latent_duration:
                 a.infection_state = "revealed"
                 state.latent_revealed_this_step[a.agent_id] = True
 
@@ -853,7 +871,7 @@ def _check_reveals(state: EpisodeState) -> None:
             continue
         if a.infection_state == "revealed" and a.bite_at_step is not None:
             duration = state.step_count - a.bite_at_step
-            if duration >= 30 and a.medicine_used == 0:
+            if duration >= cfg.infection_death_after and a.medicine_used == 0:
                 a.hp = 0
                 _kill_agent(a, state, "infection_progression", in_turn=False)
 
@@ -991,10 +1009,10 @@ def get_current_phase(state: EpisodeState) -> str:
     if state.done:
         return "terminal"
     s = state.step_count
-    if s < infection_mod.BITER_REVEAL_STEP:
+    if s < state.balance.biter_reveal_step:
         return "pre_biter_reveal"
     if s < 50:
         return "post_biter_reveal"
-    if s < infection_mod.SABOTEUR_REVEAL_STEP:
+    if s < state.balance.saboteur_reveal_step:
         return "mid_episode"
     return "post_saboteur_reveal"

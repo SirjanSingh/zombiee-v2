@@ -35,7 +35,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from survivecity_v2_env.spawn import WAVE_SCHEDULE
 from survivecity_v2_env.layout import (
     FOOD_CELLS, WATER_CELLS, MEDICINE_CELLS,
 )
@@ -269,7 +268,7 @@ def wave_survival_reward(state: "EpisodeState", agent_id: int) -> float:
     s = state.step_count
     # We pay this on the step IMMEDIATELY AFTER the wave so the agent had a
     # chance to be killed in the wave-step itself.
-    payout_steps = {ws + 1 for ws in WAVE_SCHEDULE}
+    payout_steps = {ws + 1 for ws in state.balance.waves}
     if s in payout_steps and a.is_alive:
         return 0.05
     return 0.0
