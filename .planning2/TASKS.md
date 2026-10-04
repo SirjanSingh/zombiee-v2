@@ -57,6 +57,13 @@ Rules
 
 (Phase B tasks get added after W3/W4 land.)
 
+- [x] **W6 — Mid-episode start states** (worker, 2026-10-04; full spec on claude/phase-2-gigpo).
+  `training/policies.py` (camp planner on public obs, exact parity with probe Camp), `training/scenarios.py`
+  (decision-density states, exact replay tested on 50 random (N,t,m), fixed-window scoring),
+  a0_healthy option, train flags `--balance --scenario-mode --rollout-policy --horizon --window-return`.
+  Finding: the shaped window return ranks random A0 above the planner; README Run 6 (v3) uses
+  `--window-return survival --step1-weight 0`. Smoke + dataset stats in research_log.
+
 ## Manager queue
 - [ ] M1 — DGX infra: fresh clone, conda env, CUDA check, Qwen2.5-3B download.
 - [ ] M2 — Review W1-W3 diffs; re-run calibration independently.
