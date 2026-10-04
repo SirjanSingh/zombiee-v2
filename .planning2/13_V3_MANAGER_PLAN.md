@@ -94,3 +94,31 @@ User's steer: the end goal is a model that really survives, with a strategic goa
 ### Metrics (headline, every eval)
 A0 lifetime, mean healthy alive at t=100, survival rate, reached-t100 rate, mean reward,
 action histogram. Never report survival alone (memory `eval_metric_binary_threshold`).
+
+---
+
+## Research update (2026-10-04, manager; abstracts read, papers not yet read in full)
+
+What changed since plan 11 (May-June 2026) and how it applies here:
+
+- **Signal dilution** ([Drowning in Routine, arXiv 2606.22164](https://arxiv.org/abs/2606.22164), ICML'26 FAGEN workshop):
+  routine turns add gradient variance to trajectory-level estimators like GRPO without adding
+  signal; turn-level vs trajectory-level SNR scales as rho^(-1/2) with decision density rho.
+  Our game is low-density (many "wait in safehouse" turns). **Apply:** in Phase B, sample start
+  states weighted toward decision-dense moments (low water/food, zombie within 3, vote turns,
+  radio/extraction window) instead of uniform t. Supports turn-level credit (GiGPO) over plain GRPO.
+- **ReBN** ([GEM, ICLR'26, arXiv 2510.01051](https://arxiv.org/abs/2510.01051)): REINFORCE with return
+  batch normalization handles dense per-turn rewards with better credit assignment than GRPO in
+  multi-turn settings. **Apply:** a cheap alternative/baseline to GiGPO once per-turn rewards exist;
+  worth an ablation (GRPO vs GiGPO vs ReBN) since the video story benefits from a comparison.
+- **State2State** ([arXiv 2608.04934](https://arxiv.org/abs/2608.04934), work in progress): mid-training on
+  tasks derived from explored environment states ("reach target state"), verified by rule-based state
+  matching; helps as standalone and as RL init on ALFWorld/ScienceWorld. **Apply:** confirms the
+  direction of training from explored mid-episode states rather than resets.
+- Also seen, not yet assessed: [Tree-GRPO (ICLR'26)](https://github.com/AMAP-ML/Tree-GRPO) (tree-search rollouts,
+  Qwen2.5-3B, 1/4 rollout budget), [Granularity-adaptive credit assignment (2609.12424)](https://arxiv.org/pdf/2609.12424),
+  [TRACE turn-level credit (2607.13988)](https://arxiv.org/pdf/2607.13988),
+  [PGPO potential-guided (2609.02236)](https://arxiv.org/abs/2609.02236).
+
+Net: algorithm choice is NOT the bottleneck right now (env winnability and state distribution are).
+Keep GiGPO as the main method, add ReBN as a comparison arm after Phase B works.
