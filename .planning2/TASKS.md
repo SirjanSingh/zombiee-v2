@@ -55,7 +55,10 @@ Rules
   H=25, flag), and scores A0's return over that window including any milestone/extraction
   reward that lands inside it. Must-have test: replay to t reproduces the exact state
   (positions, stats, zombies, food timers) for 50 random (N,t). Log the t histogram + state
-  tags of the dataset to research_log.
+  tags of the dataset to research_log. Training scenarios fix A0 as healthy (infected roles
+  sampled from A1-A4 only, via a create_episode option); an infected A0 has a different
+  objective and would muddy the survival gradient. Eval reports both A0-healthy and
+  natural-role seeds.
 - [ ] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
   non-oracle planner over the W6 state distribution, write (prompt, completion) JSONL at A0
   turns, completion in the exact JSON format the RL prompt asks for (K-action array).
