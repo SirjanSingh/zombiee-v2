@@ -6,30 +6,32 @@ vote-round information. Past failures (post-mortems) are prepended.
 
 from __future__ import annotations
 
+from survivecity_v2_env.balance import get_balance
+
 
 SYSTEM_PROMPT_TEMPLATE_SINGLE = """You are agent A{agent_id} in a 5-agent zombie-apocalypse simulation called SurviveCity v2.
 
 == WORLD RULES ==
 - 15x15 grid. 5 agents (A0..A4) share the map with zombies.
-- Safehouse (S) at the centre (rows 6-8, cols 6-8): heals 1 HP/step, blocks zombies.
+- Safehouse (S) at the centre (rows 6-8, cols 6-8): heals {heal} HP/step, blocks zombies.
 - Food (F): 12 cells (8 outer + 4 inner ring near safehouse). Use "eat" on cell to clear hunger, or "pickup" to carry.
 - Water (W): 8 cells, persistent (4 outer + 4 inner ring). Use "drink" on cell to clear thirst, or "pickup" to carry.
 - Medicine (M): 2 cells, scarce. Use "pickup" to carry. Use "inject" to cure latent infection.
 - Walls (#): block movement.
-- Hunger and thirst tick +1 each step. >=15 deals 1 HP/step.
+- {clock_line}
 - Inventory: 3 slots per agent. Items: food | water | medicine.
 
 == HIDDEN INFECTION ==
 - 2 of 5 agents start INFECTED: one BITER, one SABOTEUR. Roles assigned at episode start.
-- BITER: revealed at step 25. Post-reveal, attacks adjacent agents. Each attack has a 35% chance to BITE-INFECT (latent for 15 steps, then revealed). Bitten agents become biters too.
-- SABOTEUR: revealed at step 60. Post-reveal, food they eat depletes 2x slower to respawn (silently hurts the team).
-- LATENT infection: hidden 15-step countdown. If you are bitten you receive a private "You were bitten" message — go grab medicine and inject yourself.
+- BITER: revealed at step {biter_reveal}. Post-reveal, attacks adjacent agents. Each attack has a {p_bite}% chance to BITE-INFECT (latent for {latent} steps, then revealed). Bitten agents become biters too.
+- SABOTEUR: revealed at step {sab_reveal}. Post-reveal, food they eat depletes 2x slower to respawn (silently hurts the team).
+- LATENT infection: hidden {latent}-step countdown. If you are bitten you receive a private "You were bitten" message — go grab medicine and inject yourself.
 - You only see your OWN infection_state. Other agents' status is inferred via noisy behavioural cues (30% false-positive on healthy, 30% miss on infected).
 
 == DAY / NIGHT + WAVES ==
 - Day: steps 0-24 and 50-74. Visibility full.
 - Night: steps 25-49 and 75-99. Visibility reduced (filtered description).
-- Zombie waves spawn at steps 25, 50, 75 (+2, +3, +3, capped at 12 total).
+- {waves_line}{extra_rules}
 
 == VOTING (3 ROUNDS) ==
 - vote_lockout is valid at exactly step 30, 50, 70, 90. Plurality with at least 2 votes locks one agent out of the safehouse for the rest of the episode.
@@ -82,25 +84,25 @@ SYSTEM_PROMPT_TEMPLATE_MULTI = """You are agent A{agent_id} in a 5-agent zombie-
 
 == WORLD RULES ==
 - 15x15 grid. 5 agents (A0..A4) share the map with zombies.
-- Safehouse (S) at the centre (rows 6-8, cols 6-8): heals 1 HP/step, blocks zombies.
+- Safehouse (S) at the centre (rows 6-8, cols 6-8): heals {heal} HP/step, blocks zombies.
 - Food (F): 12 cells (8 outer + 4 inner ring near safehouse). Use "eat" on cell to clear hunger, or "pickup" to carry.
 - Water (W): 8 cells, persistent (4 outer + 4 inner ring). Use "drink" on cell to clear thirst, or "pickup" to carry.
 - Medicine (M): 2 cells, scarce. Use "pickup" to carry. Use "inject" to cure latent infection.
 - Walls (#): block movement.
-- Hunger and thirst tick +1 each step. >=15 deals 1 HP/step.
+- {clock_line}
 - Inventory: 3 slots per agent. Items: food | water | medicine.
 
 == HIDDEN INFECTION ==
 - 2 of 5 agents start INFECTED: one BITER, one SABOTEUR.
-- BITER: revealed at step 25. Post-reveal, attacks adjacent agents with 35% bite chance.
-- SABOTEUR: revealed at step 60. Food they eat depletes 2x slower to respawn.
-- LATENT infection: hidden 15-step countdown. If bitten you receive a private "You were bitten" message.
+- BITER: revealed at step {biter_reveal}. Post-reveal, attacks adjacent agents with {p_bite}% bite chance.
+- SABOTEUR: revealed at step {sab_reveal}. Food they eat depletes 2x slower to respawn.
+- LATENT infection: hidden {latent}-step countdown. If bitten you receive a private "You were bitten" message.
 - You only see your OWN infection_state. Other agents inferred via noisy behavioural cues.
 
 == DAY / NIGHT + WAVES ==
 - Day: steps 0-24 and 50-74. Visibility full.
 - Night: steps 25-49 and 75-99. Visibility reduced (filtered description).
-- Zombie waves spawn at steps 25, 50, 75 (+2, +3, +3, capped at 12 total).
+- {waves_line}{extra_rules}
 
 == VOTING (3 ROUNDS) ==
 - vote_lockout is valid at exactly step 30, 50, 70, 90.
@@ -135,11 +137,53 @@ Respond with ONLY the JSON array on a single line, like the examples above. No e
 """
 
 
+def _num(x: float) -> str:
+    return f"{x:g}"
+
+
+def rule_fields(balance=None) -> dict:
+    """Numbers in the rules text, taken from the BalanceConfig.
+
+    The v2.2 preset renders exactly the pre-v3 prompt text.
+    """
+    cfg = get_balance(balance)
+    if (cfg.hunger_rate == cfg.thirst_rate == 1.0
+            and cfg.starve_threshold == cfg.dehydrate_threshold == 15):
+        clock = "Hunger and thirst tick +1 each step. >=15 deals 1 HP/step."
+    else:
+        clock = (f"Hunger rises {_num(cfg.hunger_rate)}/step and thirst {_num(cfg.thirst_rate)}/step "
+                 f"(infected: hunger x{_num(cfg.infected_hunger_mult)}). Hunger >= {cfg.starve_threshold} "
+                 f"or thirst >= {cfg.dehydrate_threshold} deals 1 HP/step each. Max HP {cfg.hp_max}.")
+    waves = cfg.waves
+    if waves:
+        steps = ", ".join(str(t) for t in waves)
+        adds = ", ".join(f"+{n}" for n in waves.values())
+        waves_line = f"Zombie waves spawn at steps {steps} ({adds}, capped at {cfg.max_zombies} total)."
+    else:
+        waves_line = "No zombie waves."
+    extra = []
+    if cfg.zombie_move_every > 1:
+        extra.append(f"Zombies are slow: they move only every {cfg.zombie_move_every} steps.")
+    if cfg.zombie_chase_radius is not None:
+        extra.append(f"Zombies chase agents outside the safehouse within {cfg.zombie_chase_radius} cells; "
+                     "otherwise they wander.")
+    if not cfg.starting_infected_progression:
+        extra.append(f"Agents bitten during the game die {cfg.infection_death_after} steps after the bite "
+                     "unless injected with medicine.")
+    return {
+        "heal": cfg.safehouse_heal, "clock_line": clock, "biter_reveal": cfg.biter_reveal_step,
+        "sab_reveal": cfg.saboteur_reveal_step, "p_bite": round(cfg.p_bite * 100),
+        "latent": cfg.latent_duration, "waves_line": waves_line,
+        "extra_rules": "".join("\n- " + e for e in extra),
+    }
+
+
 def build_system_prompt(
     agent_id: int,
     situation: str,
     postmortem_buffer: dict[int, list[str]] | None = None,
     prefix_actions: int = 1,
+    balance=None,
 ) -> str:
     """Build the system prompt for an agent.
 
@@ -165,11 +209,13 @@ def build_system_prompt(
             past_failures=past_block,
             situation=situation,
             prefix_k=prefix_actions,
+            **rule_fields(balance),
         )
     return SYSTEM_PROMPT_TEMPLATE_SINGLE.format(
         agent_id=agent_id,
         past_failures=past_block,
         situation=situation,
+        **rule_fields(balance),
     )
 
 
@@ -191,6 +237,8 @@ def format_observation_description(
     own_bite_at_step: int | None,
     noise_meter: int,
     noise_threshold: int,
+    balance=None,
+    bite_history: list[dict] | None = None,
 ) -> str:
     """Format the observation into an LLM-readable description.
 
@@ -209,11 +257,12 @@ def format_observation_description(
     def _dist(other_r, other_c):
         return abs(other_r - self_a["row"]) + abs(other_c - self_a["col"])
 
+    cfg = get_balance(balance)
     lines = []
-    lines.append(f"Step {step}/100 | Phase: {phase} | {day_phase.upper()}")
+    lines.append(f"Step {step}/{cfg.max_steps} | Phase: {phase} | {day_phase.upper()}")
     lines.append(
         f"You are A{agent_id} at ({self_a['row']},{self_a['col']}) "
-        f"HP={self_a['hp']}/3 hunger={self_a['hunger']} thirst={self_a['thirst']}"
+        f"HP={self_a['hp']}/{cfg.hp_max} hunger={self_a['hunger']} thirst={self_a['thirst']}"
     )
     lines.append(f"Inventory: {own_inventory if own_inventory else 'empty'} (cap=3)")
     lines.append(f"Noise meter: {noise_meter}/{noise_threshold} (decays every 10 steps)")
@@ -223,14 +272,14 @@ def format_observation_description(
         if own_bite_at_step is not None:
             lines.append(
                 f"⚠ YOU ARE LATENT-INFECTED (bitten at step {own_bite_at_step}, "
-                f"reveals at step {own_bite_at_step + 15}). Get medicine + inject self."
+                f"reveals at step {own_bite_at_step + cfg.latent_duration}). Get medicine + inject self."
             )
         else:
             lines.append("⚠ YOU ARE LATENT-INFECTED. Get medicine + inject self.")
     elif own_infection_state == "revealed":
         lines.append(
-            "⚠⚠ YOU ARE REVEALED-INFECTED. Strategy: avoid suspicion, frame healthy "
-            "agents in votes, survive to step 100."
+            f"⚠⚠ YOU ARE REVEALED-INFECTED. Strategy: avoid suspicion, frame healthy "
+            "agents in votes, survive to step {cfg.max_steps}."
         )
 
     if self_a.get("locked_out"):
@@ -277,6 +326,11 @@ def format_observation_description(
         for c in behavioral_cues[:5]:
             lines.append(f"  • {c}")
 
+    # Bites are public: everyone saw them happen.
+    if bite_history:
+        lines.append("Bites seen: " + "; ".join(
+            f"A{b['biter_id']} bit A{b['victim_id']} at t={b['step']}" for b in bite_history[-5:]))
+
     # Last scan result
     if last_scan is not None:
         target = last_scan.get("target_id")
@@ -295,7 +349,7 @@ def format_observation_description(
     # Phase-specific reminders
     if step in (30, 50, 70, 90):
         lines.append(f"⚠ VOTE PHASE (round at step {step}) — use vote_lockout NOW.")
-    elif step in (25, 50, 75):
+    elif step in cfg.waves:
         lines.append(f"⚠ ZOMBIE WAVE INCOMING (this step). Cluster near safehouse.")
     elif step == 24:
         lines.append("⚠ Sun setting. Wave at step 25.")

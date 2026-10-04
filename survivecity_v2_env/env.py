@@ -330,6 +330,8 @@ class SurviveCityV2Env:
             own_bite_at_step=own_bite_at,
             noise_meter=ep.noise_meter,
             noise_threshold=ep.noise_threshold,
+            balance=ep.balance,
+            bite_history=ep.bite_history,
         )
 
         # Aggregate metadata
