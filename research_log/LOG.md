@@ -141,3 +141,46 @@ one-step "don't step next to a zombie" rule gets 13% at the candidate balance, i
 Open decision (manager/user): keep the old heuristic as a frozen baseline and add a fixed
 "heuristic v3" as the rollout/baseline policy, or relax the 5-20% target. `v3-rc1` is a preset,
 not yet the default. Prototype code: `data/2026-10-04_w3_heuristic_prototypes.py`.
+
+---
+
+## 2026-10-04 17:14 — calibration `v3-rc1-final` (balance `v3-rc1`, overrides: none)
+
+W3 final: v3-rc1 is now the default; heuristic_v3 is the baseline/rollout policy; prompts/rubric/postmortem follow the config.
+
+100 episodes, seed 42, git `cd4120f`, all 5 agents scripted by the policy. surv = >=1 healthy agent alive at t=100.
+
+| policy | surv | reach_T | ep_len | A0_life | healthy_end | alive_end | bites | top death causes (all agents) |
+|---|---|---|---|---|---|---|---|---|
+| random | 0% | 0% | 26.9 | 21.8 | 0.00 | 0.11 | 0.00 | hunger 360, thirst 113, zombie_attack 16 |
+| heuristic_v2 | 0% | 0% | 26.4 | 24.0 | 0.00 | 0.76 | 0.00 | hunger 312, thirst 73, zombie_attack 39 |
+| heuristic_v3 | 11% | 11% | 74.3 | 50.6 | 0.13 | 0.70 | 0.34 | hunger 184, thirst 149, zombie_attack 90, infection_progression 7 |
+| camp | 73% | 91% | 99.0 | 92.8 | 0.90 | 1.45 | 0.03 | thirst 213, hunger 142 |
+| oracle | 83% | 90% | 98.7 | 70.1 | 1.24 | 1.25 | 0.03 | hunger 225, thirst 146, zombie_attack 3, infection_progression 1 |
+
+Data: `data/2026-10-04_calibrate_v3-rc1-final.json`, `experiments.jsonl` rows with `tag=v3-rc1-final`.
+
+---
+
+## 2026-10-04 17:14 — calibration `v2.2-heuristic_v3` (balance `v2.2`, overrides: none)
+
+Before/after reference: the fixed heuristic under the old balance.
+
+100 episodes, seed 42, git `cd4120f`, all 5 agents scripted by the policy. surv = >=1 healthy agent alive at t=100.
+
+| policy | surv | reach_T | ep_len | A0_life | healthy_end | alive_end | bites | top death causes (all agents) |
+|---|---|---|---|---|---|---|---|---|
+| heuristic_v3 | 0% | 0% | 26.2 | 18.2 | 0.00 | 0.48 | 0.00 | zombie_attack 251, hunger 155, thirst 46 |
+
+Data: `data/2026-10-04_calibrate_v2.2-heuristic_v3.json`, `experiments.jsonl` rows with `tag=v2.2-heuristic_v3`.
+
+---
+
+## 2026-10-04 — v3 balance is live (worker session, W3 done)
+
+The default game is now `v3-rc1`, and the fixed `heuristic_v3` is both the baseline and the policy
+GRPO rolls out with. Targets met on 100 episodes: heuristic_v3 11% (target 5-20%), oracle 83%
+(target >= 60%), random 0%. The old heuristic still scores 0% here, and the new heuristic scores 0%
+under the old balance, so the result needed both fixes. The model's prompt now states the real v3
+rules and shows public bite events ("A2 bit A4 at t=31"). Write-up: `.planning2/14_V3_BALANCE.md`.
+Tables: the `v3-rc1-final` and `v2.2-heuristic_v3` entries above.

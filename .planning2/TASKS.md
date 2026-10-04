@@ -31,20 +31,18 @@ Rules
     Policies random/heuristic/camp/oracle, probe seed scheme (reproduces probe numbers exactly). Writes
     experiments.jsonl rows + data/<date>_calibrate_<tag>.json (per-episode) + LOG.md table; `--no-log`/`--no-md`.
     v2.2 baseline logged (tag v2.2-baseline): all 0% survival; oracle ep 66.8, A0 49.0. ~45 s for all 4 x 100.
-- [ ] **W3 — Rebalance to v3.** Find the smallest knob set that hits: heuristic survival
+- [x] **W3 — Rebalance to v3.** Find the smallest knob set that hits: heuristic survival
   ~5-20%, oracle >= 60%, random ~0%. Write the table before/after into
   `.planning2/14_V3_BALANCE.md` with one line of reasoning per knob. Make v3 the default.
   Keep layout copies in `training/inference.py` and counts in `prompts.py` in sync.
   Ask the manager before changing anything about voting/infection roles (the social
   deduction part is the project's point).
 
-  - PAUSED 2026-10-04 at a clean point (usage pause). Done: knobs `zombie_move_every`,
-    `starting_infected_progression` (approved), hp bound follows hp_max, `tools/sweep_balance.py`,
-    preset `v3-rc1` (oracle 83%, camp 73%, random 0%, heuristic 0%), logged sweeps + findings.
-    Blocked on a decision: the current heuristic is 0% in every balance (3 bugs + no zombie
-    avoidance; see LOG.md). A fixed + avoiding prototype gets 13% at v3-rc1.
-    Not done: make v3 the default; sync prompts.py / rubric.py thresholds / postmortem.py latent;
-    bite events are only in metadata.bite_history, not in prompt text.
+  - Done 2026-10-04: default preset `v3-rc1` (rate 0.6, zombies move every 2nd step, chase radius 4,
+    starting infected exempt). heuristic_v3 11%, oracle 83%, camp 73%, random 0%, heuristic_v2 0%.
+    heuristic_v3 = rollout/baseline policy; prompts/rubric/postmortem follow cfg; bite events in prompt.
+    Details: `.planning2/14_V3_BALANCE.md`.
+
 - [ ] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
   Radio at t=60 names an extraction corner (seeded); helicopter t=85-90 extracts healthy
   agents in the zone; any infected agent in the zone = extraction fails (infected win);

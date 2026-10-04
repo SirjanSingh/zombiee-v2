@@ -1,0 +1,4490 @@
+{
+ "date": "2026-10-04T17:14:18",
+ "git_sha": "cd4120f",
+ "experiment": "calibration",
+ "tag": "v2.2-heuristic_v3",
+ "balance": "v2.2",
+ "balance_overrides": {},
+ "balance_config": {
+  "max_steps": 100,
+  "hp_max": 3,
+  "hunger_rate": 1.0,
+  "thirst_rate": 1.0,
+  "infected_hunger_mult": 1.5,
+  "starve_threshold": 15,
+  "dehydrate_threshold": 15,
+  "safehouse_heal": 1,
+  "scan_thirst_cost": 1,
+  "zombie_chase_radius": null,
+  "zombie_move_every": 1,
+  "zombie_contact_damage": 1,
+  "wave_schedule": {
+   "25": 2,
+   "50": 3,
+   "75": 3
+  },
+  "max_zombies": 12,
+  "noise_threshold": 3,
+  "noise_decay_period": 10,
+  "food_respawn_delay": 10,
+  "saboteur_food_respawn_delay": 20,
+  "medicine_respawn_delay": 25,
+  "p_bite": 0.35,
+  "bite_damage": 1,
+  "latent_duration": 15,
+  "biter_reveal_step": 25,
+  "saboteur_reveal_step": 60,
+  "infection_death_after": 30,
+  "starting_infected_progression": true
+ },
+ "n_eps": 100,
+ "seed": 42,
+ "max_steps": 100,
+ "note": "Before/after reference: the fixed heuristic under the old balance.",
+ "results": {
+  "heuristic_v3": {
+   "metrics": {
+    "survival": 0.0,
+    "reached_max": 0.0,
+    "ep_len": 26.22,
+    "a0_life": 18.19,
+    "a0_alive_end": 0.03,
+    "healthy_end": 0,
+    "alive_end": 0.48,
+    "bites": 0,
+    "lockouts": 0
+   },
+   "death_causes": {
+    "zombie_attack": 251,
+    "hunger": 155,
+    "thirst": 46
+   },
+   "healthy_death_causes": {
+    "zombie_attack": 201,
+    "hunger": 58,
+    "thirst": 41
+   },
+   "a0_outcome": {
+    "hunger": 42,
+    "zombie_attack": 39,
+    "thirst": 16,
+    "alive": 3
+   },
+   "episodes": [
+    {
+     "seed": 670487,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 116739,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 26225,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 17,
+     "a0_alive_end": true,
+     "a0_death_cause": null,
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 777572,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 288389,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 23,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 23,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 256787,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 234053,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 146316,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 772246,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 107473,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 709570,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 14,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 776646,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 935518,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 571858,
+     "T": 21,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 20,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 91161,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 619176,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 442417,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 33326,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 31244,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 98246,
+     "T": 20,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 229258,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 243962,
+     "T": 22,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 21,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 529903,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 631262,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 27824,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 588508,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 208496,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 750800,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 681453,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 23,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 23,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 735392,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 571412,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 439898,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 231148,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 471029,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 617889,
+     "T": 32,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 31,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 291704,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 848749,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 911527,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 6814,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 795667,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 844962,
+     "T": 30,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 29,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 26,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 167414,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 732052,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 443143,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 356778,
+     "T": 42,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 41,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 291369,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 163032,
+     "T": 21,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 225772,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 800581,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 352944,
+     "T": 21,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 107175,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 97251,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 23,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 23,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 398382,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 101414,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 376417,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 888662,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 360663,
+     "T": 29,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 28,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 28,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 633052,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 277370,
+     "T": 19,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 846335,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 45561,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 765179,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 481741,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 562275,
+     "T": 18,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 130889,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 967096,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 396922,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 82627,
+     "T": 29,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 28,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 578856,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 17,
+     "a0_alive_end": true,
+     "a0_death_cause": null,
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 307419,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 869693,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 659176,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 14,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 18,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 648564,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 928463,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 903565,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 379201,
+     "T": 20,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 605397,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 201629,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 738797,
+     "T": 32,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 31,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 72933,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 48050,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 693384,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 238968,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 15,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 810620,
+     "T": 19,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 18,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 303445,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 83667,
+     "T": 17,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 17,
+     "a0_alive_end": true,
+     "a0_death_cause": null,
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 896865,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 244098,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 20,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 908573,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 14,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 105907,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 398591,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 291476,
+     "T": 29,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 12,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 28,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 21,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 28,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 475435,
+     "T": 33,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 26,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 32,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 666563,
+     "T": 26,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 16,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 17,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 25,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 874628,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "biter",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 14,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 15,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 382554,
+     "T": 27,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 22,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 10,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 26,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 170555,
+     "T": 23,
+     "reached_max": false,
+     "alive_end": 2,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 22,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 22,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 12,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 3
+    },
+    {
+     "seed": 388162,
+     "T": 31,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": "saboteur",
+     "a0_life": 18,
+     "a0_alive_end": false,
+     "a0_death_cause": "hunger",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 18,
+       "infected": true
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 11,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 16,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 30,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 372528,
+     "T": 25,
+     "reached_max": false,
+     "alive_end": 1,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 24,
+     "a0_alive_end": false,
+     "a0_death_cause": "thirst",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 14,
+       "infected": false
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 24,
+       "infected": false
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 20,
+       "infected": true
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    },
+    {
+     "seed": 219684,
+     "T": 28,
+     "reached_max": false,
+     "alive_end": 0,
+     "healthy_end": 0,
+     "survived": false,
+     "a0_role": null,
+     "a0_life": 13,
+     "a0_alive_end": false,
+     "a0_death_cause": "zombie_attack",
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 13,
+       "infected": false
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 19,
+       "infected": true
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 16,
+       "infected": true
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 19,
+       "infected": false
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 27,
+       "infected": false
+      }
+     ],
+     "bites": 0,
+     "lockouts": [],
+     "zombies_end": 5
+    }
+   ],
+   "sec": 7.0
+  }
+ }
+}
