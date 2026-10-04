@@ -35,7 +35,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from survivecity_v2_env.spawn import WAVE_SCHEDULE
 from survivecity_v2_env.layout import (
     FOOD_CELLS, WATER_CELLS, MEDICINE_CELLS,
 )
@@ -60,6 +59,21 @@ def _clip(score: float) -> float:
 VOTE_PHASES: list[int] = [30, 50, 70, 90]
 
 
+# Urgency thresholds were tuned against the v2.2 clock (damage at 15): "hungry"
+# at 10, urgency scale capped at 12. Expressed as fractions of the episode's
+# thresholds so they fire at the same relative urgency under any balance.
+def _hungry_at(state) -> int:
+    return round(state.balance.starve_threshold * 10 / 15)
+
+
+def _thirsty_at(state) -> int:
+    return round(state.balance.dehydrate_threshold * 10 / 15)
+
+
+def _urgency_cap(threshold: int) -> int:
+    return round(threshold * 12 / 15)
+
+
 # ---------------------------------------------------------------------------
 # 1. survival_reward (per-step, per-agent) — same shape as v1
 # ---------------------------------------------------------------------------
@@ -71,7 +85,7 @@ def survival_reward(state: "EpisodeState", agent_id: int) -> float:
         r += 0.005
         if a.ate_this_step:
             r += 0.05
-        if a.hunger >= 10:
+        if a.hunger >= _hungry_at(state):
             r -= 0.05
         if a.damage_this_step > 0:
             r -= 0.10 * a.damage_this_step
@@ -182,7 +196,7 @@ def thirst_reward(state: "EpisodeState", agent_id: int) -> float:
         return 0.0
     if a.drank_this_step:
         return 0.03
-    if a.thirst >= 10:
+    if a.thirst >= _thirsty_at(state):
         return -0.05
     return 0.005
 
@@ -269,7 +283,7 @@ def wave_survival_reward(state: "EpisodeState", agent_id: int) -> float:
     s = state.step_count
     # We pay this on the step IMMEDIATELY AFTER the wave so the agent had a
     # chance to be killed in the wave-step itself.
-    payout_steps = {ws + 1 for ws in WAVE_SCHEDULE}
+    payout_steps = {ws + 1 for ws in state.balance.waves}
     if s in payout_steps and a.is_alive:
         return 0.05
     return 0.0
@@ -328,13 +342,15 @@ def forage_shaping_reward(state: "EpisodeState", agent_id: int) -> float:
         # Live food cells only — depleted depots aren't reachable food yet
         live_food = [c for c in FOOD_CELLS if state.food_present.get(c, True)]
         d = _manhattan(a.row, a.col, live_food)
-        scale = min(a.hunger, 12) / 12.0
+        cap = _urgency_cap(state.balance.starve_threshold)
+        scale = min(a.hunger, cap) / cap
         r -= 0.003 * scale * min(d, 12)
 
     if a.thirst >= 1:
         # Water depots are persistent (do not deplete) — always include all
         d = _manhattan(a.row, a.col, list(WATER_CELLS))
-        scale = min(a.thirst, 12) / 12.0
+        cap = _urgency_cap(state.balance.dehydrate_threshold)
+        scale = min(a.thirst, cap) / cap
         r -= 0.003 * scale * min(d, 12)
 
     # Latent infected without a cure path — nudge toward medicine cells

@@ -109,7 +109,7 @@ def _format_bite_history(state: "EpisodeState", agent_id: int) -> str:
     bite = own_bites[0]
     return (
         f"You were bitten by A{bite['biter_id']} at step {bite['step']} "
-        f"(latent -> reveal at step {bite['step'] + 15}). "
+        f"(latent -> reveal at step {bite['step'] + state.balance.latent_duration}). "
     )
 
 

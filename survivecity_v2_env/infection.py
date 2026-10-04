@@ -15,26 +15,20 @@ The actual mutation of infection_state is in game.py. This module provides:
 from __future__ import annotations
 
 import hashlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+from survivecity_v2_env.balance import DEFAULT_BALANCE
 
 if TYPE_CHECKING:
     from survivecity_v2_env.game import EpisodeState
 
 
-# Bite probability on adjacency. Calibrated so a balance sweep with random
-# policy puts random survival in [0%, 5%] over 100 episodes (see
-# notebooks/balance_v2_sweep.ipynb).
-P_BITE = 0.35
-
-# Latent-infection countdown: the bitten agent's infection_state flips from
-# "latent" → "revealed" exactly LATENT_DURATION steps after the bite.
-LATENT_DURATION = 15
-
-# Reveal step for starting-infected agents (bypassing the bite mechanic):
-#   biter starts revealed at step BITER_REVEAL_STEP
-#   saboteur starts revealed at step SABOTEUR_REVEAL_STEP
-BITER_REVEAL_STEP = 25
-SABOTEUR_REVEAL_STEP = 60
+# Infection timing defaults from the active balance preset. Episodes read
+# their own values from EpisodeState.balance (see balance.py).
+P_BITE = DEFAULT_BALANCE.p_bite
+LATENT_DURATION = DEFAULT_BALANCE.latent_duration
+BITER_REVEAL_STEP = DEFAULT_BALANCE.biter_reveal_step
+SABOTEUR_REVEAL_STEP = DEFAULT_BALANCE.saboteur_reveal_step
 
 # Behavioural-cue noise rates. Floats in [0, 1].
 CUE_FALSE_POSITIVE_RATE = 0.30   # healthy agent flagged as suspicious
@@ -59,6 +53,7 @@ def should_bite(
     step: int,
     biter_id: int,
     victim_id: int,
+    p_bite: Optional[float] = None,
 ) -> bool:
     """Deterministically decide whether `biter_id` bites `victim_id` this step.
 
@@ -66,7 +61,8 @@ def should_bite(
     so the episode is reproducible regardless of how many bite checks
     are performed (which depends on adjacency, which depends on actions).
     """
-    return _hash01("bite", episode_seed, step, biter_id, victim_id) < P_BITE
+    p = P_BITE if p_bite is None else p_bite
+    return _hash01("bite", episode_seed, step, biter_id, victim_id) < p
 
 
 def cue_visible(

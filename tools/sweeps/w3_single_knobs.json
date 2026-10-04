@@ -1,0 +1,85 @@
+[
+ {
+  "name": "v2.2",
+  "set": {}
+ },
+ {
+  "name": "start-infected exempt (no other change)",
+  "set": {
+   "starting_infected_progression": false
+  }
+ },
+ {
+  "name": "hunger+thirst rate 0.75",
+  "set": {
+   "hunger_rate": 0.75,
+   "thirst_rate": 0.75
+  }
+ },
+ {
+  "name": "hunger+thirst rate 0.5",
+  "set": {
+   "hunger_rate": 0.5,
+   "thirst_rate": 0.5
+  }
+ },
+ {
+  "name": "thresholds 25",
+  "set": {
+   "starve_threshold": 25,
+   "dehydrate_threshold": 25
+  }
+ },
+ {
+  "name": "chase radius 6",
+  "set": {
+   "zombie_chase_radius": 6
+  }
+ },
+ {
+  "name": "chase radius 4",
+  "set": {
+   "zombie_chase_radius": 4
+  }
+ },
+ {
+  "name": "chase radius 3",
+  "set": {
+   "zombie_chase_radius": 3
+  }
+ },
+ {
+  "name": "waves halved",
+  "set": {
+   "wave_schedule": {
+    "25": 1,
+    "50": 2,
+    "75": 2
+   }
+  }
+ },
+ {
+  "name": "no waves",
+  "set": {
+   "wave_schedule": {}
+  }
+ },
+ {
+  "name": "food respawn 5",
+  "set": {
+   "food_respawn_delay": 5
+  }
+ },
+ {
+  "name": "hp_max 5",
+  "set": {
+   "hp_max": 5
+  }
+ },
+ {
+  "name": "infected mult 1.0",
+  "set": {
+   "infected_hunger_mult": 1.0
+  }
+ }
+]

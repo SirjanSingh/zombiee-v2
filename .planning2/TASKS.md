@@ -15,20 +15,33 @@ Rules
 
 ## Worker queue
 
-- [ ] **W1 — Balance config.** Move env balance constants (hunger/thirst thresholds and tick
+- [x] **W1 — Balance config.** Move env balance constants (hunger/thirst thresholds and tick
   rates, infected hunger multiplier, zombie chase behaviour, wave schedule, MAX_ZOMBIES, food
   respawn delay, P_BITE, LATENT_DURATION, safehouse heal) into one `BalanceConfig` dataclass
   (e.g. `survivecity_v2_env/balance.py`). Defaults = today's values, so behaviour is identical.
   Prove it: `tools/probes/baseline.py` and `oracle.py` numbers unchanged; tests pass.
-- [ ] **W2 — Calibration script.** `tools/calibrate.py`: runs random, current heuristic,
+  - Done 2026-10-04 (142e45c, ccd8397): `survivecity_v2_env/balance.py` (`BalanceConfig`, preset `v2.2`,
+    `get_balance`, fractional `meter_tick`). Env/game/spawn/infection/rubric read `state.balance`.
+    Identity: sha256 of full heuristic/random/oracle trajectories (40 seeds each) identical before/after;
+    baseline.py 16.02/12.98 and oracle.py 66.76/49.04 unchanged; golden-hash test pins v2.2. 97 tests pass.
+- [x] **W2 — Calibration script.** `tools/calibrate.py`: runs random, current heuristic,
   camp planner, oracle for N=100 eps under a given BalanceConfig and prints one table
   (ep_len, A0 lifetime, healthy alive at end, survival, reached-t100, death causes).
-- [ ] **W3 — Rebalance to v3.** Find the smallest knob set that hits: heuristic survival
+  - Done 2026-10-04: `python tools/calibrate.py [--balance P] [--set k=json] [--policies ...] [--n] [--tag] [--note]`.
+    Policies random/heuristic/camp/oracle, probe seed scheme (reproduces probe numbers exactly). Writes
+    experiments.jsonl rows + data/<date>_calibrate_<tag>.json (per-episode) + LOG.md table; `--no-log`/`--no-md`.
+    v2.2 baseline logged (tag v2.2-baseline): all 0% survival; oracle ep 66.8, A0 49.0. ~45 s for all 4 x 100.
+- [x] **W3 — Rebalance to v3.** Find the smallest knob set that hits: heuristic survival
   ~5-20%, oracle >= 60%, random ~0%. Write the table before/after into
   `.planning2/14_V3_BALANCE.md` with one line of reasoning per knob. Make v3 the default.
   Keep layout copies in `training/inference.py` and counts in `prompts.py` in sync.
   Ask the manager before changing anything about voting/infection roles (the social
   deduction part is the project's point).
+
+  - Done 2026-10-04: default preset `v3-rc1` (rate 0.6, zombies move every 2nd step, chase radius 4,
+    starting infected exempt). heuristic_v3 11%, oracle 83%, camp 73%, random 0%, heuristic_v2 0%.
+    heuristic_v3 = rollout/baseline policy; prompts/rubric/postmortem follow cfg; bite events in prompt.
+    Details: `.planning2/14_V3_BALANCE.md`.
 
 - [ ] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
   Radio at t=60 names an extraction corner (seeded); helicopter t=85-90 extracts healthy
@@ -42,15 +55,11 @@ Rules
   zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
   same seeds, old balance vs v3.
 
-**PAUSED 2026-10-04 (usage pause, resume only on user command).** W3 at c73f50e on v3-winnable-env:
-v3-rc1 preset (rate 0.6, zombie_move_every 2, chase radius 4, starting infected exempt) -> oracle 83%,
-camp 73%, random 0%, old heuristic 0% (bugs: drinks forever on water, eats on depleted food, stuck on walls).
-**Manager decision:** freeze the old policy as `heuristic_v2` (history only); make fixed +
-one-step-zombie-avoid `heuristic_v3` the baseline AND the GRPO rollout policy (prototype: 13% at v3-rc1;
-a buggy rollout policy would also corrupt the Q estimates). Then finish W3: v3-rc1 as default, sync
-prompts.py / rubric.py fractions / postmortem latent, bite events in prompt text. First item on restart.
+**2026-10-04 status:** W3 done (d600c33): v3-rc1 default, heuristic_v3 11%, camp 73%, oracle 83%, random 0%.
+**User chose the MINIMUM PATH to a first DGX run:** merge (done, manager) -> W6 -> GRPO run on v3-rc1
+(survival only). W4, W5, W7, W8 come after the first run. Worker does ONLY W6, then stops.
 
-### Phase B (queued; start after W3+W4 are reviewed by the manager)
+### Phase B (W6 active now; W7/W8 queued)
 
 - [ ] **W6 — Mid-episode start states.** Replace reset-only `build_scenario_dataset`:
   for each scenario pick seed N, roll a *behaviour mix* forward (planner / heuristic /
@@ -84,8 +93,8 @@ prompts.py / rubric.py fractions / postmortem latent, bite events in prompt text
   Qwen2.5-3B cached, 84 tests pass, GPU smoke test OK (fp16, 6.5 GB peak, 1298-token prompt).
   Quota 90 GB: user approved deleting conda envs ec, eckv (Amazon ML challenge) + heever on 2026-10-04 -> ~13 GB free.
   Keep --save-total-limit <= 5 for training runs.
-- [ ] M2 — Review W1-W3 diffs; re-run calibration independently.
-- [ ] M3 — Spec Phase B tasks (mid-episode states, fixed horizon, SFT from planner).
+- [x] M2 — Reviewed W1 + W2 (reproduced independently); W3 merged into claude/phase-2-gigpo, 116 tests pass.
+- [x] M3 — Spec Phase B tasks (mid-episode states, fixed horizon, SFT from planner).
 
 ## Done
 - 2026-10-04 manager: ceiling probes. Env is unwinnable even for an oracle (0/100 reach t=100).

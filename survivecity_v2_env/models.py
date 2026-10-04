@@ -28,7 +28,7 @@ class AgentState(BaseModel):
     agent_id: int
     row: int
     col: int
-    hp: int = Field(default=3, ge=0, le=3)
+    hp: int = Field(default=3, ge=0)  # max is BalanceConfig.hp_max
     hunger: int = Field(default=0, ge=0)
     thirst: int = Field(default=0, ge=0)
     is_alive: bool = True

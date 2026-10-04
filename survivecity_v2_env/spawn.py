@@ -13,22 +13,21 @@ by an agent or another zombie excluded. Capped at MAX_ZOMBIES total.
 from __future__ import annotations
 
 import random
-from typing import Iterable
+from typing import Iterable, Optional
 
+from survivecity_v2_env.balance import DEFAULT_BALANCE
 from survivecity_v2_env.layout import WAVE_SPAWN_POOL
 
 
-WAVE_SCHEDULE: dict[int, int] = {
-    25: 2,
-    50: 3,
-    75: 3,
-}
+# Defaults from the active balance preset. Episodes read their own
+# schedule from EpisodeState.balance; these are for callers without one.
+WAVE_SCHEDULE: dict[int, int] = DEFAULT_BALANCE.waves
 
-MAX_ZOMBIES = 12
+MAX_ZOMBIES = DEFAULT_BALANCE.max_zombies
 
 
-def is_wave_step(step: int) -> bool:
-    return step in WAVE_SCHEDULE
+def is_wave_step(step: int, schedule: Optional[dict[int, int]] = None) -> bool:
+    return step in (WAVE_SCHEDULE if schedule is None else schedule)
 
 
 def pick_wave_spawn_cells(
@@ -36,6 +35,8 @@ def pick_wave_spawn_cells(
     rng: random.Random,
     occupied: Iterable[tuple[int, int]],
     current_zombie_count: int,
+    schedule: Optional[dict[int, int]] = None,
+    max_zombies: Optional[int] = None,
 ) -> list[tuple[int, int]]:
     """Select cells to spawn zombies at for the given wave step.
 
@@ -49,8 +50,10 @@ def pick_wave_spawn_cells(
         A list of (row, col) cells. Length is min(WAVE_SCHEDULE[step],
         MAX_ZOMBIES - current_zombie_count, len(available_pool)).
     """
-    wanted = WAVE_SCHEDULE.get(step, 0)
-    headroom = max(0, MAX_ZOMBIES - current_zombie_count)
+    schedule = WAVE_SCHEDULE if schedule is None else schedule
+    cap = MAX_ZOMBIES if max_zombies is None else max_zombies
+    wanted = schedule.get(step, 0)
+    headroom = max(0, cap - current_zombie_count)
     n = min(wanted, headroom)
     if n <= 0:
         return []
