@@ -222,6 +222,23 @@ _SAFEHOUSE_CELLS_TUPLE: tuple[tuple[int, int], ...] = tuple(
 )
 
 
+# Mirror of survivecity_v2_env.layout.WALL_CELLS (test_layout_mirrors_match keeps them in sync).
+_WALL_CELLS_TUPLE: tuple[tuple[int, int], ...] = (
+    (4, 6), (4, 8), (10, 6), (10, 8),
+    (6, 4), (8, 4), (6, 10), (8, 10),
+    (2, 2), (2, 12), (12, 2), (12, 12),
+)
+_GRID_N = 15
+
+_MOVE_DELTAS = {
+    "move_up": (-1, 0), "move_down": (1, 0), "move_left": (0, -1), "move_right": (0, 1),
+}
+
+
+def _walkable(r: int, c: int) -> bool:
+    return 0 <= r < _GRID_N and 0 <= c < _GRID_N and (r, c) not in _WALL_CELLS_TUPLE
+
+
 def _nearest_cell(my_r: int, my_c: int, cells) -> Optional[tuple[int, int]]:
     best = None
     best_d = 999
@@ -246,12 +263,20 @@ def _step_toward(my_r: int, my_c: int, target: tuple[int, int]) -> Optional[str]
     return None
 
 
-def forage_heuristic_action(
+def forage_heuristic_v2(
     agent_id: int,
     obs: dict,
     rng: Optional[random.Random] = None,
 ) -> dict:
-    """A scripted forage policy used as the rollout opponent during GRPO.
+    """FROZEN v2 heuristic (runs 1-4). History only; see forage_heuristic_v3.
+
+    Kept unchanged so old numbers stay reproducible. W3 (2026-10-04) found it
+    survives 0% under every balance: it drinks forever once on a water cell,
+    "eats" on depleted food cells, walks into walls, and never avoids zombies.
+
+    Original docstring follows.
+
+    A scripted forage policy used as the rollout opponent during GRPO.
 
     v2.2 rewrite (2026-05-10) — fixes the early-game zombie deaths that
     pinned eval episodes at ~17 steps regardless of the trained model.
@@ -372,6 +397,126 @@ def forage_heuristic_action(
     if mv is not None:
         return {"agent_id": agent_id, "action_type": mv}
     return {"agent_id": agent_id, "action_type": "wait"}
+
+
+def _step_toward_v3(my_r: int, my_c: int, target: tuple[int, int]) -> Optional[str]:
+    """Greedy step like _step_toward, but tries the other axis when the first is a wall."""
+    tr, tc = target
+    dr, dc = tr - my_r, tc - my_c
+    v = ("move_down" if dr > 0 else "move_up") if dr else None
+    h = ("move_right" if dc > 0 else "move_left") if dc else None
+    order = [v, h] if abs(dr) > abs(dc) else [h, v]
+    for m in order:
+        if m and _walkable(my_r + _MOVE_DELTAS[m][0], my_c + _MOVE_DELTAS[m][1]):
+            return m
+    return next((m for m in order if m), None)
+
+
+def forage_heuristic_v3(
+    agent_id: int,
+    obs: dict,
+    rng: Optional[random.Random] = None,
+) -> dict:
+    """Baseline + GRPO rollout policy from v3 on (W3, 2026-10-04).
+
+    Same priorities as forage_heuristic_v2, with the three v2 bugs fixed and
+    one cheap survival rule added. It is meant to stay simple: no planning,
+    no infection reasoning, random votes.
+      - drinks on a water cell only when thirsty (v2 drank forever and starved there)
+      - ignores depleted food cells (obs metadata["depleted_food"])
+      - steps around walls instead of walking into them
+      - won't step onto or next to a zombie outside the safehouse; waits
+        instead, or sidesteps if it is already in danger
+      - after the extraction radio (W4), heads for the extraction zone
+    """
+    rng = rng or random
+    s = obs.get("step_count", 0)
+    me = next((a for a in obs.get("agents", [])
+               if a.get("agent_id") == agent_id and a.get("is_alive", True)), None)
+    if me is None:
+        return {"agent_id": agent_id, "action_type": "wait"}
+    A = lambda t, **k: {"agent_id": agent_id, "action_type": t, **k}  # noqa: E731
+
+    meta = obs.get("metadata", {}) or {}
+    my_r, my_c = me.get("row", 0), me.get("col", 0)
+    pos = (my_r, my_c)
+    hunger, thirst, hp = me.get("hunger", 0), me.get("thirst", 0), me.get("hp", 3)
+    inv = me.get("inventory", []) or []
+    depleted = {tuple(c) for c in meta.get("depleted_food", [])}
+    food_cells = tuple(c for c in _FOOD_CELLS_TUPLE if c not in depleted) or _FOOD_CELLS_TUPLE
+    on_water = pos in _WATER_CELLS_TUPLE
+    on_food = pos in food_cells
+    in_safehouse = pos in _SAFEHOUSE_CELLS_TUPLE
+    has_food, has_water = "food" in inv, "water" in inv
+    zone = [tuple(c) for c in (meta.get("extraction_zone") or [])]
+
+    zs = {(z["row"], z["col"]) for z in obs.get("zombies", [])}
+    danger = {(r + dr, c + dc) for r, c in zs for dr, dc in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1))}
+
+    def safe(cell):
+        return cell not in danger or cell in _SAFEHOUSE_CELLS_TUPLE
+
+    def go(cells):
+        target = _nearest_cell(my_r, my_c, cells)
+        if target is None:
+            return None
+        m = _step_toward_v3(my_r, my_c, target)
+        if m is None:
+            return None
+        nxt = (my_r + _MOVE_DELTAS[m][0], my_c + _MOVE_DELTAS[m][1])
+        if safe(nxt):
+            return A(m)
+        if safe(pos):
+            return A("wait")
+        for alt, (dr, dc) in _MOVE_DELTAS.items():
+            cell = (my_r + dr, my_c + dc)
+            if alt != m and _walkable(*cell) and safe(cell):
+                return A(alt)
+        return A(m)
+
+    if on_water and thirst > 0:
+        return A("drink")
+    if on_food and hunger > 0:
+        return A("eat")
+    if on_food and not has_food and len(inv) < 3:
+        return A("pickup", item_type="food")
+    if s in (30, 50, 70, 90):
+        return A("vote_lockout", vote_target=rng.choice([i for i in range(5) if i != agent_id]))
+    if in_safehouse:
+        if hunger >= 4 and has_food:
+            return A("eat")
+        if thirst >= 4 and has_water:
+            return A("drink")
+    if zone:
+        if pos in zone:
+            if hunger >= 4 and has_food:
+                return A("eat")
+            if thirst >= 4 and has_water:
+                return A("drink")
+            return A("wait")
+        return go(zone) or A("wait")
+    if hp <= 1:
+        if in_safehouse:
+            return A("wait")
+        mv = go(_SAFEHOUSE_CELLS_TUPLE)
+        if mv is not None:
+            return mv
+    if thirst >= 4 and thirst >= hunger:
+        mv = go([c for c in _WATER_CELLS_TUPLE if c != pos])
+        if mv is not None:
+            return mv
+    if hunger >= 4:
+        mv = go([c for c in food_cells if c != pos])
+        if mv is not None:
+            return mv
+    if in_safehouse:
+        return A("wait")
+    return go(_SAFEHOUSE_CELLS_TUPLE) or A("wait")
+
+
+# The rollout / baseline policy used by train.py, eval.py and the LLM
+# fallback. v3 from 2026-10-04 (W3); runs 1-4 used forage_heuristic_v2.
+forage_heuristic_action = forage_heuristic_v3
 
 
 def make_llm_action_fn(

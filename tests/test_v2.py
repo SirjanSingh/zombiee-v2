@@ -507,7 +507,7 @@ def test_observation_exposes_last_actor_and_cumulative():
 # ---------------------------------------------------------------------------
 
 def test_forage_heuristic_targets_food_when_hungry():
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 5,
         "agents": [
@@ -519,7 +519,7 @@ def test_forage_heuristic_targets_food_when_hungry():
 
 
 def test_forage_heuristic_drinks_on_water_cell():
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 5,
         "agents": [
@@ -532,7 +532,7 @@ def test_forage_heuristic_drinks_on_water_cell():
 
 
 def test_forage_heuristic_eats_on_food_cell():
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 5,
         "agents": [
@@ -551,7 +551,7 @@ def test_forage_heuristic_eats_on_food_cell():
 def test_forage_heuristic_step_zero_heads_to_safehouse_not_random():
     """At step 0 with full HP / no hunger, the OLD heuristic returned random.
     The new one should head to safehouse — random walk gets agents killed."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 0,
         "agents": [
@@ -567,7 +567,7 @@ def test_forage_heuristic_step_zero_heads_to_safehouse_not_random():
 
 def test_forage_heuristic_waits_in_safehouse_when_safe():
     """Inside safehouse with full HP and low needs: just wait (heal + safe)."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 5,
         "agents": [
@@ -581,7 +581,7 @@ def test_forage_heuristic_waits_in_safehouse_when_safe():
 
 def test_forage_heuristic_picks_up_food_when_not_hungry():
     """On food cell with empty inventory but hunger=0: stash food for later."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 5,
         "agents": [
@@ -597,7 +597,7 @@ def test_forage_heuristic_picks_up_food_when_not_hungry():
 
 def test_forage_heuristic_eats_inventory_food_in_safehouse():
     """In safehouse with food in inventory + hunger>=4: eat from inventory."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 10,
         "agents": [
@@ -611,7 +611,7 @@ def test_forage_heuristic_eats_inventory_food_in_safehouse():
 
 def test_forage_heuristic_drinks_inventory_water_in_safehouse():
     """In safehouse with water in inventory + thirst>=4: drink from inventory."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 10,
         "agents": [
@@ -625,7 +625,7 @@ def test_forage_heuristic_drinks_inventory_water_in_safehouse():
 
 def test_forage_heuristic_breaks_cover_at_critical_hunger_in_safehouse():
     """In safehouse with hunger>=10 and no food in inventory: must forage."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 20,
         "agents": [
@@ -640,7 +640,7 @@ def test_forage_heuristic_breaks_cover_at_critical_hunger_in_safehouse():
 
 def test_forage_heuristic_emergency_hp_returns_to_safehouse():
     """HP=1 anywhere outside safehouse: emergency return."""
-    from training.inference import forage_heuristic_action
+    from training.inference import forage_heuristic_v2 as forage_heuristic_action
     obs = {
         "step_count": 15,
         "agents": [

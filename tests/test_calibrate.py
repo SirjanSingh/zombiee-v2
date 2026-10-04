@@ -22,8 +22,8 @@ def test_calibrate_small_run_all_policies():
 
 def test_short_episode_counts_as_survival():
     # With max_steps=10 nobody starves: every policy should reach the end alive.
-    res = C.calibrate(V2_2.with_(max_steps=10), ["heuristic"], n=3, seed=1, progress=False)
-    assert res["heuristic"]["metrics"]["reached_max"] == 1.0
+    res = C.calibrate(V2_2.with_(max_steps=10), ["heuristic_v3"], n=3, seed=1, progress=False)
+    assert res["heuristic_v3"]["metrics"]["reached_max"] == 1.0
 
 
 def test_parse_overrides():

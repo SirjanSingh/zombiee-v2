@@ -36,7 +36,7 @@ logging.disable(logging.CRITICAL)
 
 from survivecity_v2_env.balance import BalanceConfig, DEFAULT_PRESET, PRESETS, get_balance  # noqa: E402
 from survivecity_v2_env.env import SurviveCityV2Env  # noqa: E402
-from training.inference import forage_heuristic_action, random_action  # noqa: E402
+from training.inference import forage_heuristic_v2, forage_heuristic_v3, random_action  # noqa: E402
 
 LOG_DIR = os.path.join(ROOT, "research_log")
 
@@ -64,14 +64,16 @@ def _oracle_factory(env, seed):
 
 POLICIES: dict[str, Callable] = {
     "random": _rng_policy(random_action),
-    "heuristic": _rng_policy(forage_heuristic_action),
+    "heuristic_v2": _rng_policy(forage_heuristic_v2),
+    "heuristic_v3": _rng_policy(forage_heuristic_v3),
     "camp": _camp_factory,
     "oracle": _oracle_factory,
 }
 
 POLICY_NOTES = {
     "random": "uniform random actions, random votes",
-    "heuristic": "training/inference.py forage_heuristic_action (GRPO rollout policy)",
+    "heuristic_v2": "frozen runs-1-4 rollout heuristic (training/inference.py forage_heuristic_v2)",
+    "heuristic_v3": "v3 baseline + GRPO rollout policy: v2 bugs fixed + one-step zombie avoid",
     "camp": "tools/probes/planner2.py Camp: stock water, camp in safehouse, safe sorties",
     "oracle": "tools/probes/oracle.py: Camp + knows who is infected, votes them out, keeps distance",
 }

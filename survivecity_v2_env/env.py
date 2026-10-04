@@ -374,6 +374,8 @@ class SurviveCityV2Env:
             "lockout_results": dict(ep.lockout_results),
             "vote_correct": vote_correct,
             "bite_history": list(ep.bite_history),
+            # Public map info (the grid hides a depot under an agent standing on it).
+            "depleted_food": sorted(c for c, present in ep.food_present.items() if not present),
             "rubric_breakdown": per_rubric_breakdown(ep, agent_id),
             "n_alive": sum(1 for a in ep.agents if a.is_alive),
             "n_healthy_alive": sum(
