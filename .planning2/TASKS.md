@@ -52,7 +52,7 @@ Rules
   small milestone bonus at t=30/60. Weights in config. Prompt shows radio info + turns left.
   Extend the oracle planner to do the extraction run so calibration can measure it.
   Do after W3 has a winnable survival baseline. Propose reward weights to the manager first.
-- [ ] **W5 — Replay recorder (for YouTube visuals).** `tools/record_episode.py`: runs one
+- [x] **W5 — Replay recorder (for YouTube visuals).** `tools/record_episode.py`: runs one
   episode under a given policy + BalanceConfig and writes `research_log/replays/<name>.json`
   with every step: grid, agents (pos, hp, hunger, thirst, infection, inventory, action),
   zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
@@ -85,7 +85,7 @@ Rules
   sampled from A1-A4 only, via a create_episode option); an infected A0 has a different
   objective and would muddy the survival gradient. Eval reports both A0-healthy and
   natural-role seeds.
-- [~] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
+- [x] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
   non-oracle planner over the W6 state distribution, write (prompt, completion) JSONL at A0
   turns, completion in the exact JSON format the RL prompt asks for (K-action array).
   `training/sft.py`: LoRA SFT with prompt tokens masked, same LoRA config as train.py, so the

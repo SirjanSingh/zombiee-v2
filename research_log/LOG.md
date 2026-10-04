@@ -567,3 +567,18 @@ zombies. Infected agents are rarely the problem (failed flight 4%): most die bef
 hunger x1.5). Next levers if the 60% bar matters: a planner that stocks water in the t=40-60 window
 while hunger still allows sorties, or zombie-aware routing that predicts shambler moves. heuristic_v3
 needs a better survival core, not a better extraction rule; or accept ~1% as the "weak baseline".
+
+---
+
+## 2026-10-05 03:30 — W4 accepted as v3-rc2; run 8 mid-way flat; v3-rc2 imitation pipeline queued (manager)
+
+- **v3-rc2 accepted** (subagent, branch w4-extraction, merged d9cdbc6; 157 tests pass): extraction rate
+  random 0%, heuristic_v3 1%, camp 33%, oracle 54% (target was 60%; stopped after principled fixes). Accepted
+  because the goal was met: hiding no longer wins (0%), and the camp-to-oracle gap leaves room to learn.
+  Bottleneck found by the subagent: at the radio, 247/260 healthy agents carry no water and 202 are starving,
+  so the run starts unsupplied. Stocking up before t=60 is the strategy a learned policy could find.
+- **Run 8 at step ~30 of 60 (v3-rc1):** return grpo 0.68 -> 0.56, gagpo 0.71 -> 0.71 (first 10 vs last 10
+  steps), KL ~0.001, zero-variance groups 10-14%. Flat, as predicted for a near-ceiling start on an easy game.
+- **Queued on GPU 5 after run 8's gagpo chain:** v3-rc2 imitation pipeline: camp-teacher SFT (2000 states) ->
+  2 DAgger rounds -> eval on 60 fresh seeds vs camp/heuristic_v3/wait/random, recording 4 replays per row.
+  Then run 8 (closed-loop RL) on v3-rc2 from that model: the experiment where RL has room to matter.
