@@ -31,7 +31,7 @@ def _trajectory_hash(balance, n_eps=8) -> str:
                             "scan_target": rng.randrange(5)})
             ep = env._episode
             h.update(json.dumps([
-                ep.step_count, obs.get("reward"),
+                ep.step_count, round(obs.get("reward") or 0.0, 9),  # 9 dp: float sum() differs in last bits across Python 3.11/3.12+
                 [(a.row, a.col, a.hp, a.hunger, a.thirst, a.is_alive, a.infection_state)
                  for a in ep.agents],
                 [(z.row, z.col) for z in ep.zombies],
@@ -45,7 +45,7 @@ def test_v2_2_preset_trajectories_unchanged():
     assert _trajectory_hash("v2.2") == V2_2_GOLDEN
 
 
-V2_2_GOLDEN = "4c382b68cd9a0546"
+V2_2_GOLDEN = "da750a6eb61e0520"
 
 
 def test_meter_tick_integer_rates():
