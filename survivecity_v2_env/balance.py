@@ -113,11 +113,11 @@ V2_2 = BalanceConfig(
     starting_infected_progression=True,
 )
 
-# W3 candidate (not the default yet): slower clocks set the planners' supply
+# v3 default (W3): slower clocks set the planners' supply
 # horizon, shamblers + chase radius 4 make zombies avoidable, starting infected
 # no longer die of infection_progression at t=30/60. 100 eps, seed 42:
-# oracle 83%, camp 73%, random 0%, current heuristic 0% (bug-fixed + zombie-
-# avoiding prototype: 13%). See research_log 2026-10-04 W3 entry.
+# oracle 83%, camp 73%, heuristic_v3 11%, random 0%, heuristic_v2 0%.
+# See research_log 2026-10-04 W3 entries and .planning2/14_V3_BALANCE.md.
 V3_RC1 = V2_2.with_(
     hunger_rate=0.6,
     thirst_rate=0.6,
@@ -131,7 +131,7 @@ PRESETS: dict[str, BalanceConfig] = {
     "v3-rc1": V3_RC1,
 }
 
-DEFAULT_PRESET = "v2.2"
+DEFAULT_PRESET = "v3-rc1"
 DEFAULT_BALANCE: BalanceConfig = PRESETS[DEFAULT_PRESET]
 
 
