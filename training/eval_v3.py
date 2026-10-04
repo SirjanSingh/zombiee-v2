@@ -107,10 +107,14 @@ def make_hf_generator(model_name: str, lora_path: Optional[str], max_new_tokens:
 
 class Episode:
     def __init__(self, seed: int, balance, a0_healthy: bool, teammate: str, k: int,
-                 record_meta: Optional[dict] = None):
+                 record_meta: Optional[dict] = None, env=None, obs: Optional[dict] = None):
+        """env/obs: start from an existing (e.g. replayed mid-episode) state instead of reset(seed)."""
         self.seed = seed
-        self.env = SurviveCityV2Env(balance=balance, a0_healthy=a0_healthy)
-        self.obs = self.env.reset(seed=seed)
+        if env is None:
+            self.env = SurviveCityV2Env(balance=balance, a0_healthy=a0_healthy)
+            self.obs = self.env.reset(seed=seed)
+        else:
+            self.env, self.obs = env, obs
         self.balance = balance
         self.mate = get_policy(teammate)
         self.rng = random.Random(f"eval|{seed}")

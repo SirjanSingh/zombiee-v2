@@ -767,6 +767,91 @@ fused optimizer needs sm_80+, and `--save-total-limit 4` because the DGX disk qu
 
 ---
 
+### Run 8 — closed-loop multi-turn RL (`training/train_closed_loop.py`)
+
+The trainer used in runs 6/7 (`training/train.py`) is one-shot: the model writes one 5-action plan
+and a scripted policy plays the rest, so the RL barely moved the policy (run 6c 20.8 -> 21.7 turns,
+run 7 25.1 -> 26.8). Run 8 uses a custom loop (plain PyTorch + PEFT, no TRL trainer) in which
+**the model plays A0 at every decision**:
+
+- Each step: B start states from the `training/scenarios.py` distribution (decision-dense, A0
+  healthy), G rollouts per start state (deepcopy of the replayed env). The model re-plans every K A0
+  turns, A1-A4 are the camp planner, a rollout lasts H game turns or until A0 dies / the game ends.
+  All B*G rollouts run in lockstep with one batched `generate` per round, in eval mode (KV cache on).
+  Prompts are exactly eval_v3's (raw text, no chat template), the distribution the DAgger adapter
+  was trained on. Sampling uses top_k=0, top_p=1, repetition_penalty=1 so samples come from the
+  policy the loss scores (Qwen's generation_config defaults would not).
+- Reward (`--reward graded`, default): 0 at intermediate decisions, the graded window value at the
+  last one (alive: 1 + 0.5 hp + 0.25 food + 0.25 water headroom; dead: -1 + 0.5 * fraction of the
+  horizon survived). `--reward env` = A0's env reward gained per decision.
+- `--adv-estimator`: `grpo` (group-normalised rollout return on every decision), `gigpo` (+ discounted
+  return-to-go normalised inside (start state, anchor key) clusters), `gagpo` (V(s) = mean discounted
+  return of all batch decisions at the same anchor key; TD residual + GAE, gamma 0.95, lambda 0.8;
+  standardised per start state).
+- Loss: PPO-clip on completion tokens + beta * KL to the **frozen init adapter** (keeps RL near the
+  DAgger policy). fp16 autocast, fp32 LoRA, GradScaler, AdamW (not fused), gradient checkpointing
+  for the update only.
+- Logs one JSON row per step to `<output-dir>/metrics.jsonl` (return mean/std, zero-variance group
+  fraction, KL, loss, A0 lifetime in rollouts, parse rate, tokens/s, generation / update / wall
+  time, peak GPU memory). Adapters every `--save-steps`, keeping the last `--save-total-limit` (3).
+
+**Launch (DGX, conda env, one GPU per estimator for the A/B/C comparison):**
+```bash
+cd ~/zombiee-v3 && git fetch origin && git checkout run8-closed-loop && git pull
+conda activate zombiee
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv   # pick free GPUs
+mkdir -p logs
+TS=$(date +%Y%m%d_%H%M%S)
+COMMON="--init-adapter checkpoints/sft_dagger2 --balance v3-rc1 \
+  --batch-starts 4 --group-size 8 --horizon 30 --prefix-actions 5 --temperature 1.0 \
+  --reward graded --gamma 0.95 --lam 0.8 --beta 0.01 --lr 3e-6 \
+  --max-steps 60 --save-steps 10 --save-total-limit 3"
+ENVV="SC_STEP_LOG_EVERY=0 PYTHONUNBUFFERED=1 TRANSFORMERS_VERBOSITY=error"
+
+# A: GRPO
+env CUDA_VISIBLE_DEVICES=<free gpu A> $ENVV nohup python -m training.train_closed_loop $COMMON \
+  --adv-estimator grpo --output-dir checkpoints/run8_grpo > logs/run8_grpo_${TS}.log 2>&1 &
+# B: GiGPO
+env CUDA_VISIBLE_DEVICES=<free gpu B> $ENVV nohup python -m training.train_closed_loop $COMMON \
+  --adv-estimator gigpo --gigpo-zscore --output-dir checkpoints/run8_gigpo > logs/run8_gigpo_${TS}.log 2>&1 &
+# C: GAGPO
+env CUDA_VISIBLE_DEVICES=<free gpu C> $ENVV nohup python -m training.train_closed_loop $COMMON \
+  --adv-estimator gagpo --output-dir checkpoints/run8_gagpo > logs/run8_gagpo_${TS}.log 2>&1 &
+
+tail -f logs/run8_gagpo_${TS}.log
+```
+If only one GPU is free, run them one after another (same command, same GPU). Eval a checkpoint
+with the usual closed-loop eval, e.g.
+`CUDA_VISIBLE_DEVICES=<gpu> python -m training.eval_v3 --lora-path checkpoints/run8_gagpo/checkpoint-60 --n-episodes 30 --tag run8-gagpo-ckpt60`.
+
+**What to check in the first minutes:**
+- The first log line must say `Device: cuda Tesla V100...`; the trainer refuses to start on CPU.
+- `[step 1]`: `kl=0.0000` (policy == reference at step 1), parse near 1.00 (the DAgger adapter
+  parses 100%), `life` close to H=30 for most rollouts.
+- `zero_var` = fraction of start states whose G rollouts all got the same return (no GRPO signal).
+  The DAgger policy survives most 30-turn windows, so this may be high. Graded returns break most
+  ties; if it stays near 1, raise `--horizon` (50) or `--temperature`.
+- `max_mem_gb` and `gen_time_s` / `update_time_s` in `metrics.jsonl` give the real memory and time.
+
+**Rough cost per step (estimate, not measured; check the first rows of metrics.jsonl):**
+- Decisions per step: at most B*G*ceil(H/K) = 4*8*6 = 192 (fewer when A0 dies), in about 6
+  lockstep generation rounds of up to 32 prompts (~1200 prompt tokens, up to 192 new tokens).
+- Generation: measured reference is ~16 s for 8 prompts x 128 new tokens with the KV cache on a
+  V100. Without any batching gain the 192 samples would cost 24 x 16 s = ~6.5 min; batching 32 per
+  call should cut that by a factor of a few, so expect roughly 2-6 min.
+- Update: ~192 x ~1300 tokens through the 3B model about 4 times (reference pass, forward,
+  checkpoint recompute, backward ~2x) is ~6e15 FLOPs; at 40-60 TFLOP/s effective fp16 on a V100
+  that is ~2 min.
+- Total: roughly 4-8 min per step, so 60 steps is roughly 4-8 h per estimator.
+  To halve it: `--group-size 4` or `--horizon 20`.
+- Memory (32 GB V100): fp16 weights ~6.2 GB + two fp32 LoRA adapters, Adam state and grads ~0.6 GB;
+  generation KV cache for 32 x 1400 tokens ~1.6 GB; update micro-batch of 4 with gradient
+  checkpointing a few GB plus completion-only logits (~0.4 GB). Expected peak about 12-16 GB. If it
+  runs out of memory, lower `--gen-batch-size` (16) and `--micro-batch-size` (2).
+
+---
+
 ## What changed vs v1
 
 | Aspect | v1 | v2 |
