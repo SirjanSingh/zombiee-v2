@@ -287,3 +287,26 @@ instead of ~9 h. This also means every earlier run (1-4) paid this slowdown.
 
 Run 6c = run 6b's config + the fix: GPU 3, `checkpoints/run6c_v3`, log `logs/train_run6c_v3_20261004_195959.log`.
 Run 6b was stopped at ~step 3 (its metrics.jsonl kept).
+
+---
+
+## 2026-10-04 20:06 — eval `base-qwen` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `e36a26b`; 67 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| base model | 0% | 20.8 | 63% | 0.73 | 100% | thirst 26, hunger 4 |
+| heuristic_v3 | 3% | 63.6 | 60% | 0.70 | - | thirst 16, hunger 10, alive 1, zombie_attack 3 |
+| camp | 0% | 94.5 | 67% | 0.77 | - | thirst 23, hunger 7 |
+| random | 0% | 24.1 | 67% | 0.80 | - | hunger 21, thirst 7, zombie_attack 2 |
+| wait | 0% | 24.0 | 63% | 0.73 | - | thirst 30 |
+
+Data: `data/2026-10-04_eval_base-qwen.json`.
+
+**Reading (manager):** A0 lifetime is the metric that separates policies; team survival (60-67% in
+every row) is carried by the camp-planner teammates whoever plays A0. The untrained base model
+(20.8) is worse than waiting every turn (24.0): it dies of thirst without fetching water. Targets
+for training: heuristic_v3 63.6, camp planner 94.5. Even camp rarely reaches t=100 as A0: it stops
+water sorties near the end and dies of thirst around t=94 (worth fixing before it becomes the
+W7 SFT teacher).
