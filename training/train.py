@@ -1301,8 +1301,9 @@ def main():
             gigpo_remove_std=args.gigpo_remove_std,
         )
     else:
-        logger.info("[adv-estimator] grpo: stock TRL GRPOTrainer")
-        trainer = GRPOTrainer(
+        from training.gigpo_trainer import make_fast_generate_grpo_class
+        logger.info("[adv-estimator] grpo: TRL GRPOTrainer (+ eval-mode generation fix)")
+        trainer = make_fast_generate_grpo_class()(
             model=model,
             args=config,
             reward_funcs=[reward_fn],

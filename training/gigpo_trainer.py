@@ -68,6 +68,37 @@ from training.gigpo import compose_gigpo_advantages_multistep
 logger = logging.getLogger("survivecity_v2.gigpo_trainer")
 
 
+def run_in_eval_mode(model, fn, *args, **kwargs):
+    """Run `fn` with `model` in eval mode, then restore train mode.
+
+    TRL 0.15.2 generates completions inside `_prepare_inputs` while the model is
+    still in train mode. With gradient checkpointing on, transformers then forces
+    `use_cache=False`, so every new token re-reads the whole ~1200-token prompt.
+    Measured on the DGX V100: 8 x 128 tokens took 188 s in train mode and 16 s in
+    eval mode. Everything in `_prepare_inputs` (generation, reference log-probs)
+    runs without gradients, so eval mode is safe; the loss is computed afterwards
+    in train mode. Eval mode also turns LoRA dropout off while sampling.
+    """
+    was_training = model.training
+    model.eval()
+    try:
+        return fn(*args, **kwargs)
+    finally:
+        if was_training:
+            model.train()
+
+
+def make_fast_generate_grpo_class():
+    """Stock TRL GRPOTrainer with the eval-mode generation fix (see run_in_eval_mode)."""
+    from trl import GRPOTrainer
+
+    class FastGenGRPOTrainer(GRPOTrainer):
+        def _prepare_inputs(self, inputs):
+            return run_in_eval_mode(self.model, super()._prepare_inputs, inputs)
+
+    return FastGenGRPOTrainer
+
+
 def make_gigpo_trainer_class():
     """Return GiGPOTrainer as a subclass of trl.GRPOTrainer.
 
@@ -153,6 +184,11 @@ def make_gigpo_trainer_class():
         # The only override
         # ------------------------------------------------------------------
         def _prepare_inputs(
+            self, inputs: dict[str, Union[torch.Tensor, Any]]
+        ) -> dict[str, Union[torch.Tensor, Any]]:
+            return run_in_eval_mode(self.model, self._prepare_inputs_inner, inputs)
+
+        def _prepare_inputs_inner(
             self, inputs: dict[str, Union[torch.Tensor, Any]]
         ) -> dict[str, Union[torch.Tensor, Any]]:
             """Copy of GRPOTrainer._prepare_inputs (TRL 0.15.2) with the
