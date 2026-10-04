@@ -221,3 +221,26 @@ the planner's moves, and in a 64-state probe it ranked a random A0 (-1.15) above
 hunger/thirst penalties, so an early death reads as cheaper than surviving hungry. The survival
 window return (+1 alive / -1 dead, small HP and newly-infected terms) ranks them the right way.
 Recommendation for the first DGX run: `--window-return survival --step1-weight 0`. Data: `data/2026-10-04_w6_smoke.json`.
+
+## 2026-10-04 — Pre-launch checks + run 6 (v3) launched (manager)
+
+**Reward sparsity probe** (24 v3-rc1 training states, 6 candidate 5-action plans each: camp planner,
+heuristic_v3, all-wait, 3x random; survival window return, step1_weight 0):
+
+| horizon H | states where plans score differently | spread > 0.25 | mean std |
+|---|---|---|---|
+| 25 | 11/24 | 10/24 | 0.432 |
+| 40 | 10/24 | 10/24 | 0.456 |
+| 60 | 10/24 | 10/24 | 0.451 |
+
+About 45% of GRPO groups carry signal, and a longer window does not add any, so H=25 stays (cheaper).
+The worker's "1/16" figure compared planner vs wait only; real samples are more diverse.
+
+**Cross-machine determinism:** the v2.2 golden hash differed between Windows (Python 3.13) and the
+DGX (3.11). Game states hash identically on both, and rewards match to 9 decimals; only the last
+float bits differ (Python 3.12 changed float `sum()`). The test now rounds rewards to 9 dp.
+123/123 tests pass on the DGX.
+
+**Run 6 (v3) launched** on lnmdgx1 GPU 3, commit fd25f31: GiGPO, K=5, mid-episode scenarios (200),
+camp-planner rollout, survival window H=25, step1_weight 0, A0 healthy, balance v3-rc1, 60 steps,
+fp16 / adamw_torch, LoRA defaults from Phase 1 (r64). Log: `~/zombiee-v3/logs/train_run6_v3_.log`.
