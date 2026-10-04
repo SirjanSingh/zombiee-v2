@@ -265,3 +265,25 @@ per step, so ~15 h for 60 steps. Checkpoints every 10 steps (~2.5 h).
 
 Known cosmetic bug: after startup the training log stops printing INFO lines (no `reward_fn #N`
 summaries). `checkpoints/run6b_v3/metrics.jsonl` has every call's stats, so nothing is lost.
+
+## 2026-10-04 20:00 — Training was 5x slower than it should be: fixed; run 6c launched (manager)
+
+Run 6b took ~550 s per optimizer step although completions average only 73 tokens. Cause: TRL 0.15.2
+generates inside `_prepare_inputs` while the model is in train mode, and with gradient checkpointing
+on, transformers silently forces `use_cache=False` (the warning was hidden by
+`TRANSFORMERS_VERBOSITY=error`). Without a KV cache every new token re-reads the ~1200-token prompt.
+
+Benchmark on the same V100 (Qwen2.5-3B + LoRA r64, 8 completions x 128 tokens):
+
+| model mode during generate | time |
+|---|---|
+| train (what runs 1-6b did) | 188 s |
+| eval (KV cache on) | 16 s |
+
+Fix (commit 556dbf5): `run_in_eval_mode` wraps `_prepare_inputs` (generation + reference log-probs,
+all no-grad), then restores train mode for the loss. Applied to both the GiGPO and plain GRPO trainers,
+with tests. Run 6c: reward calls every ~12.5 s (was ~70 s), so ~2 min/step and ~2 h for 60 steps
+instead of ~9 h. This also means every earlier run (1-4) paid this slowdown.
+
+Run 6c = run 6b's config + the fix: GPU 3, `checkpoints/run6c_v3`, log `logs/train_run6c_v3_20261004_195959.log`.
+Run 6b was stopped at ~step 3 (its metrics.jsonl kept).
