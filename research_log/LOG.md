@@ -36,3 +36,10 @@ mid-episode states.
 
 Data: `data/2026-10-04_ceiling_probe_v2.json`, `experiments.jsonl` rows with
 `experiment=ceiling_probe_v2_balance`.
+
+## 2026-10-04 — DGX ready (manager)
+
+Fresh env on lnmdgx1 (V100-32GB): torch 2.5.1+cu121, transformers 4.46.3, trl 0.15.2, Qwen2.5-3B-Instruct.
+Smoke test, GPU 3: model loads + one generation in 10.4 s, 6.5 GB peak (fp16), game prompt = 1298 tokens.
+Untrained Qwen's first move at t=0 (seed 7): `{"action_type": "scan", "scan_target": 2}`. The base
+model's prior already leans to scanning, the same behaviour that became scan-spam in run 1.
