@@ -38,6 +38,13 @@ Rules
   Ask the manager before changing anything about voting/infection roles (the social
   deduction part is the project's point).
 
+  - PAUSED 2026-10-04 at a clean point (usage pause). Done: knobs `zombie_move_every`,
+    `starting_infected_progression` (approved), hp bound follows hp_max, `tools/sweep_balance.py`,
+    preset `v3-rc1` (oracle 83%, camp 73%, random 0%, heuristic 0%), logged sweeps + findings.
+    Blocked on a decision: the current heuristic is 0% in every balance (3 bugs + no zombie
+    avoidance; see LOG.md). A fixed + avoiding prototype gets 13% at v3-rc1.
+    Not done: make v3 the default; sync prompts.py / rubric.py thresholds / postmortem.py latent;
+    bite events are only in metadata.bite_history, not in prompt text.
 - [ ] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
   Radio at t=60 names an extraction corner (seeded); helicopter t=85-90 extracts healthy
   agents in the zone; any infected agent in the zone = extraction fails (infected win);

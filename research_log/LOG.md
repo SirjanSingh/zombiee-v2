@@ -65,3 +65,79 @@ Reference numbers for the original tuning, recorded by the new calibrate.py (W2)
 | oracle | 0% | 0% | 66.8 | 49.0 | 0.00 | 0.00 | 0.00 | thirst 227, hunger 220, infection_progression 48, zombie_attack 5 |
 
 Data: `data/2026-10-04_calibrate_v2.2-baseline.json`, `experiments.jsonl` rows with `tag=v2.2-baseline`.
+
+---
+
+## 2026-10-04 15:50 — calibration `v3-rc1` (balance `v3-rc1`, overrides: none)
+
+W3 candidate preset. Not the default: the current heuristic cannot survive in any balance tried (see the W3 finding entry below).
+
+100 episodes, seed 42, git `ef8ba1c`, all 5 agents scripted by the policy. surv = >=1 healthy agent alive at t=100.
+
+| policy | surv | reach_T | ep_len | A0_life | healthy_end | alive_end | bites | top death causes (all agents) |
+|---|---|---|---|---|---|---|---|---|
+| random | 0% | 0% | 26.9 | 21.8 | 0.00 | 0.11 | 0.00 | hunger 360, thirst 113, zombie_attack 16 |
+| heuristic | 0% | 0% | 26.4 | 24.0 | 0.00 | 0.76 | 0.00 | hunger 312, thirst 73, zombie_attack 39 |
+| camp | 73% | 91% | 99.0 | 92.8 | 0.90 | 1.45 | 0.03 | thirst 213, hunger 142 |
+| oracle | 83% | 90% | 98.7 | 70.1 | 1.24 | 1.25 | 0.03 | hunger 225, thirst 146, zombie_attack 3, infection_progression 1 |
+
+Data: `data/2026-10-04_calibrate_v3-rc1.json`, `experiments.jsonl` rows with `tag=v3-rc1`.
+
+---
+
+## 2026-10-04 15:53 — balance sweep `w3-combo1` (12 variants)
+
+W3 knob sweep: clock rate x zombie_move_every x chase radius, starting infected exempt from infection_progression.
+
+100 episodes per cell, seed 42, git `ef8ba1c`. Cells: survival / episode length / A0 lifetime / healthy alive at end.
+
+| variant | random surv / ep_len / A0 / healthy | heuristic surv / ep_len / A0 / healthy | camp surv / ep_len / A0 / healthy | oracle surv / ep_len / A0 / healthy |
+|---|---|---|---|---|
+| rate 0.5 move_every 1 radius None | 0% / 25.0 / 16.6 / 0.00 | 0% / 26.8 / 19.8 / 0.00 | 98% / 99.8 / 99.2 / 2.20 | 99% / 99.9 / 72.3 / 2.00 |
+| rate 0.5 move_every 1 radius 5 | 0% / 30.1 / 23.0 / 0.00 | 0% / 29.7 / 24.1 / 0.00 | 97% / 99.8 / 97.7 / 2.09 | 96% / 99.7 / 71.9 / 2.19 |
+| rate 0.5 move_every 2 radius None | 0% / 31.1 / 24.4 / 0.00 | 0% / 30.8 / 25.0 / 0.00 | 96% / 99.7 / 97.5 / 1.96 | 93% / 99.5 / 72.2 / 2.18 |
+| rate 0.5 move_every 2 radius 5 | 0% / 31.9 / 25.9 / 0.00 | 0% / 31.6 / 27.6 / 0.00 | 97% / 99.8 / 98.1 / 2.05 | 93% / 99.5 / 71.8 / 2.22 |
+| rate 0.6 move_every 1 radius None | 0% / 22.9 / 15.8 / 0.00 | 0% / 24.9 / 18.1 / 0.00 | 83% / 99.2 / 94.9 / 1.00 | 67% / 99.2 / 69.6 / 0.78 |
+| rate 0.6 move_every 1 radius 5 | 0% / 26.0 / 20.4 / 0.00 | 0% / 26.1 / 20.9 / 0.00 | 72% / 98.7 / 92.8 / 0.92 | 78% / 98.5 / 69.4 / 1.13 |
+| rate 0.6 move_every 2 radius None | 0% / 26.3 / 21.3 / 0.00 | 0% / 25.9 / 21.7 / 0.00 | 73% / 99.3 / 93.3 / 0.86 | 93% / 99.2 / 70.8 / 1.34 |
+| rate 0.6 move_every 2 radius 5 | 0% / 26.8 / 21.7 / 0.00 | 0% / 26.4 / 23.6 / 0.00 | 74% / 99.2 / 92.8 / 0.91 | 88% / 98.7 / 69.0 / 1.26 |
+| rate 0.75 move_every 1 radius None | 0% / 19.9 / 14.6 / 0.00 | 0% / 20.1 / 15.3 / 0.00 | 0% / 83.4 / 77.7 / 0.00 | 0% / 83.4 / 59.7 / 0.00 |
+| rate 0.75 move_every 1 radius 5 | 0% / 21.6 / 17.0 / 0.00 | 0% / 21.1 / 17.5 / 0.00 | 0% / 82.6 / 75.2 / 0.00 | 0% / 83.5 / 59.7 / 0.00 |
+| rate 0.75 move_every 2 radius None | 0% / 21.9 / 17.5 / 0.00 | 0% / 21.6 / 18.8 / 0.00 | 0% / 83.4 / 74.9 / 0.00 | 0% / 85.5 / 59.4 / 0.00 |
+| rate 0.75 move_every 2 radius 5 | 0% / 22.1 / 17.6 / 0.00 | 0% / 21.9 / 19.3 / 0.00 | 0% / 83.1 / 75.6 / 0.00 | 0% / 82.9 / 58.8 / 0.00 |
+
+Data: `data/2026-10-04_sweep_w3-combo1.json`, grid `tools/sweeps/w3_combo1.json`.
+
+---
+
+## 2026-10-04 — Two design findings from the W3 rebalance (worker session)
+
+**1. The traitor died of old age before it could bite anyone.** The "30 steps after a bite with no
+medicine, you die" rule also applied to the two agents infected at t=0 (their bite step is 0). So the
+starting biter was revealed at t=25 and killed by the rule at t=30, the same turn as the first vote.
+Under the oracle this happened in 48/100 episodes, and bites per episode were 0.00 across 400 runs.
+Fix (approved by manager): `starting_infected_progression=False` in v3; `v2.2` keeps the old rule.
+Exempting them alone barely moves the oracle (episode length 66.8 -> 66.5, still 0%), because the
+real wall is food and water.
+
+**2. The rollout heuristic cannot survive in any balance.** Sweeping clocks, zombie speed, chase
+radius, waves and HP, the GRPO rollout heuristic stays at 0% everywhere, even where planners hit 99%.
+Traces show three bugs, not difficulty:
+- it drinks forever once standing on a water cell (rule 1 has no thirst check), and starves there;
+- it "eats" on a depleted food cell while a zombie attacks it;
+- greedy stepping walks into the walls next to the inner-ring water and stays stuck for 20+ turns.
+With the three bugs fixed it still gets 0-1%, because it walks straight into zombies. Adding a
+one-step "don't step next to a zombie" rule gets 13% at the candidate balance, inside the 5-20% target.
+
+| policy at `v3-rc1` (rate 0.6, shamblers, chase radius 4, starting infected exempt) | survival | episode length |
+|---|---|---|
+| random | 0% | 26.9 |
+| current heuristic | 0% | 26.4 |
+| heuristic with 3 bug fixes (prototype) | 0% | 60.0 |
+| bug fixes + zombie avoidance (prototype) | 13% | 74.9 |
+| camp planner | 73% | 99.0 |
+| oracle | 83% | 98.7 |
+
+Open decision (manager/user): keep the old heuristic as a frozen baseline and add a fixed
+"heuristic v3" as the rollout/baseline policy, or relax the 5-20% target. `v3-rc1` is a preset,
+not yet the default. Prototype code: `data/2026-10-04_w3_heuristic_prototypes.py`.
