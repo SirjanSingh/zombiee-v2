@@ -24,9 +24,13 @@ Rules
     `get_balance`, fractional `meter_tick`). Env/game/spawn/infection/rubric read `state.balance`.
     Identity: sha256 of full heuristic/random/oracle trajectories (40 seeds each) identical before/after;
     baseline.py 16.02/12.98 and oracle.py 66.76/49.04 unchanged; golden-hash test pins v2.2. 97 tests pass.
-- [ ] **W2 — Calibration script.** `tools/calibrate.py`: runs random, current heuristic,
+- [x] **W2 — Calibration script.** `tools/calibrate.py`: runs random, current heuristic,
   camp planner, oracle for N=100 eps under a given BalanceConfig and prints one table
   (ep_len, A0 lifetime, healthy alive at end, survival, reached-t100, death causes).
+  - Done 2026-10-04: `python tools/calibrate.py [--balance P] [--set k=json] [--policies ...] [--n] [--tag] [--note]`.
+    Policies random/heuristic/camp/oracle, probe seed scheme (reproduces probe numbers exactly). Writes
+    experiments.jsonl rows + data/<date>_calibrate_<tag>.json (per-episode) + LOG.md table; `--no-log`/`--no-md`.
+    v2.2 baseline logged (tag v2.2-baseline): all 0% survival; oracle ep 66.8, A0 49.0. ~45 s for all 4 x 100.
 - [ ] **W3 — Rebalance to v3.** Find the smallest knob set that hits: heuristic survival
   ~5-20%, oracle >= 60%, random ~0%. Write the table before/after into
   `.planning2/14_V3_BALANCE.md` with one line of reasoning per knob. Make v3 the default.

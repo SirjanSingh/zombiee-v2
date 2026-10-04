@@ -48,3 +48,20 @@ The original tuning is preset `v2.2`. This is plumbing so W2/W3 can sweep diffic
 **Check it changed nothing:** hashed every step of 40 seeded episodes under the heuristic, random and
 oracle policies before and after. All three hashes identical; probe numbers identical (heuristic ep
 length 16.02, oracle 66.76, both 0% survival). A golden-hash test now guards the `v2.2` preset.
+
+---
+
+## 2026-10-04 15:24 — calibration `v2.2-baseline` (balance `v2.2`, overrides: none)
+
+Reference numbers for the original tuning, recorded by the new calibrate.py (W2). Matches the manager's ceiling probes exactly. Note: the starting biter always dies of infection_progression at t=30 (bite_at_step=0 + 30-step rule), so mid-game bites are rare.
+
+100 episodes, seed 42, git `a9430ae`, all 5 agents scripted by the policy. surv = >=1 healthy agent alive at t=100.
+
+| policy | surv | reach_T | ep_len | A0_life | healthy_end | alive_end | bites | top death causes (all agents) |
+|---|---|---|---|---|---|---|---|---|
+| random | 0% | 0% | 16.7 | 13.0 | 0.00 | 0.24 | 0.00 | zombie_attack 177, hunger 162, thirst 137 |
+| heuristic | 0% | 0% | 16.1 | 13.0 | 0.00 | 0.47 | 0.00 | zombie_attack 265, hunger 147, thirst 41 |
+| camp | 0% | 0% | 66.8 | 54.2 | 0.00 | 0.05 | 0.00 | thirst 259, hunger 153, infection_progression 83 |
+| oracle | 0% | 0% | 66.8 | 49.0 | 0.00 | 0.00 | 0.00 | thirst 227, hunger 220, infection_progression 48, zombie_attack 5 |
+
+Data: `data/2026-10-04_calibrate_v2.2-baseline.json`, `experiments.jsonl` rows with `tag=v2.2-baseline`.
