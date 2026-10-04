@@ -133,8 +133,15 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
     if hunger >= 12 and "food" in inv:
         return "eat", {}
     d, m = bfs(pos, zone, danger)
-    if m:
+    if m and d < turns_left:
         return m, {}
+    # The safe detour arrives too late (or there is none): take the short way,
+    # as long as the next cell is not a zombie.
+    d, m = bfs(pos, zone, set())
+    if m and d < turns_left:
+        nxt = (pos[0] + MOVES[m][0], pos[1] + MOVES[m][1])
+        if nxt not in set(map(tuple, zs)):
+            return m, {}
     return _dodge(pos, danger)
 
 
@@ -193,7 +200,9 @@ def keep_fed_action(pos, inv, hunger: int, zs, food, insafe: bool, zclear: int =
         return None                       # camp rules drink / stock water here
     if insafe:
         if nw == 0 and room:
-            mv = sortie(WATER_CELLS, True, STARVE + (99 if has_food else 0))
+            if thirst >= 9 and has_food and hunger >= FED_EAT_AT:
+                return "eat", {}          # spend the meal now so the water run is not a starving one
+            mv = sortie(WATER_CELLS, True, STARVE)
             if mv:
                 return mv
             if thirst >= 9:
