@@ -26,7 +26,7 @@ class Camp:
         stock=self.stock
         if ep.balance.extraction_enabled:   # extraction game: stay fed, leave a slot for food
             stock=min(stock,EXTRACT_STOCK)
-            fed=keep_fed_action(pos,inv,me.hunger,zs,food,insafe,self.zclear)
+            fed=keep_fed_action(pos,inv,me.hunger,zs,food,insafe,self.zclear,me.thirst,self.drink_at)
             if fed is not None: return A(fed[0],**fed[1])
         if insafe:
             if me.thirst>=self.drink_at and nw: return A("drink")

@@ -69,7 +69,7 @@ EXTRACT_STOCK = 2        # water to carry before leaving for the zone
 
 
 def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunger: int, thirst: int,
-                      food, drink_at: int = 13, slack: int = EXTRACT_SLACK,
+                      food, drink_at: int = 13, slack: Optional[int] = None,
                       avoid=()) -> Optional[tuple]:
     """Next move of a timed extraction run, or None while it is not yet time to leave.
 
@@ -93,7 +93,7 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
             return "drink", {}
         if pos in food and hunger >= 4 and zmin > 1:
             return "eat", {}
-        if hunger >= 12 and "food" in inv:
+        if hunger >= 6 and "food" in inv:
             return "eat", {}
         if pos in danger:
             for m, (dr, dc) in MOVES.items():
@@ -105,8 +105,13 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
     d_est, _ = bfs(pos, zone, set())
     if d_est is None:
         return None
-    if turns_left > d_est + slack:
+    out_of_water = thirst >= drink_at and nw == 0
+    if slack is None:
+        slack = EXTRACT_SLACK
+    if turns_left > d_est + slack and not out_of_water:
         return None
+    if "food" in inv and hunger >= 6:     # the meal reserved for the run
+        return "eat", {}
 
     # On the way: refuel when standing on a supply, detour for food/water when low.
     if pos in WATER_CELLS and thirst >= 3 and zmin > 1:
@@ -130,44 +135,84 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
     d, m = bfs(pos, zone, danger)
     if m:
         return m, {}
+    return _dodge(pos, danger)
+
+
+def _dodge(pos, danger) -> tuple:
+    """Wait if safe, else step to any walkable cell not next to a zombie."""
+    if pos not in danger:
+        return "wait", {}
+    for m, (dr, dc) in MOVES.items():
+        n = (pos[0] + dr, pos[1] + dc)
+        if _walk(*n) and n not in danger:
+            return m, {}
     return "wait", {}
 
 
-FED_EAT_AT = 12          # eat carried food before starvation damage starts (15)
-FED_SORTIE_MAX = 12      # only leave the safehouse for food while not starving
+FED_EAT_AT = 12          # eat carried food before starvation damage starts
+FED_RANGE = 6            # max path length of a supply sortie
+FED_ZCLEAR = 2           # sortie only if no zombie is within this of the depot (the path avoids zombies)
+STARVE = 15              # v3 starve/dehydrate threshold (outside the safehouse that is -1 HP per turn)
 
 
-def keep_fed_action(pos, inv, hunger: int, zs, food, insafe: bool, zclear: int = 4) -> Optional[tuple]:
-    """Hunger management for the extraction game, or None.
+def keep_fed_action(pos, inv, hunger: int, zs, food, insafe: bool, zclear: int = 4,
+                    thirst: int = 0, drink_at: int = 13) -> Optional[tuple]:
+    """Supply rules for the extraction game, or None (fall through to the camp rules).
 
     The plain camp planner never eats: inside the safehouse healing cancels
-    starvation damage, so it hides at hunger >= 15 forever. That makes any
-    late trip outside lethal (-1 HP per turn), so with extraction on the camp
-    planner carries one food item and eats it before starvation starts.
+    starvation damage, so it hides at hunger >= 15 for most of the game. Any
+    trip outside while starving costs 1 HP per turn, so a late extraction run
+    is lethal. With extraction on, the camp planner keeps hunger below 15:
+    eats on food depots, carries one food item and eats it at 12, drinks its
+    water anywhere, and only starts a water sortie it can finish before
+    starving.
     """
     zmin = min((_mdist(pos, z) for z in zs), default=99)
     danger = {(zr + dr, zc + dc) for zr, zc in zs for dr in (-1, 0, 1) for dc in (-1, 0, 1)
               if abs(dr) + abs(dc) <= 1}
     has_food = "food" in inv
-    if has_food and hunger >= FED_EAT_AT:
+    nw = inv.count("water")
+    room = len(inv) < 3
+    clear = min(zclear, FED_ZCLEAR)
+
+    def sortie(cells, require_clear: bool, max_hunger: int):
+        tgt = [c for c in cells
+               if not require_clear or min((_mdist(c, z) for z in zs), default=99) > clear]
+        if not tgt:
+            return None
+        d, m = bfs(pos, set(tgt), danger)
+        if m and d <= FED_RANGE and hunger + 2 * d < max_hunger:
+            return m, {}
+        return None
+
+    if thirst >= drink_at and nw:         # anywhere (plain camp only drank its stock inside)
+        return "drink", {}
+    if has_food and hunger >= FED_EAT_AT and not insafe:   # inside, healing cancels starvation: keep the meal
         return "eat", {}
+    if pos in WATER_CELLS and thirst >= 1:
+        return None                       # camp rules drink / stock water here
     if insafe:
-        if not has_food and len(inv) < 3 and hunger < FED_SORTIE_MAX:
-            tgt = [f for f in food if min((_mdist(f, z) for z in zs), default=99) > zclear]
-            if tgt:
-                d, m = bfs(pos, set(tgt), danger)
-                if m and d <= 4:
-                    return m, {}
+        if nw == 0 and room:
+            mv = sortie(WATER_CELLS, True, STARVE + (99 if has_food else 0))
+            if mv:
+                return mv
+            if thirst >= 9:
+                return None               # camp's own water sortie rule
+        if not has_food and room and hunger < FED_EAT_AT:
+            return sortie(food, True, 99)
         return None
     if pos in food and zmin > 1:
-        if hunger >= 4:
-            return "eat", {}
-        if not has_food and len(inv) < 3:
+        if not has_food and room:         # carrying beats eating: the carried meal is the one that counts
             return "pickup", {"item_type": "food"}
-    if not has_food and len(inv) < 3 and zmin > 2:
-        d, m = bfs(pos, set(food), danger)
-        if m and d <= 3:
-            return m, {}
+        if hunger >= 8:
+            return "eat", {}
+    if zmin > 2 and room:
+        if nw == 0:
+            mv = sortie(WATER_CELLS, False, STARVE + (99 if has_food else 0))
+            if mv:
+                return mv
+        if not has_food and hunger < FED_EAT_AT + 2:
+            return sortie(food, False, 99)
     return None
 
 
@@ -211,7 +256,7 @@ def camp_action(agent_id: int, obs: dict, rng=None, drink_at: int = 13, stock: i
             return A(ext[0], **ext[1])
     if "extraction" in meta:          # extraction game: stay fed, leave a slot for food
         stock = min(stock, EXTRACT_STOCK)
-        fed = keep_fed_action(pos, inv, hunger, zs, food, insafe, zclear)
+        fed = keep_fed_action(pos, inv, hunger, zs, food, insafe, zclear, thirst, drink_at)
         if fed is not None:
             return A(fed[0], **fed[1])
     if insafe:

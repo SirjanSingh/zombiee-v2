@@ -412,6 +412,11 @@ def _step_toward_v3(my_r: int, my_c: int, target: tuple[int, int]) -> Optional[s
     return next((m for m in order if m), None)
 
 
+# Spare turns heuristic_v3 budgets on top of the Manhattan distance to the
+# extraction zone before it leaves (W4).
+HEURISTIC_EXTRACT_SLACK = 8
+
+
 def forage_heuristic_v3(
     agent_id: int,
     obs: dict,
@@ -427,7 +432,8 @@ def forage_heuristic_v3(
       - steps around walls instead of walking into them
       - won't step onto or next to a zombie outside the safehouse; waits
         instead, or sidesteps if it is already in danger
-      - after the extraction radio (W4), heads for the extraction zone
+      - after the extraction radio (W4), leaves for the extraction zone when
+        the turns left drop to distance + HEURISTIC_EXTRACT_SLACK, then waits there
     """
     rng = rng or random
     s = obs.get("step_count", 0)
@@ -494,7 +500,13 @@ def forage_heuristic_v3(
             if thirst >= 4 and has_water:
                 return A("drink")
             return A("wait")
-        return go(zone) or A("wait")
+        # Leave for the zone when the turns left drop to the distance + a margin
+        # (no extraction info in the metadata = go now).
+        ext = meta.get("extraction") or {}
+        left = ext.get("extraction_step", s) - s
+        dist = min(abs(my_r - r) + abs(my_c - c) for r, c in zone)
+        if left <= dist + HEURISTIC_EXTRACT_SLACK:
+            return go(zone) or A("wait")
     if hp <= 1:
         if in_safehouse:
             return A("wait")
