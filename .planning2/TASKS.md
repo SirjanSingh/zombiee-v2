@@ -42,6 +42,14 @@ Rules
   zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
   same seeds, old balance vs v3.
 
+**PAUSED 2026-10-04 (usage pause, resume only on user command).** W3 at c73f50e on v3-winnable-env:
+v3-rc1 preset (rate 0.6, zombie_move_every 2, chase radius 4, starting infected exempt) -> oracle 83%,
+camp 73%, random 0%, old heuristic 0% (bugs: drinks forever on water, eats on depleted food, stuck on walls).
+**Manager decision:** freeze the old policy as `heuristic_v2` (history only); make fixed +
+one-step-zombie-avoid `heuristic_v3` the baseline AND the GRPO rollout policy (prototype: 13% at v3-rc1;
+a buggy rollout policy would also corrupt the Q estimates). Then finish W3: v3-rc1 as default, sync
+prompts.py / rubric.py fractions / postmortem latent, bite events in prompt text. First item on restart.
+
 ### Phase B (queued; start after W3+W4 are reviewed by the manager)
 
 - [ ] **W6 — Mid-episode start states.** Replace reset-only `build_scenario_dataset`:
