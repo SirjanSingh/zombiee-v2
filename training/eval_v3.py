@@ -186,7 +186,23 @@ class Episode:
             "a0_actions": dict(self.a0_actions),
             "deaths": [{"agent": a.agent_id, "cause": a.death_cause, "step": a.death_step}
                        for a in ep.agents if not a.is_alive],
+            **extraction_fields(ep),
         }
+
+
+def extraction_fields(ep) -> dict:
+    """W4 extraction outcome (empty when the objective is off)."""
+    if not ep.balance.extraction_enabled:
+        return {}
+    res = ep.extraction_result or {}
+    extracted = list(res.get("extracted", []))
+    return {
+        "extracted": bool(res.get("success")),          # >=1 healthy extracted, flight not failed
+        "failed_flight": bool(res.get("failed_flight")),
+        "n_extracted": len(extracted),
+        "a0_extracted": 0 in extracted,
+        "extraction_zone": res.get("zone"),
+    }
 
 
 def run_policy(seeds: list[int], balance, a0_healthy: bool, teammate: str, k: int,
@@ -247,6 +263,11 @@ def summarize(records: list[dict]) -> dict:
             "ep_len": round(S.mean(r["T"] for r in records), 2),
             "parse_rate": round(1 - sum(r["parse_fail"] for r in records) / calls, 4) if calls else None,
             "model_calls": calls,
+            **({"extraction": round(sum(r["extracted"] for r in records) / n, 4),
+                "failed_flight": round(sum(r["failed_flight"] for r in records) / n, 4),
+                "n_extracted": round(S.mean(r["n_extracted"] for r in records), 3),
+                "a0_extracted": round(sum(r["a0_extracted"] for r in records) / n, 4)}
+               if records and "extracted" in records[0] else {}),
         },
         "a0_outcome": dict(collections.Counter(r["a0_death_cause"] or "alive" for r in records)),
         "a0_actions": dict(acts.most_common()),
@@ -254,13 +275,16 @@ def summarize(records: list[dict]) -> dict:
 
 
 def format_table(results: dict[str, dict]) -> str:
-    lines = ["| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |",
-             "|---|---|---|---|---|---|---|"]
+    ext = any("extraction" in r["metrics"] for r in results.values())
+    lines = ["| A0 policy | " + ("extraction | A0 extracted | failed flight | " if ext else "")
+             + "A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |",
+             "|---|---|---|---|---|---|---|" + ("---|---|---|" if ext else "")]
     for name, r in results.items():
         m = r["metrics"]
         pr = "-" if m["parse_rate"] is None else f"{m['parse_rate']:.0%}"
         out = ", ".join(f"{k} {v}" for k, v in r["a0_outcome"].items())
-        lines.append(f"| {name} | {m['a0_survived']:.0%} | {m['a0_life']:.1f} | "
+        ex = (f"{m['extraction']:.0%} | {m['a0_extracted']:.0%} | {m['failed_flight']:.0%} | " if ext else "")
+        lines.append(f"| {name} | {ex}{m['a0_survived']:.0%} | {m['a0_life']:.1f} | "
                      f"{m['team_survival']:.0%} | {m['healthy_end']:.2f} | {pr} | {out} |")
     return "\n".join(lines)
 
