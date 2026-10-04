@@ -451,3 +451,24 @@ heuristic_v3 2% / 60.9; random 0% / 23.6; wait 0% / 24.0. Parse rate 100% throug
 
 Data: `data/2026-10-04_eval_{sft-camp-v3,sft-dagger1,sft-dagger2,sft-dagger2-verify,run6c-ckpt10,run6c-ckpt30,run6c-ckpt60,run7-ckpt60}.json`.
 Adapters on the DGX: `checkpoints/sft_camp_v3`, `sft_dagger1`, `sft_dagger2` (best), `run6c_v3`, `run7_v3`.
+
+---
+
+## 2026-10-05 01:05 — CORRECTION: "student beats teacher" is a one-turn timing artifact (manager)
+
+Replay analysis (`research_log/replays/ep-dagger2_*`, 8 matched seeds) of the camp planner vs the DAgger-2
+model as A0:
+- **Same strategy.** Both fetch water once (3 pickups by turn 6), drink 5 times, then stay in the
+  safehouse for the rest of the game. Drink turns on seed 462141: camp [4, 7, 29, 51, 74], DAgger-2
+  [4, 7, 29, 51, **75**].
+- **One turn decides it.** Camp's last drink one turn earlier makes thirst reach 15 at t=98; it dies at
+  t=99, one turn before the t=100 horizon (6 of 8 seeds). DAgger-2 peaks at thirst 14 and is alive at
+  t=100. The "72% vs 0%" headline is real data but it measures a one-turn margin at the horizon,
+  not a smarter strategy. A0 lifetime (99.0 vs 93.8) mostly reflects the same thing plus 2 camp
+  hunger deaths (t=79, 87) after 13 outside turns.
+- **What the model DID learn** (still true): from 20.8 turns (untrained, dies of thirst having never
+  fetched water) to playing the planner's full survival routine, closed loop, with a 100% parse rate.
+  That is the honest headline: imitation + DAgger taught a 3B LLM a complete survival routine.
+- **Game-design finding:** in v3-rc1 "fetch 3 water, then hide" is a near-dominant strategy, so
+  survival-to-t100 does not reward real decision-making. Radio + extraction (W4) is now the priority:
+  it forces a late-game trip and makes timing, routing and deduction matter.
