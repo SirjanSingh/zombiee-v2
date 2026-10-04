@@ -42,7 +42,31 @@ Rules
   zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
   same seeds, old balance vs v3.
 
-(Phase B tasks get added after W3/W4 land.)
+### Phase B (queued; start after W3+W4 are reviewed by the manager)
+
+- [ ] **W6 — Mid-episode start states.** Replace reset-only `build_scenario_dataset`:
+  for each scenario pick seed N, roll a *behaviour mix* forward (planner / heuristic /
+  epsilon-random per agent, chosen by a seeded rng) to time t, keep the state if A0 is alive.
+  Choose t by **decision density** (see plan 13 research update): weight states where A0 has
+  low water/food, a zombie within 3, a vote turn, or the radio/extraction window; cap routine
+  "safe in safehouse, full stats" states at ~20%. Prompt = A0's real observation at t, with
+  `[SEED:N][T:t][MIX:m]`. Reward fn replays deterministically to t (same rngs), applies the K
+  model actions, continues with the **planner** (not the weak heuristic) for H steps (default
+  H=25, flag), and scores A0's return over that window including any milestone/extraction
+  reward that lands inside it. Must-have test: replay to t reproduces the exact state
+  (positions, stats, zombies, food timers) for 50 random (N,t). Log the t histogram + state
+  tags of the dataset to research_log.
+- [ ] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
+  non-oracle planner over the W6 state distribution, write (prompt, completion) JSONL at A0
+  turns, completion in the exact JSON format the RL prompt asks for (K-action array).
+  `training/sft.py`: LoRA SFT with prompt tokens masked, same LoRA config as train.py, so the
+  adapter loads via the existing warm-start path. Verify on CPU with a tiny model
+  (e.g. `Qwen/Qwen2.5-0.5B-Instruct`, 20 steps) that loss drops and the output parses.
+- [ ] **W8 — Closed-loop eval.** `training/eval.py` mode where the model drives A0 at every
+  turn (re-plan every K turns), others run planner or heuristic (flag), plus a mode where the
+  model drives *all* healthy agents. Report: extraction rate, A0 lifetime, healthy alive at
+  end, survival, mean reward, action histogram; vs heuristic/planner/oracle on the SAME seeds.
+  Writes to research_log and optionally records replays (W5) for the first 3 episodes.
 
 ## Manager queue
 - [ ] M1 — DGX infra: fresh clone, conda env, CUDA check, Qwen2.5-3B download.
