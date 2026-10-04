@@ -240,11 +240,30 @@ def score_completion(prompt: str, actions: list[dict], *, rollout_policy: str = 
                 window -= 0.5
         else:
             window = -1.0
+    elif window_return == "graded":
+        # Survival, but graded so a GRPO group rarely ties: run 6 attempt 1 showed
+        # 5/5 groups with std=0 under the binary alive/dead return (every sample
+        # either died in the window or survived at full hp).
+        #   dead:  -1 + 0.5 * fraction of the window survived (later death is better)
+        #   alive: +1 + 0.5*hp/hp_max + 0.25*food headroom + 0.25*water headroom
+        #          (- 0.5 if newly infected); headroom = 1 - meter/threshold, clipped.
+        a0 = env._episode.agents[0]
+        cfg = env._episode.balance
+        span = max(1, t_end - t)
+        if a0.is_alive:
+            food = 1.0 - min(1.0, a0.hunger / cfg.starve_threshold)
+            water = 1.0 - min(1.0, a0.thirst / cfg.dehydrate_threshold)
+            window = 1.0 + 0.5 * a0.hp / cfg.hp_max + 0.25 * food + 0.25 * water
+            if not a0_start_infected and a0.infection_state != "none":
+                window -= 0.5
+        else:
+            lived = (a0.death_step if a0.death_step is not None else t) - t
+            window = -1.0 + 0.5 * max(0.0, min(1.0, lived / span))
     elif window_return == "shaped":
         window = obs["metadata"]["cumulative_rewards"].get(0, 0.0) - cum_start
     else:
         raise ValueError(f"unknown window_return {window_return!r}")
-    if window_return == "survival":
+    if window_return in ("survival", "graded"):
         # GiGPO step reward = return from that step on. Every model step in the
         # prefix shares the window outcome; the shaped per-step raws would bring
         # the misaligned rubric signal back in through the step advantage.

@@ -317,11 +317,13 @@ def parse_args():
                         "(training/policies.py).")
     p.add_argument("--horizon", type=int, default=25,
                    help="Score A0 over the window from t until K + H game steps later.")
-    p.add_argument("--window-return", choices=["shaped", "survival"], default="shaped",
+    p.add_argument("--window-return", choices=["shaped", "survival", "graded"], default="shaped",
                    help="'shaped' = A0's raw rubric reward over the window (spec default). "
                         "'survival' = outcome at window end (+1 alive/-1 dead, +0.5*hp frac, "
                         "-0.5 if newly infected). See training/scenarios.py for why; pair "
-                        "survival with --step1-weight 0 to drop the per-step shaping too.")
+                        "survival with --step1-weight 0 to drop the per-step shaping too. "
+                        "'graded' = survival with partial credit (death timing; hp + food/water "
+                        "headroom at window end) so GRPO groups rarely tie.")
     p.add_argument("--a0-healthy", dest="a0_healthy", action="store_true", default=True,
                    help="Training scenarios sample the 2 infected from A1-A4 only (default).")
     p.add_argument("--natural-roles", dest="a0_healthy", action="store_false",
