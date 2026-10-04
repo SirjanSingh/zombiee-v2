@@ -55,9 +55,15 @@ Rules
   zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
   same seeds, old balance vs v3.
 
-**2026-10-04 status:** W3 done (d600c33): v3-rc1 default, heuristic_v3 11%, camp 73%, oracle 83%, random 0%.
-**User chose the MINIMUM PATH to a first DGX run:** merge (done, manager) -> W6 -> GRPO run on v3-rc1
-(survival only). W4, W5, W7, W8 come after the first run. Worker does ONLY W6, then stops.
+**2026-10-04 status (evening):** W3 + W6 merged. Manager did W8 + W7 (worker session closed).
+- Run 6c (GiGPO, graded window return, eval-mode generation fix = 5x faster) training on DGX GPU 3,
+  ETA ~22:00. ckpt-10 eval = base model (A0 lifetime 20.8); KL rising 0 -> 0.02.
+- W8 done: `training/eval_v3.py` closed loop. Baselines (A0 lifetime): base Qwen 20.8, wait 24.0,
+  heuristic_v3 63.6, camp 94.5.
+- W7 in progress on DGX GPU 5: `training/build_sft_dataset.py` (camp-planner imitation, 2000 ex) ->
+  `training/sft.py` -> eval. Pipeline script ~/sft_pipeline.sh, log logs/sft_pipeline.log.
+- Next: run 7 = GiGPO warm-started from the SFT adapter (`--warmstart-from checkpoints/sft_camp_v3`).
+  Then W4 (extraction). Known: camp planner dies of thirst ~t=94 as A0 (stops sorties near the end).
 
 ### Phase B (W6 active now; W7/W8 queued)
 
@@ -76,13 +82,13 @@ Rules
   sampled from A1-A4 only, via a create_episode option); an infected A0 has a different
   objective and would muddy the survival gradient. Eval reports both A0-healthy and
   natural-role seeds.
-- [ ] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
+- [~] **W7 — SFT warm-start data + trainer.** `training/build_sft_dataset.py`: run the
   non-oracle planner over the W6 state distribution, write (prompt, completion) JSONL at A0
   turns, completion in the exact JSON format the RL prompt asks for (K-action array).
   `training/sft.py`: LoRA SFT with prompt tokens masked, same LoRA config as train.py, so the
   adapter loads via the existing warm-start path. Verify on CPU with a tiny model
   (e.g. `Qwen/Qwen2.5-0.5B-Instruct`, 20 steps) that loss drops and the output parses.
-- [ ] **W8 — Closed-loop eval.** `training/eval.py` mode where the model drives A0 at every
+- [x] **W8 — Closed-loop eval.** `training/eval.py` mode where the model drives A0 at every
   turn (re-plan every K turns), others run planner or heuristic (flag), plus a mode where the
   model drives *all* healthy agents. Report: extraction rate, A0 lifetime, healthy alive at
   end, survival, mean reward, action histogram; vs heuristic/planner/oracle on the SAME seeds.
