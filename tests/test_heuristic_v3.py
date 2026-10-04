@@ -56,3 +56,12 @@ def test_heads_to_extraction_zone_after_radio():
     a = H(0, _obs(7, 7, step=61, meta={"extraction_zone": zone}))
     assert a["action_type"] in ("move_up", "move_right")
     assert H(0, _obs(0, 13, step=71, meta={"extraction_zone": zone}))["action_type"] == "wait"
+
+
+def test_extraction_departure_is_timed():
+    zone = [[r, c] for r in range(3) for c in range(12, 15)]
+    meta = {"extraction_zone": zone, "extraction": {"extraction_step": 90}}
+    # 29 turns left, zone 9 away: too early, stays in the safehouse
+    assert H(0, _obs(7, 7, step=61, meta=meta))["action_type"] == "wait"
+    # 15 turns left: leaves
+    assert H(0, _obs(7, 7, step=75, meta=meta))["action_type"] in ("move_up", "move_right")
