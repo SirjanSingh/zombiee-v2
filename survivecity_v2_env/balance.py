@@ -61,6 +61,21 @@ class BalanceConfig:
     # (bite_at_step=0), so the starting biter died at t=30, 5 steps after its reveal.
     starting_infected_progression: bool = True
 
+    # Radio + extraction objective (W4). Off in v2.2 / v3-rc1, on in v3-rc2.
+    # At radio_step a corner zone is announced (picked by an rng separate from the
+    # episode rng); at extraction_step the helicopter takes every alive agent in the
+    # zone and the episode ends. Any infected agent aboard fails the flight.
+    extraction_enabled: bool = False
+    radio_step: int = 60
+    extraction_step: int = 90
+    extraction_zone_radius: int = 2         # zone = walkable cells within Chebyshev r of a corner
+    extract_reward: float = 3.0             # each healthy agent extracted
+    extract_team_bonus: float = 1.0         # ... plus this per OTHER healthy agent extracted
+    failed_flight_penalty: float = -1.0     # healthy agents aboard a failed flight
+    infected_win_reward: float = 3.0        # infected agents, if the flight fails or nobody healthy got out
+    milestone_steps: tuple[int, ...] = (30, 60)
+    milestone_reward: float = 0.3           # each healthy agent alive at a milestone step
+
     @property
     def waves(self) -> dict[int, int]:
         return dict(self.wave_schedule)
@@ -68,11 +83,14 @@ class BalanceConfig:
     def to_dict(self) -> dict:
         d = asdict(self)
         d["wave_schedule"] = {str(k): v for k, v in self.wave_schedule}
+        d["milestone_steps"] = list(self.milestone_steps)
         return d
 
     def with_(self, **changes) -> "BalanceConfig":
         if "wave_schedule" in changes and isinstance(changes["wave_schedule"], dict):
             changes["wave_schedule"] = tuple(sorted(changes["wave_schedule"].items()))
+        if isinstance(changes.get("milestone_steps"), list):
+            changes["milestone_steps"] = tuple(changes["milestone_steps"])
         return replace(self, **changes)
 
 
@@ -126,9 +144,21 @@ V3_RC1 = V2_2.with_(
     starting_infected_progression=False,
 )
 
+# v3-rc1 + the radio/extraction objective (W4). Survival to t=100 stopped
+# rewarding decisions ("fetch 3 water, then hide" was near-dominant), so the
+# game now ends at a helicopter at t=90 in a corner announced at t=60.
+# See research_log 2026-10-05 W4 entries.
+V3_RC2 = V3_RC1.with_(
+    max_steps=90,
+    extraction_enabled=True,
+    radio_step=60,
+    extraction_step=90,
+)
+
 PRESETS: dict[str, BalanceConfig] = {
     "v2.2": V2_2,
     "v3-rc1": V3_RC1,
+    "v3-rc2": V3_RC2,
 }
 
 DEFAULT_PRESET = "v3-rc1"

@@ -31,3 +31,13 @@ def test_parse_overrides():
     assert ov == {"starve_threshold": 20, "wave_schedule": {50: 2}, "zombie_chase_radius": None}
     cfg = V2_2.with_(**ov)
     assert cfg.waves == {50: 2}
+
+
+def test_extraction_metrics_reported_for_rc2():
+    from survivecity_v2_env.balance import V3_RC2
+    res = C.calibrate(V3_RC2, ["heuristic_v3"], n=2, seed=1, progress=False)
+    assert {"extraction", "failed_flight", "n_extracted"} <= set(res["heuristic_v3"]["metrics"])
+    assert {"extracted", "failed_flight", "n_extracted"} <= set(res["heuristic_v3"]["episodes"][0])
+    assert "| extract |" in C.format_table(res)
+    off = C.calibrate(V2_2, ["random"], n=1, seed=1, progress=False)
+    assert "extraction" not in off["random"]["metrics"]

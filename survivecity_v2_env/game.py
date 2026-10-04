@@ -155,6 +155,12 @@ class EpisodeState:
     # Day/night phase
     day_phase: str = "day"   # "day" | "night"
 
+    # Radio + extraction (W4; only used when balance.extraction_enabled).
+    # Zone is announced at balance.radio_step; result is set once at episode end.
+    extraction_zone_name: Optional[str] = None
+    extraction_zone: list[tuple[int, int]] = field(default_factory=list)
+    extraction_result: Optional[dict] = None
+
     # RNG
     rng: random.Random = field(default_factory=lambda: random.Random())
 
@@ -1009,8 +1015,75 @@ def advance_step(state: EpisodeState) -> None:
     # Resource respawns
     _respawn_resources(state)
 
+    # Radio, milestones, helicopter (W4). No-op unless extraction_enabled.
+    if state.balance.extraction_enabled:
+        _advance_extraction(state)
+
     # Terminal check
     check_terminal(state)
+    if state.done and state.balance.extraction_enabled and state.extraction_result is None:
+        _resolve_extraction(state, flew=False)
+
+
+# ---------------------------------------------------------------------------
+# Radio + extraction (W4)
+# ---------------------------------------------------------------------------
+
+def _advance_extraction(state: EpisodeState) -> None:
+    """Milestone bonus, radio announcement, and the helicopter at extraction_step.
+
+    Rewards are credited to pending_reward, which the env drains into
+    cumulative_rewards right after advance_step for every agent.
+    """
+    cfg = state.balance
+    s = state.step_count
+    if s in cfg.milestone_steps:
+        for a in state.agents:
+            if a.is_alive and a.infection_state == "none":
+                a.pending_reward += cfg.milestone_reward
+    if s >= cfg.radio_step and state.extraction_zone_name is None:
+        from survivecity_v2_env.extraction import pick_zone, zone_cells
+        state.extraction_zone_name = pick_zone(state.episode_seed)
+        state.extraction_zone = zone_cells(state.extraction_zone_name, cfg.extraction_zone_radius)
+    if s >= cfg.extraction_step and state.extraction_result is None:
+        _resolve_extraction(state, flew=True)
+        state.done = True
+
+
+def _resolve_extraction(state: EpisodeState, flew: bool) -> None:
+    """Board everyone alive in the zone (if the helicopter flew) and pay the outcome.
+
+    flew=False: the episode ended before extraction_step (e.g. every healthy
+    agent died), so nobody boards and the infected win.
+    """
+    cfg = state.balance
+    zone = set(state.extraction_zone)
+    aboard = [a for a in state.agents if flew and a.is_alive and (a.row, a.col) in zone]
+    healthy_aboard = [a for a in aboard if a.infection_state == "none"]
+    infected_aboard = [a for a in aboard if a.infection_state != "none"]
+    failed = bool(infected_aboard)
+    extracted = [] if failed else healthy_aboard
+    n = len(extracted)
+    for a in extracted:
+        a.pending_reward += cfg.extract_reward + cfg.extract_team_bonus * (n - 1)
+    if failed:
+        for a in healthy_aboard:
+            a.pending_reward += cfg.failed_flight_penalty
+    if failed or n == 0:
+        for a in state.agents:
+            if a.infection_state != "none":
+                a.pending_reward += cfg.infected_win_reward
+    state.extraction_result = {
+        "flew": flew,
+        "step": state.step_count,
+        "zone": state.extraction_zone_name,
+        "aboard": [a.agent_id for a in aboard],
+        "infected_aboard": [a.agent_id for a in infected_aboard],
+        "extracted": [a.agent_id for a in extracted],
+        "n_extracted": n,
+        "failed_flight": failed,
+        "success": n >= 1,
+    }
 
 
 def get_current_phase(state: EpisodeState) -> str:

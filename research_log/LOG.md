@@ -493,3 +493,77 @@ checkpoint with eval_v3 (30 eps, seed 1234; compare to DAgger-2: lifetime 99.7, 
 Caveat stated before results: v3-rc1 is near-solved by "fetch water, hide", and the DAgger-2 start policy
 already survives most windows, so this run mostly validates the trainer; estimator differences may be
 small. The informative comparison is on v3-rc2 (extraction) once W4 lands.
+
+## 2026-10-05 02:43 — calibration `w4-v3-rc2` (balance `v3-rc2`, overrides: none)
+
+W4 radio + extraction (v3-rc2 = v3-rc1 + radio t=60, helicopter t=90, corner zone r=2, max_steps 90). Headline = extraction rate.
+
+100 episodes, seed 42, git `176b115`, all 5 agents scripted by the policy. surv = >=1 healthy agent alive at t=90. extract = >=1 healthy agent extracted and no infected aboard; failed_flight = an infected agent boarded; n_extr = mean healthy agents extracted.
+
+| policy | extract | failed_flight | n_extr | surv | reach_T | ep_len | A0_life | healthy_end | alive_end | bites | top death causes (all agents) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| random | 0% | 0% | 0.00 | 0% | 0% | 26.9 | 21.8 | 0.00 | 0.11 | 0.00 | hunger 360, thirst 113, zombie_attack 16 |
+| heuristic_v2 | 0% | 0% | 0.00 | 0% | 0% | 26.4 | 24.0 | 0.00 | 0.76 | 0.00 | hunger 312, thirst 73, zombie_attack 39 |
+| heuristic_v3 | 1% | 0% | 0.01 | 10% | 11% | 71.3 | 49.8 | 0.11 | 0.72 | 0.36 | hunger 189, thirst 138, zombie_attack 93, infection_progression 7 |
+| camp | 33% | 14% | 0.49 | 49% | 50% | 85.9 | 75.3 | 0.77 | 1.32 | 0.70 | zombie_attack 150, hunger 135, thirst 41, infection_progression 33 |
+| oracle | 54% | 4% | 0.78 | 63% | 63% | 87.3 | 66.4 | 0.91 | 1.03 | 0.34 | zombie_attack 217, hunger 123, thirst 38, infection_progression 17 |
+
+Data: `data/2026-10-05_calibrate_w4-v3-rc2.json`, `experiments.jsonl` rows with `tag=w4-v3-rc2`.
+
+---
+
+## 2026-10-05 W4: radio + extraction, preset v3-rc2 (worker, branch `w4-extraction`)
+
+**Rule.** v3-rc2 = v3-rc1 + extraction, `max_steps=90`. At t=60 a radio names one of 4 corner zones
+(walkable cells within Chebyshev 2 of a corner, 8 cells each), picked by `random.Random(f"radio|{seed}")`,
+so the episode rng stream is untouched (test: same seed, same episode up to the radio with extraction
+on or off). At t=90 the helicopter boards every alive agent in the zone and the game ends; any infected
+agent aboard (latent or revealed) fails the flight. Rewards (config weights, paid through
+`pending_reward` into `cumulative_rewards`): healthy extracted +3.0 plus +1.0 per other healthy agent
+extracted; healthy aboard a failed flight -1.0; infected agents (alive or dead) +3.0 if the flight fails
+or nobody healthy gets out (including episodes that end early); +0.3 to each healthy agent alive at
+t=30 and t=60. Prompt: "Survive; a radio message will come at t=60." before the radio, then
+"RADIO: extraction at the NE corner (rows 0-2, cols 12-14), helicopter loads at t=90, N turns left.
+Anyone infected aboard dooms the flight." plus one EXTRACTION rule line in the system prompt.
+v2.2 and v3-rc1 trajectories, prompts, descriptions and rewards are byte-identical (hash-pinned).
+
+**Headline (100 eps, seed 42, all 5 agents scripted, infected agents also head for the zone):**
+
+| policy | target | extraction | failed flight | healthy extracted / ep | healthy alive at t=90 |
+|---|---|---|---|---|---|
+| random | ~0% | 0% | 0% | 0.00 | 0% |
+| heuristic_v3 | 5-20% | **1%** (missed) | 0% | 0.01 | 10% |
+| camp | between | 33% | 14% | 0.49 | 49% |
+| oracle | >= 60% | **54%** (missed) | 4% | 0.78 | 63% |
+
+**What it took on the policy side.** The first camp/oracle versions extracted 17%/27% (30 eps):
+1. The plain camp planner never eats. Inside the safehouse healing cancels starvation, so it sits at
+   hunger 30+ all game, and any trip outside then costs 1 HP per turn. With extraction on (only then:
+   v3-rc1 behaviour is unchanged), camp carries one food item as the meal for the run, eats it when it
+   leaves, keeps 2 water, and only starts supply sorties it can finish before hunger reaches 15.
+   Ordering mattered: an early version sortied for food ahead of drinking and died of thirst.
+2. The run: leave when turns left <= path length + slack; take a zombie-free route only if it is
+   at most 2 steps longer, else the short route when the next cell is safe, else wait while there is
+   time. Before this, BFS-around-zombies routes sent agents the long way round the map and they arrived
+   late. Short-way fallback + eating the meal before a starving water run: oracle 13% -> 43% (60 eps);
+   bounded detour: 47%. Slack sweep (60 eps, oracle): 3 -> 32%, 6 -> 47%, 8 -> 52%,
+   10 -> 53%, 12 -> 58%, 16 -> 42%; set to 10.
+3. heuristic_v3 now leaves at distance + 8 instead of walking to the zone at t=60 and starving there
+   for 30 turns. Its slack does not matter (2/4/8/14/30 -> 2/2/1/1/0%): it is bounded by surviving to
+   t=60 at all (19/100 episodes have no healthy agent left at the radio, 10% have one alive at t=90).
+
+**Game knobs tried (100 eps unless noted), none adopted, preset stays as specified:**
+- radio_step 50: oracle 44%, camp 35% (radio 45 on an earlier policy version, 30 eps: no gain either).
+  More notice does not help; supplies and zombies are the limit.
+- zone radius 3 (5x5): oracle 56%, camp 36% (vs 54/33). Within noise.
+- no t=75 wave: oracle 57%, camp 33%. Within noise. Removing every wave gave oracle 63% (earlier policy version, 30 eps), but that
+  removes most of the late-game pressure the objective is meant to add.
+
+**What binds the oracle (fate of the 260 healthy agents alive at the radio, 100 eps):** extracted 78;
+killed by zombies after leaving the safehouse 97; thirst 35 and hunger 32 after leaving; alive but not
+in the zone 10; aboard a failed flight 3. At the radio 247/260 carry no water and 202/260 are starving
+(hunger >= 15, harmless only inside). So the run starts with no supplies through a map holding 8-11
+zombies. Infected agents are rarely the problem (failed flight 4%): most die before t=90 (infected
+hunger x1.5). Next levers if the 60% bar matters: a planner that stocks water in the t=40-60 window
+while hunger still allows sorties, or zombie-aware routing that predicts shambler moves. heuristic_v3
+needs a better survival core, not a better extraction rule; or accept ~1% as the "weak baseline".

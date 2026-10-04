@@ -43,3 +43,10 @@ def test_replay_recording(tmp_path):
     assert len(rep["frames"][1]["agents"]) == 5
     types = {e["type"] for f in rep["frames"] for e in f["events"]}
     assert "drink" in types                              # camp drinks within an episode
+
+
+def test_extraction_fields_in_records():
+    res = eval_v3.main(["--no-model", "--n-episodes", "2", "--baselines", "camp", "--no-log",
+                        "--balance", "v3-rc2"])
+    assert {"extracted", "failed_flight", "n_extracted", "a0_extracted"} <= set(res["camp"]["episodes"][0])
+    assert "extraction" in res["camp"]["metrics"]

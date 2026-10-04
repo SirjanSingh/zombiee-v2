@@ -36,6 +36,21 @@ from survivecity_v2_env.prompts import format_observation_description
 logger = logging.getLogger(__name__)
 
 
+def extraction_info(ep: EpisodeState) -> Optional[dict]:
+    """Public radio/extraction state for prompts and metadata; None when the objective is off."""
+    cfg = ep.balance
+    if not cfg.extraction_enabled:
+        return None
+    return {
+        "radio_step": cfg.radio_step,
+        "extraction_step": cfg.extraction_step,
+        "zone_name": ep.extraction_zone_name,
+        "zone_radius": cfg.extraction_zone_radius,
+        "turns_left": max(0, cfg.extraction_step - ep.step_count),
+        "result": dict(ep.extraction_result) if ep.extraction_result else None,
+    }
+
+
 N_AGENTS = 5
 
 # Log a periodic [v2 STEP] every Nth game-step (and an [v2 END] summary at
@@ -222,7 +237,7 @@ class SurviveCityV2Env:
             a.agent_id for a in ep.agents
             if a.infection_role in {"biter", "saboteur"}
         ]
-        return {
+        out = {
             "episode_id": self._episode_id,
             "step_count": ep.step_count,
             "max_steps": ep.max_steps,
@@ -239,6 +254,9 @@ class SurviveCityV2Env:
             ),
             "cumulative_rewards": dict(self._cumulative_rewards),
         }
+        if ep.balance.extraction_enabled:
+            out["extraction"] = extraction_info(ep)
+        return out
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -314,6 +332,7 @@ class SurviveCityV2Env:
         own_inf_state = own_internal.infection_state
         own_bite_at = own_internal.bite_at_step
         last_scan = ep.last_scan_result.get(agent_id)
+        extraction = extraction_info(ep)
 
         description = format_observation_description(
             agent_id=agent_id,
@@ -334,6 +353,7 @@ class SurviveCityV2Env:
             noise_threshold=ep.noise_threshold,
             balance=ep.balance,
             bite_history=ep.bite_history,
+            extraction=extraction,
         )
 
         # Aggregate metadata
@@ -393,6 +413,10 @@ class SurviveCityV2Env:
             # what happened during this step.
             "cumulative_rewards": dict(self._cumulative_rewards),
         }
+        if extraction is not None:
+            # Public: the radio is heard by everyone. Empty zone before radio_step.
+            metadata["extraction_zone"] = [list(c) for c in ep.extraction_zone]
+            metadata["extraction"] = extraction
 
         return SurviveObservation(
             grid=grid,
