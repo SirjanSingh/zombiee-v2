@@ -74,7 +74,8 @@ Rules
 ## Manager queue
 - [x] M1 — DGX infra. `~/zombiee-v3` + conda env `zombiee` (torch 2.5.1 cu121, trl 0.15.2, bnb 0.42.0 because glibc 2.17),
   Qwen2.5-3B cached, 84 tests pass, GPU smoke test OK (fp16, 6.5 GB peak, 1298-token prompt).
-  BLOCKER: user quota 90 GB, ~2.5 GB free. Checkpoints need space; user to decide (free space / /tmp / save-total-limit 2).
+  Quota 90 GB: user approved deleting conda envs ec, eckv (Amazon ML challenge) + heever on 2026-10-04 -> ~13 GB free.
+  Keep --save-total-limit <= 5 for training runs.
 - [ ] M2 — Review W1-W3 diffs; re-run calibration independently.
 - [ ] M3 — Spec Phase B tasks (mid-episode states, fixed horizon, SFT from planner).
 
