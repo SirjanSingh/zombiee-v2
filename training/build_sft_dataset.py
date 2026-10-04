@@ -34,14 +34,14 @@ def compact(action: dict) -> dict:
     return {k: v for k, v in action.items() if k != "agent_id" and v is not None}
 
 
-def teacher_plan(sc: dict, balance, teacher: str, teammate: str, k: int,
-                 a0_healthy: bool = True) -> list[dict]:
-    """The teacher's actions on A0's next k turns, starting from the scenario state."""
-    env, obs, ok = replay_to(sc["seed"], sc["t"], sc["mix"], balance=balance, a0_healthy=a0_healthy)
-    if not ok:
-        return []
+def plan_from_env(env, obs: dict, teacher: str, teammate: str, k: int, rng_key: str) -> list[dict]:
+    """The teacher's actions on A0's next k turns from the env's CURRENT state.
+
+    `env` is advanced in place, so pass a copy (copy.deepcopy) when the caller
+    still needs the original. Teammates run `teammate`, as in the RL rollouts.
+    """
     pol, mate = get_policy(teacher), get_policy(teammate)
-    rng = random.Random(f"sft|{sc['seed']}|{sc['t']}")
+    rng = random.Random(rng_key)
     plan: list[dict] = []
     guard = 0
     while len(plan) < k and not obs.get("done") and guard < 200:
@@ -54,6 +54,15 @@ def teacher_plan(sc: dict, balance, teacher: str, teammate: str, k: int,
             act = mate(aid, obs, rng=rng)
         obs = env.step(act)
     return plan
+
+
+def teacher_plan(sc: dict, balance, teacher: str, teammate: str, k: int,
+                 a0_healthy: bool = True) -> list[dict]:
+    """The teacher's actions on A0's next k turns, starting from the scenario state."""
+    env, obs, ok = replay_to(sc["seed"], sc["t"], sc["mix"], balance=balance, a0_healthy=a0_healthy)
+    if not ok:
+        return []
+    return plan_from_env(env, obs, teacher, teammate, k, f"sft|{sc['seed']}|{sc['t']}")
 
 
 def main(argv=None):

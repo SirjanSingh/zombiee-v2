@@ -16,3 +16,15 @@ def test_mock_model_closed_loop_runs_and_parses():
 def test_baseline_needs_no_generator():
     res = eval_v3.main(["--no-model", "--n-episodes", "2", "--baselines", "heuristic_v3", "--no-log"])
     assert res["heuristic_v3"]["metrics"]["parse_rate"] is None
+
+
+def test_dagger_labels_model_states(tmp_path):
+    out = tmp_path / "dagger.jsonl"
+    eval_v3.main(["--mock-model", "--n-episodes", "2", "--baselines", "--no-log",
+                  "--dagger-out", str(out)])
+    import json
+    from training.inference import parse_actions
+    rows = [json.loads(line) for line in out.read_text().splitlines()]
+    assert rows, "no DAgger rows written"
+    assert all(len(parse_actions(r["completion"], agent_id=0, max_actions=5)) == 5 for r in rows)
+    assert all(r["prompt"].rstrip().endswith("commentary.") for r in rows)

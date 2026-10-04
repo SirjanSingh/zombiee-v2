@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import copy
 import datetime as dt
 import json
 import logging
@@ -182,7 +183,7 @@ class Episode:
 
 def run_policy(seeds: list[int], balance, a0_healthy: bool, teammate: str, k: int,
                a0_policy: Optional[Callable] = None, generator: Optional[Callable] = None,
-               progress: bool = True) -> list[dict]:
+               progress: bool = True, dagger: Optional[dict] = None) -> list[dict]:
     eps = [Episode(s, balance, a0_healthy, teammate, k) for s in seeds]
     rounds = 0
     while True:
@@ -191,7 +192,19 @@ def run_policy(seeds: list[int], balance, a0_healthy: bool, teammate: str, k: in
             break
         if generator is None:
             raise RuntimeError("A0 needs a model plan but no generator was given")
-        comps = generator([e.prompt() for e in need], [e.obs for e in need])
+        prompts = [e.prompt() for e in need]
+        if dagger is not None:
+            # DAgger: label the states the MODEL reaches with the teacher's plan
+            # from that exact state (on a copy, so the live episode is untouched).
+            from training.build_sft_dataset import plan_from_env
+            for e, p in zip(need, prompts):
+                t = e.env._episode.step_count
+                plan = plan_from_env(copy.deepcopy(e.env), e.obs, dagger["teacher"], dagger["teammate"],
+                                     k, f"dagger|{e.seed}|{t}")
+                if len(plan) == k:
+                    dagger["rows"].append({"prompt": p, "completion": json.dumps(plan),
+                                           "seed": e.seed, "t": t, "source": "dagger"})
+        comps = generator(prompts, [e.obs for e in need])
         for e, c in zip(need, comps):
             e.accept(c)
         rounds += 1
@@ -290,6 +303,9 @@ def parse_args(argv=None):
     p.add_argument("--temperature", type=float, default=0.0, help="0 = greedy")
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--tag", default="")
+    p.add_argument("--dagger-out", default=None,
+                   help="write (prompt, teacher plan) JSONL for every state where the model planned")
+    p.add_argument("--dagger-teacher", default="camp")
     p.add_argument("--no-log", action="store_true")
     return p.parse_args(argv)
 
@@ -312,9 +328,17 @@ def main(argv=None) -> dict:
                                     args.temperature, args.batch_size)
             name = f"model({os.path.basename(os.path.normpath(args.lora_path))})" if args.lora_path else "base model"
         logger.info(f"Running {name} on {len(seeds)} episodes")
+        dagger = ({"teacher": args.dagger_teacher, "teammate": args.teammate_policy, "rows": []}
+                  if args.dagger_out else None)
         recs = run_policy(seeds, balance, args.a0_healthy, args.teammate_policy,
-                          args.prefix_actions, generator=gen)
+                          args.prefix_actions, generator=gen, dagger=dagger)
         results[name] = {**summarize(recs), "episodes": recs}
+        if dagger is not None:
+            os.makedirs(os.path.dirname(args.dagger_out) or ".", exist_ok=True)
+            with open(args.dagger_out, "w", encoding="utf-8") as f:
+                for row in dagger["rows"]:
+                    f.write(json.dumps(row) + "\n")
+            logger.info(f"DAgger: wrote {len(dagger['rows'])} teacher-labelled states to {args.dagger_out}")
 
     for b in args.baselines:
         pol = (lambda aid, obs, rng=None: dict(WAIT)) if b == "wait" else get_policy(b)
