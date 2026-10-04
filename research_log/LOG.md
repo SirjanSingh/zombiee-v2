@@ -244,3 +244,24 @@ float bits differ (Python 3.12 changed float `sum()`). The test now rounds rewar
 **Run 6 (v3) launched** on lnmdgx1 GPU 3, commit fd25f31: GiGPO, K=5, mid-episode scenarios (200),
 camp-planner rollout, survival window H=25, step1_weight 0, A0 healthy, balance v3-rc1, 60 steps,
 fp16 / adamw_torch, LoRA defaults from Phase 1 (r64). Log: `~/zombiee-v3/logs/train_run6_v3_.log`.
+
+## 2026-10-04 19:30 — Run 6 attempt 1 aborted (zero-variance groups); run 6b launched (manager)
+
+**Attempt 1** (`--window-return survival`): crashed once on launch (README command lacked
+`--per-device-batch-size 8`; TRL needs the global batch divisible by num_generations=8). After the
+fix: parse 8/8, varied actions, but **5/5 reward calls had std = 0**. Every group of 8 either all
+died in the window (-1.0) or all survived at full HP (+1.5), so GRPO had no gradient. Stopped
+before any checkpoint.
+
+**Fix:** `--window-return graded`. Same survival objective with partial credit:
+dead = -1 + 0.5 x fraction of the window survived; alive = +1 + 0.5 x hp + 0.25 x food headroom
++ 0.25 x water headroom (-0.5 if newly infected). Tie probe (24 v3-rc1 states, 8 random-policy plans
+each, `tools/probes/tieprobe.py`, run on the DGX): zero-spread groups **7/24 survival -> 2/24 graded**.
+
+**Run 6b** (commit 76e13ee): same config as attempt 1 but graded return, output
+`checkpoints/run6b_v3`, log `logs/train_run6b_v3_20261004_192619.log`, GPU 3. First calls:
+std 0.036 and 0.012 (non-zero). Speed: ~2 min per reward call x 8 per optimizer step, about 15 min
+per step, so ~15 h for 60 steps. Checkpoints every 10 steps (~2.5 h).
+
+Known cosmetic bug: after startup the training log stops printing INFO lines (no `reward_fn #N`
+summaries). `checkpoints/run6b_v3/metrics.jsonl` has every call's stats, so nothing is lost.
