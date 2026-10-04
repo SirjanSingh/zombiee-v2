@@ -472,3 +472,24 @@ model as A0:
 - **Game-design finding:** in v3-rc1 "fetch 3 water, then hide" is a near-dominant strategy, so
   survival-to-t100 does not reward real decision-making. Radio + extraction (W4) is now the priority:
   it forces a late-game trip and makes timing, routing and deduction matter.
+
+---
+
+## 2026-10-05 02:15 — Run 8 (closed-loop RL) launched: GRPO vs GiGPO vs GAGPO (manager)
+
+Trainer `training/train_closed_loop.py` (built by a subagent, branch run8-closed-loop, merged 9e7cf48; 144
+tests pass on CPU). The model plays A0 at EVERY decision (re-plans every 5 A0 turns) for 30-turn windows
+from mid-game start states; teammates = camp; graded return; per-decision credit by the chosen estimator;
+PPO-clip + KL to the frozen DAgger-2 adapter; init = `checkpoints/sft_dagger2`.
+
+DGX smoke (B=2, G=4, H=20, 2 steps, GPU 1): cuda, parse 1.00, KL 0 -> 0.0005 (frozen reference works on
+peft 0.13.2), zero-variance groups 0.50 -> 0.00.
+
+Full config (B=4 start states x G=8 rollouts, H=30, 60 steps, lr 3e-6, beta 0.01): step 1 = 150 decisions,
+gen 47 s + update 78 s = 127 s/step, peak 10.8 GB on a 32 GB V100. ~2.2 h per estimator.
+GPU 1: grpo then gigpo (z-score); GPU 5: gagpo (gamma 0.95, lambda 0.8). Each auto-evaluates its last
+checkpoint with eval_v3 (30 eps, seed 1234; compare to DAgger-2: lifetime 99.7, alive at t=100 70%).
+
+Caveat stated before results: v3-rc1 is near-solved by "fetch water, hide", and the DAgger-2 start policy
+already survives most windows, so this run mostly validates the trainer; estimator differences may be
+small. The informative comparison is on v3-rc2 (extraction) once W4 lands.
