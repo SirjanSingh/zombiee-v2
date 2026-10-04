@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SurviveCity Replay</title>
+<style>
+  :root {
+    --bg: #101418; --panel: #182026; --ink: #e8ece9; --muted: #8b9a94; --line: #26313a;
+    --floor: #1b242b; --wall: #3a4650; --safe: #1f3b33; --safe-edge: #3f8f6e;
+    --food: #e0a23b; --water: #3b8fd9; --med: #e8ece9; --zombie: #7d9b4f; --a0: #f2c14e;
+    --mate: #9fb6c6; --infected: #e2574c; --dead: #4a545c; --accent: #3f8f6e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 "Segoe UI", system-ui, sans-serif; }
+  header { display: flex; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header h1 { font-size: 15px; margin: 0 12px 0 0; font-weight: 600; letter-spacing: .02em; }
+  button, select, input[type=file] { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  #turn { font-variant-numeric: tabular-nums; min-width: 92px; color: var(--muted); }
+  main { padding: 16px; display: flex; justify-content: center; }
+  canvas { max-width: 100%; height: auto; border-radius: 10px; background: var(--bg); }
+  .hint { color: var(--muted); padding: 40px 16px; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SurviveCity replay</h1>
+  <input type="file" id="files" accept=".json" multiple title="Load one replay, or two for side by side">
+  <button id="play">Play</button>
+  <select id="speed"><option value="2">2 turns/s</option><option value="4" selected>4 turns/s</option><option value="8">8 turns/s</option></select>
+  <input type="range" id="scrub" min="0" max="100" step="0.05" value="0">
+  <span id="turn">turn 0</span>
+</header>
+<main><canvas id="view" width="1280" height="760"></canvas></main>
+<p class="hint" id="hint">Load one replay JSON, or two to compare side by side (same seed works best).
+  You can also open <code>?a=path.json&amp;b=path.json</code> when served over http.</p>
+<script>
+"use strict";
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C = {};
+["bg","panel","ink","muted","line","floor","wall","safe","safe-edge","food","water","med","zombie","a0","mate","infected","dead","accent"].forEach(k => C[k] = css("--" + k));
+
+// ---------- data helpers ----------
+function prepare(rep) {
+  // index frames by turn so two replays can be played on one shared game clock
+  const byTurn = new Map();
+  rep.frames.forEach((f, i) => { if (!byTurn.has(f.t)) byTurn.set(f.t, []); byTurn.get(f.t).push(i); });
+  rep._byTurn = byTurn;
+  rep._lastT = rep.frames[rep.frames.length - 1].t;
+  rep._key = s => s.map(([r, c]) => r + "," + c);
+  rep._sets = {};
+  for (const k of ["walls", "food", "water", "medicine", "safehouse"]) rep._sets[k] = new Set(rep._key(rep.layout[k]));
+  return rep;
+}
+function frameAt(rep, T) {
+  // T is a float game time. Within a turn, step through that turn's actions.
+  const t = Math.min(Math.floor(T), rep._lastT);
+  let idxs = rep._byTurn.get(t);
+  if (!idxs) { // turns are contiguous, but be safe
+    let tt = t; while (tt > 0 && !rep._byTurn.get(tt)) tt--; idxs = rep._byTurn.get(tt);
+  }
+  const frac = T >= rep._lastT ? 1 : T - t;
+  return rep.frames[idxs[Math.min(idxs.length - 1, Math.floor(frac * idxs.length))]];
+}
+function eventsUpTo(rep, frameIdx, n) {
+  const out = [];
+  for (let i = frameIdx; i >= 0 && out.length < n; i--)
+    for (const e of rep.frames[i].events) if (e.type !== "drink" && e.type !== "eat") out.push([rep.frames[i].t, e]);
+  return out;
+}
+const NAMES = ["A0", "A1", "A2", "A3", "A4"];
+function eventText(e) {
+  switch (e.type) {
+    case "death": return `${NAMES[e.agent]} died (${(e.cause || "?").replace(/_/g, " ")})`;
+    case "bite": return `${NAMES[e.biter]} bit ${NAMES[e.victim]}`;
+    case "reveal": return `${NAMES[e.agent]} revealed as ${e.role}`;
+    case "lockout": return `${NAMES[e.agent]} locked out by vote`;
+    case "wave": return `zombie wave +${e.new}`;
+    default: return e.type;
+  }
+}
+
+// ---------- drawing (pure: depends only on replay + T) ----------
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+function bar(ctx, x, y, w, h, frac, color) {
+  ctx.fillStyle = C.line; roundRect(ctx, x, y, w, h, h / 2); ctx.fill();
+  ctx.fillStyle = color; roundRect(ctx, x, y, Math.max(h, w * Math.max(0, Math.min(1, frac))), h, h / 2); ctx.fill();
+}
+function renderAt(ctx, rep, T, ox, oy, W, H) {
+  const f = frameAt(rep, T);
+  const fi = rep.frames.indexOf(f);
+  const bal = rep.meta.balance, L = rep.layout;
+  const top = 64, gridSize = Math.min(W - 24, H - top - 150);
+  const cell = gridSize / L.cols, gx = ox + (W - gridSize) / 2, gy = oy + top;
+
+  // title + turn
+  ctx.fillStyle = C.ink; ctx.font = "600 20px Segoe UI, system-ui, sans-serif"; ctx.textAlign = "left";
+  ctx.fillText(rep.meta.a0_policy || "replay", ox + 12, oy + 28);
+  ctx.fillStyle = C.muted; ctx.font = "14px Segoe UI, system-ui, sans-serif";
+  ctx.fillText(`seed ${rep.meta.seed}   turn ${f.t} / ${rep.meta.max_steps}   ${f.day}`, ox + 12, oy + 50);
+
+  // board
+  for (let r = 0; r < L.rows; r++) for (let c = 0; c < L.cols; c++) {
+    const k = r + "," + c, x = gx + c * cell, y = gy + r * cell;
+    ctx.fillStyle = rep._sets.walls.has(k) ? C.wall : rep._sets.safehouse.has(k) ? C.safe : C.floor;
+    ctx.fillRect(x + 1, y + 1, cell - 2, cell - 2);
+  }
+  // safehouse outline
+  const sh = L.safehouse, rs = sh.map(p => p[0]), cs = sh.map(p => p[1]);
+  ctx.strokeStyle = C["safe-edge"]; ctx.lineWidth = 2;
+  ctx.strokeRect(gx + Math.min(...cs) * cell, gy + Math.min(...rs) * cell, (Math.max(...cs) - Math.min(...cs) + 1) * cell, (Math.max(...rs) - Math.min(...rs) + 1) * cell);
+
+  // resources
+  const down = new Set(rep._key(f.food_down));
+  for (const [r, c] of L.food) {
+    const x = gx + (c + .5) * cell, y = gy + (r + .5) * cell, gone = down.has(r + "," + c);
+    ctx.fillStyle = gone ? C.dead : C.food; ctx.beginPath(); ctx.arc(x, y + cell * .04, cell * .2, 0, 7); ctx.fill();
+    ctx.strokeStyle = gone ? C.dead : C.accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y - cell * .14); ctx.lineTo(x + cell * .08, y - cell * .26); ctx.stroke();
+  }
+  for (const [r, c] of L.water) {
+    const x = gx + (c + .5) * cell, y = gy + (r + .5) * cell, s = cell * .22;
+    ctx.fillStyle = C.water; ctx.beginPath(); ctx.moveTo(x, y - s * 1.3);
+    ctx.quadraticCurveTo(x + s * 1.1, y + s * .1, x, y + s); ctx.quadraticCurveTo(x - s * 1.1, y + s * .1, x, y - s * 1.3); ctx.fill();
+  }
+  for (const [r, c] of L.medicine) {
+    const x = gx + (c + .5) * cell, y = gy + (r + .5) * cell, a = cell * .2, b = cell * .07;
+    ctx.fillStyle = C.med; ctx.fillRect(x - a, y - b, 2 * a, 2 * b); ctx.fillRect(x - b, y - a, 2 * b, 2 * a);
+  }
+
+  // zombies
+  for (const [r, c] of f.zombies) {
+    const x = gx + c * cell, y = gy + r * cell, p = cell * .18;
+    ctx.fillStyle = C.zombie; roundRect(ctx, x + p, y + p, cell - 2 * p, cell - 2 * p, cell * .12); ctx.fill();
+    ctx.fillStyle = C.bg; ctx.fillRect(x + cell * .34, y + cell * .38, cell * .1, cell * .1); ctx.fillRect(x + cell * .56, y + cell * .38, cell * .1, cell * .1);
+  }
+
+  // agents: spread agents that share a cell, draw the dead first and A0 last (always on top)
+  const groups = new Map();
+  for (const a of f.agents) { const k = a[1] + "," + a[2]; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(a[0]); }
+  const OFF = { 1: [[0, 0]], 2: [[-.22, 0], [.22, 0]], 3: [[-.22, -.18], [.22, -.18], [0, .2]],
+                4: [[-.22, -.22], [.22, -.22], [-.22, .22], [.22, .22]], 5: [[-.24, -.24], [.24, -.24], [0, 0], [-.24, .24], [.24, .24]] };
+  const order = [...f.agents].sort((p, q) => (p[6] - q[6]) || (p[0] === 0 ? 1 : q[0] === 0 ? -1 : 0));
+  for (const a of order) {
+    const [id, r, c, hp, , , alive, inf] = a;
+    const g = groups.get(r + "," + c), [dx, dy] = OFF[g.length][g.indexOf(id)];
+    const shared = g.length > 1;
+    const x = gx + (c + .5 + dx) * cell, y = gy + (r + .5 + dy) * cell;
+    const rad = cell * (shared ? (id === 0 ? .22 : .18) : (id === 0 ? .32 : .27));
+    ctx.fillStyle = !alive ? C.dead : id === 0 ? C.a0 : C.mate;
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, 7); ctx.fill();
+    if (alive && inf !== "none") { // true infection, visible to the viewer only
+      ctx.strokeStyle = C.infected; ctx.lineWidth = 3; ctx.setLineDash(inf === "latent" ? [4, 3] : []);
+      ctx.beginPath(); ctx.arc(x, y, rad + 3, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (f.actor === id && alive) { ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, rad + 6, 0, 7); ctx.stroke(); }
+    ctx.fillStyle = C.bg; ctx.font = `700 ${Math.round(rad * .85)}px Segoe UI, system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(alive ? NAMES[id] : "x", x, y + 1); ctx.textBaseline = "alphabetic";
+  }
+  if (f.day === "night") { ctx.fillStyle = "rgba(5, 10, 20, 0.28)"; ctx.fillRect(gx, gy, gridSize, gridSize); }
+
+  // A0 panel
+  const a0 = f.agents[0], py = gy + gridSize + 20, px = ox + 16, bw = Math.min(220, W / 3 - 30);
+  ctx.textAlign = "left"; ctx.font = "600 14px Segoe UI, system-ui, sans-serif"; ctx.fillStyle = C.a0;
+  ctx.fillText("A0 (our AI)", px, py + 4);
+  const rows = [["health", a0[3] / bal.hp_max, C.accent], ["hunger", a0[4] / bal.starve_threshold, C.food], ["thirst", a0[5] / bal.dehydrate_threshold, C.water]];
+  rows.forEach(([name, v, col], i) => {
+    ctx.fillStyle = C.muted; ctx.font = "13px Segoe UI, system-ui, sans-serif"; ctx.fillText(name, px, py + 28 + i * 24);
+    bar(ctx, px + 64, py + 18 + i * 24, bw, 10, v, col);
+  });
+  const act = f.actor === 0 && f.action ? f.action.action_type.replace(/_/g, " ") : "";
+  ctx.fillStyle = C.ink; ctx.font = "13px Segoe UI, system-ui, sans-serif";
+  ctx.fillText(act ? `last action: ${act}` : "", px, py + 102);
+  // event ticker
+  const ex = ox + W / 2 + 10;
+  ctx.fillStyle = C.muted; ctx.font = "600 13px Segoe UI, system-ui, sans-serif"; ctx.fillText("events", ex, py + 4);
+  eventsUpTo(rep, fi, 5).forEach(([t, e], i) => {
+    ctx.fillStyle = e.type === "death" && e.agent === 0 ? C.infected : C.ink; ctx.font = "13px Segoe UI, system-ui, sans-serif";
+    ctx.fillText(`t${String(t).padStart(3, " ")}  ${eventText(e)}`, ex, py + 28 + i * 19);
+  });
+  // A0 death banner
+  if (!a0[6]) {
+    const d = rep.frames.slice(0, fi + 1).flatMap(fr => fr.events.map(e => [fr.t, e])).find(([, e]) => e.type === "death" && e.agent === 0);
+    if (d) {
+      ctx.fillStyle = "rgba(16, 20, 24, 0.82)"; ctx.fillRect(gx, gy + gridSize / 2 - 34, gridSize, 68);
+      ctx.fillStyle = C.infected; ctx.textAlign = "center"; ctx.font = "700 24px Segoe UI, system-ui, sans-serif";
+      ctx.fillText(`A0 died on turn ${d[0]}: ${(d[1].cause || "").replace(/_/g, " ")}`, gx + gridSize / 2, gy + gridSize / 2 + 8);
+    }
+  } else if (f.t >= rep.meta.max_steps) {
+    ctx.fillStyle = "rgba(16, 20, 24, 0.82)"; ctx.fillRect(gx, gy + gridSize / 2 - 34, gridSize, 68);
+    ctx.fillStyle = C.accent; ctx.textAlign = "center"; ctx.font = "700 24px Segoe UI, system-ui, sans-serif";
+    ctx.fillText(`A0 survived all ${rep.meta.max_steps} turns`, gx + gridSize / 2, gy + gridSize / 2 + 8);
+  }
+}
+
+// ---------- player ----------
+const canvas = document.getElementById("view"), ctx = canvas.getContext("2d");
+const scrub = document.getElementById("scrub"), turnEl = document.getElementById("turn");
+let reps = [], T = 0, playing = false, last = 0;
+function maxT() { return Math.max(...reps.map(r => r._lastT)); }
+function draw() {
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (!reps.length) return;
+  const w = canvas.width / reps.length;
+  reps.forEach((r, i) => {
+    if (i) { ctx.fillStyle = C.line; ctx.fillRect(i * w - 1, 16, 2, canvas.height - 32); }
+    renderAt(ctx, r, T, i * w, 0, w, canvas.height);
+  });
+  turnEl.textContent = `turn ${Math.floor(T)} / ${maxT()}`;
+  scrub.value = T;
+}
+function load(list) {
+  reps = list.map(prepare);
+  scrub.max = maxT(); T = 0;
+  document.getElementById("hint").style.display = "none";
+  draw();
+}
+function tick(now) {
+  if (playing) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    T = Math.min(maxT(), T + dt * Number(document.getElementById("speed").value));
+    if (T >= maxT()) { playing = false; document.getElementById("play").textContent = "Play"; }
+    draw();
+  }
+  last = now; requestAnimationFrame(tick);
+}
+document.getElementById("play").onclick = e => { playing = !playing; if (T >= maxT()) T = 0; e.target.textContent = playing ? "Pause" : "Play"; };
+scrub.oninput = () => { T = Number(scrub.value); draw(); };
+document.getElementById("files").onchange = async e => {
+  const files = [...e.target.files].slice(0, 2);
+  load(await Promise.all(files.map(f => f.text().then(JSON.parse))));
+};
+const q = new URLSearchParams(location.search), srcs = ["a", "b"].map(k => q.get(k)).filter(Boolean);
+if (srcs.length) Promise.all(srcs.map(s => fetch(s).then(r => r.json()))).then(list => {
+  load(list);
+  if (q.get("t")) { T = Number(q.get("t")); draw(); }
+});
+window.renderAt = renderAt; window.prepareReplay = prepare; // reused by the video engine
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

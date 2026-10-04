@@ -28,3 +28,18 @@ def test_dagger_labels_model_states(tmp_path):
     assert rows, "no DAgger rows written"
     assert all(len(parse_actions(r["completion"], agent_id=0, max_actions=5)) == 5 for r in rows)
     assert all(r["prompt"].rstrip().endswith("commentary.") for r in rows)
+
+
+def test_replay_recording(tmp_path):
+    import json
+    eval_v3.main(["--no-model", "--baselines", "camp", "--n-episodes", "1", "--no-log",
+                  "--record-replays", "1", "--replay-dir", str(tmp_path), "--tag", "t"])
+    files = list(tmp_path.glob("*.json"))
+    assert len(files) == 1
+    rep = json.loads(files[0].read_text())
+    assert rep["frames"][0]["actor"] is None            # reset frame first
+    assert rep["frames"][-1]["t"] == rep["meta"]["result"]["final_t"]
+    assert {"walls", "food", "water", "safehouse"} <= set(rep["layout"])
+    assert len(rep["frames"][1]["agents"]) == 5
+    types = {e["type"] for f in rep["frames"] for e in f["events"]}
+    assert "drink" in types                              # camp drinks within an episode

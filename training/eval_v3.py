@@ -106,7 +106,8 @@ def make_hf_generator(model_name: str, lora_path: Optional[str], max_new_tokens:
 # ---------------------------------------------------------------------------
 
 class Episode:
-    def __init__(self, seed: int, balance, a0_healthy: bool, teammate: str, k: int):
+    def __init__(self, seed: int, balance, a0_healthy: bool, teammate: str, k: int,
+                 record_meta: Optional[dict] = None):
         self.seed = seed
         self.env = SurviveCityV2Env(balance=balance, a0_healthy=a0_healthy)
         self.obs = self.env.reset(seed=seed)
@@ -118,6 +119,11 @@ class Episode:
         self.calls = 0
         self.parse_fail = 0
         self.a0_actions: collections.Counter = collections.Counter()
+        self.recorder = None
+        if record_meta is not None:
+            from training.replay import ReplayRecorder
+            self.recorder = ReplayRecorder(self.env, {**record_meta, "teammates": teammate,
+                                                      "prefix_actions": k})
 
     @property
     def done(self) -> bool:
@@ -141,6 +147,8 @@ class Episode:
             else:
                 act = self.mate(aid, self.obs, rng=self.rng)
             self.obs = self.env.step(act)
+            if self.recorder is not None:
+                self.recorder.capture(aid, act)
         return False
 
     def prompt(self) -> str:
@@ -183,8 +191,11 @@ class Episode:
 
 def run_policy(seeds: list[int], balance, a0_healthy: bool, teammate: str, k: int,
                a0_policy: Optional[Callable] = None, generator: Optional[Callable] = None,
-               progress: bool = True, dagger: Optional[dict] = None) -> list[dict]:
-    eps = [Episode(s, balance, a0_healthy, teammate, k) for s in seeds]
+               progress: bool = True, dagger: Optional[dict] = None,
+               record_n: int = 0, record_dir: Optional[str] = None, label: str = "") -> list[dict]:
+    eps = [Episode(s, balance, a0_healthy, teammate, k,
+                   record_meta={"a0_policy": label} if i < record_n else None)
+           for i, s in enumerate(seeds)]
     rounds = 0
     while True:
         need = [e for e in eps if not e.done and e.advance(a0_policy)]
@@ -212,6 +223,12 @@ def run_policy(seeds: list[int], balance, a0_healthy: bool, teammate: str, k: in
             alive = sum(not e.done for e in eps)
             logger.info(f"  round {rounds}: {alive}/{len(eps)} episodes running, "
                         f"t~{max(e.env._episode.step_count for e in eps)}")
+    if record_n and record_dir:
+        safe = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in label)
+        for e in eps:
+            if e.recorder is not None:
+                path = e.recorder.save(os.path.join(record_dir, f"{safe}_seed{e.seed}.json"))
+                logger.info(f"replay saved: {path}")
     return [e.record() for e in eps]
 
 
@@ -306,6 +323,9 @@ def parse_args(argv=None):
     p.add_argument("--dagger-out", default=None,
                    help="write (prompt, teacher plan) JSONL for every state where the model planned")
     p.add_argument("--dagger-teacher", default="camp")
+    p.add_argument("--record-replays", type=int, default=0,
+                   help="record full replays of the first N episodes of EVERY row (same seeds)")
+    p.add_argument("--replay-dir", default=os.path.join(LOG_DIR, "replays"))
     p.add_argument("--no-log", action="store_true")
     return p.parse_args(argv)
 
@@ -331,7 +351,9 @@ def main(argv=None) -> dict:
         dagger = ({"teacher": args.dagger_teacher, "teammate": args.teammate_policy, "rows": []}
                   if args.dagger_out else None)
         recs = run_policy(seeds, balance, args.a0_healthy, args.teammate_policy,
-                          args.prefix_actions, generator=gen, dagger=dagger)
+                          args.prefix_actions, generator=gen, dagger=dagger,
+                          record_n=args.record_replays, record_dir=args.replay_dir,
+                          label=f"{args.tag or 'eval'}_{name}")
         results[name] = {**summarize(recs), "episodes": recs}
         if dagger is not None:
             os.makedirs(os.path.dirname(args.dagger_out) or ".", exist_ok=True)
@@ -343,7 +365,9 @@ def main(argv=None) -> dict:
     for b in args.baselines:
         pol = (lambda aid, obs, rng=None: dict(WAIT)) if b == "wait" else get_policy(b)
         recs = run_policy(seeds, balance, args.a0_healthy, args.teammate_policy,
-                          args.prefix_actions, a0_policy=pol, progress=False)
+                          args.prefix_actions, a0_policy=pol, progress=False,
+                          record_n=args.record_replays, record_dir=args.replay_dir,
+                          label=f"{args.tag or 'eval'}_{b}")
         results[b] = {**summarize(recs), "episodes": recs}
 
     elapsed = time.time() - t0
