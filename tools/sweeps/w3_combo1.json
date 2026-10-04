@@ -1,0 +1,122 @@
+[
+ {
+  "name": "rate 0.5 move_every 1 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.5,
+   "thirst_rate": 0.5,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.5 move_every 1 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.5,
+   "thirst_rate": 0.5,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": 5
+  }
+ },
+ {
+  "name": "rate 0.5 move_every 2 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.5,
+   "thirst_rate": 0.5,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.5 move_every 2 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.5,
+   "thirst_rate": 0.5,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": 5
+  }
+ },
+ {
+  "name": "rate 0.6 move_every 1 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.6,
+   "thirst_rate": 0.6,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.6 move_every 1 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.6,
+   "thirst_rate": 0.6,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": 5
+  }
+ },
+ {
+  "name": "rate 0.6 move_every 2 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.6,
+   "thirst_rate": 0.6,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.6 move_every 2 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.6,
+   "thirst_rate": 0.6,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": 5
+  }
+ },
+ {
+  "name": "rate 0.75 move_every 1 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.75,
+   "thirst_rate": 0.75,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.75 move_every 1 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.75,
+   "thirst_rate": 0.75,
+   "zombie_move_every": 1,
+   "zombie_chase_radius": 5
+  }
+ },
+ {
+  "name": "rate 0.75 move_every 2 radius None",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.75,
+   "thirst_rate": 0.75,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": null
+  }
+ },
+ {
+  "name": "rate 0.75 move_every 2 radius 5",
+  "set": {
+   "starting_infected_progression": false,
+   "hunger_rate": 0.75,
+   "thirst_rate": 0.75,
+   "zombie_move_every": 2,
+   "zombie_chase_radius": 5
+  }
+ }
+]
