@@ -122,3 +122,32 @@ What changed since plan 11 (May-June 2026) and how it applies here:
 
 Net: algorithm choice is NOT the bottleneck right now (env winnability and state distribution are).
 Keep GiGPO as the main method, add ReBN as a comparison arm after Phase B works.
+
+---
+
+## Research update 2 (2026-10-04 evening, manager): newer algorithms
+
+Read: GAGPO full paper (HTML); TCPO, OMAR, AEM, Progress-Advantage abstracts; an awesome-list decision guide.
+
+| method | what it adds | evidence | code | fit for us |
+|---|---|---|---|---|
+| [GAGPO, 2605.13217](https://arxiv.org/abs/2605.13217) | critic-free TD/GAE over steps: V(s) = mean return of all rollout steps that hit the same state; delta = r + gamma*V(s') - V(s); GAE gamma 0.95, lambda 0.8; per-group standardization | ALFWorld 1.5B: 93.5 vs GiGPO 88.1 vs GRPO 70.3; 7B: 95.6 vs 88.8 vs 73.2; WebShop similar | none public (built on verl-agent) | high: our GiGPO anchor grouping already gives V(s) groups; ~100 lines on top of training/gigpo.py |
+| [TCPO, 2608.01667](https://arxiv.org/abs/2608.01667) | turn-level credit: retrospective progress, hindsight delayed credit, counterfactual re-sampling of high-surprisal turns | Qwen3-4B / R1-Distill-8B on math, code, AppWorld | not stated | medium: counterfactual re-sampling is cheap in our fast sim |
+| [OMAR, 2602.03109](https://arxiv.org/abs/2602.03109) | one model plays ALL roles in multi-agent self-play; turn+token hierarchical advantages | SOTOPIA + Werewolf; emergent persuasion/compromise; reward hacking noted | not stated | the social-deduction phase: one LoRA plays healthy AND infected agents |
+| [AEM, 2605.00425](https://arxiv.org/abs/2605.00425) | response-level uncertainty rescales advantages (explore->exploit) | 1.5B-32B, ALFWorld/WebShop/SWE; +1.4% on SWE | not stated | low priority |
+| [Progress advantage, 2606.26080](https://arxiv.org/abs/2606.26080) | log-prob ratio trained/reference policy as a free step-level advantage estimate | test-time scaling, failure attribution | not stated | useful for analysis/video (which step went wrong), not training |
+
+**Biggest takeaway:** every 2026 method assumes TRUE multi-turn rollouts (the model acts at every
+turn, closed loop, credit per turn). Our trainer is still a one-shot K=5 open-loop plan + scripted
+continuation (a contextual bandit with a heuristic Q estimate). Algorithm swaps matter less than that
+structure. With the 12x generation fix and eval_v3's batched lockstep rollouts, closed-loop
+training is now affordable.
+
+**Roadmap (proposed):**
+1. Run 7: GiGPO warm-started from the SFT adapter (current pipeline; cheap).
+2. Run 8: closed-loop multi-turn trainer (custom loop on eval_v3's lockstep runner: G episodes per
+   start state, model acts every A0 turn, policy-gradient loss over all turn samples) with
+   `--adv-estimator {grpo, gigpo, gagpo}`. GAGPO = anchor-group V(s) + GAE (gamma 0.95, lambda 0.8).
+   Ablation GRPO vs GiGPO vs GAGPO is also the strongest video segment.
+3. Run 9+: OMAR-style self-play once W4 (extraction, infected rewards) lands: one model plays all
+   five agents, both sides.
