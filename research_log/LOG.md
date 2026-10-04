@@ -310,3 +310,144 @@ every row) is carried by the camp-planner teammates whoever plays A0. The untrai
 for training: heuristic_v3 63.6, camp planner 94.5. Even camp rarely reaches t=100 as A0: it stops
 water sorties near the end and dies of thirst around t=94 (worth fixing before it becomes the
 W7 SFT teacher).
+
+---
+
+## 2026-10-04 20:30 — eval `run6c-ckpt10` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `a0f0c5c`; 64 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-10) | 0% | 20.8 | 63% | 0.73 | 100% | thirst 27, hunger 3 |
+
+Data: `data/2026-10-04_eval_run6c-ckpt10.json`.
+
+---
+
+## 2026-10-04 20:57 — eval `sft-camp-v3` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `0a12abb`; 63 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(sft_camp_v3) | 0% | 25.1 | 63% | 0.73 | 100% | hunger 29, thirst 1 |
+
+Data: `data/2026-10-04_eval_sft-camp-v3.json`.
+
+---
+
+## 2026-10-04 21:36 — eval `sft-dagger1` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `1c35c1b`; 92 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(sft_dagger1) | 0% | 33.6 | 63% | 0.73 | 100% | thirst 30 |
+
+Data: `data/2026-10-04_eval_sft-dagger1.json`.
+
+---
+
+## 2026-10-04 22:07 — eval `run6c-ckpt30` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `1c35c1b`; 64 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-30) | 0% | 21.5 | 63% | 0.73 | 100% | thirst 30 |
+
+Data: `data/2026-10-04_eval_run6c-ckpt30.json`.
+
+---
+
+## 2026-10-04 22:08 — eval `run6c-ckpt60` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `1c35c1b`; 65 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-60) | 0% | 21.7 | 63% | 0.73 | 100% | thirst 30 |
+
+Data: `data/2026-10-04_eval_run6c-ckpt60.json`.
+
+---
+
+## 2026-10-04 22:26 — eval `run7-ckpt60` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `1c35c1b`; 76 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-60) | 0% | 26.8 | 63% | 0.80 | 100% | hunger 28, thirst 2 |
+
+Data: `data/2026-10-04_eval_run7-ckpt60.json`.
+
+---
+
+## 2026-10-04 22:30 — eval `sft-dagger2` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `1c35c1b`; 167 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(sft_dagger2) | 70% | 99.7 | 97% | 1.47 | 100% | thirst 9, alive 21 |
+
+Data: `data/2026-10-04_eval_sft-dagger2.json`.
+
+---
+
+## 2026-10-04 22:53 — eval `sft-dagger2-verify` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 60 seeds for every row; A0 healthy = True; git `1c35c1b`; 361 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(sft_dagger2) | 72% | 99.0 | 92% | 1.43 | 100% | alive 43, thirst 14, hunger 3 |
+| heuristic_v3 | 2% | 60.9 | 58% | 0.68 | - | hunger 19, thirst 28, zombie_attack 7, infection_progression 5, alive 1 |
+| camp | 0% | 93.8 | 62% | 0.73 | - | thirst 41, hunger 19 |
+| random | 0% | 23.6 | 68% | 0.80 | - | hunger 45, zombie_attack 4, thirst 11 |
+| wait | 0% | 24.0 | 58% | 0.70 | - | thirst 60 |
+
+Data: `data/2026-10-04_eval_sft-dagger2-verify.json`.
+
+---
+
+## 2026-10-04 23:00 — HEADLINE: DAgger makes Qwen survive the full game; RL alone barely moved (manager)
+
+Closed-loop eval (`training/eval_v3.py`): our model plays A0 for the whole game, re-planning every 5 of
+its turns; A1-A4 = camp planner; balance v3-rc1; A0 lifetime in turns.
+
+| A0 played by | how it was trained | A0 lifetime | A0 alive at t=100 | team survival |
+|---|---|---|---|---|
+| untrained Qwen2.5-3B | none | 20.8 | 0% | 63% |
+| run 6c ckpt-30 / ckpt-60 | GiGPO RL from scratch, 60 steps | 21.5 / 21.7 | 0% | 63% |
+| SFT warm-start | imitate camp planner, 1845 states | 25.1 | 0% | 63% |
+| run 7 ckpt-60 | GiGPO RL from the SFT model, 60 steps | 26.8 | 0% | 63% |
+| DAgger round 1 | + 1229 states the model itself reached, teacher-labelled | 33.6 | 0% | 63% |
+| **DAgger round 2** | + 1848 more own-states (4922 total) | **99.7** | **70%** | **97%** |
+| *camp planner (teacher)* | hand-written | *94.5* | *0%* | *67%* |
+
+(30 episodes, eval seed 1234.) **Verified on fresh seeds** (4321, 60 episodes, all baselines on the same
+seeds): DAgger-2 model **72% alive at t=100 (43/60), lifetime 99.0, team survival 92%**; camp 0% / 93.8;
+heuristic_v3 2% / 60.9; random 0% / 23.6; wait 0% / 24.0. Parse rate 100% throughout.
+
+**What happened, in order**
+1. Pure imitation (SFT) taught water runs (thirst deaths 26 -> 1) but every game ended at exactly t=25:
+   the model drifted out of the safehouse (move_right 144 vs move_left 69) and starved outside. The
+   teacher never eats; it survives hunger by staying inside, where healing cancels starvation damage.
+   The model never saw how to recover from leaving: the classic compounding-error failure of behaviour
+   cloning.
+2. DAgger (Ross et al. 2011): run the student, label the states IT reaches with the teacher's 5-action
+   plan (computed on a deepcopy of the live env), aggregate, retrain. Two rounds took ~90 min of one V100.
+3. The student now beats its teacher. Overall action mixes are almost identical (wait 86% vs 84%,
+   drink 5.0% vs 5.3%), so the gain is in timing, not style. Open question: the teacher stops water
+   sorties near the end (dies of thirst ~t=94); the hypothesis is the student keeps re-planning water
+   runs in the end game. To check with per-episode death-time and replay analysis.
+4. RL with the current one-shot trainer (one 5-action plan from a mid-game state, scripted continuation,
+   graded 25-step window return) barely moved the policy: run 6c 20.8 -> 21.7, run 7 25.1 -> 26.8.
+   KL rose to ~0.02 only. This supports the research note: the RL needs the true closed-loop
+   multi-turn trainer (run 8 plan) to matter.
+
+Data: `data/2026-10-04_eval_{sft-camp-v3,sft-dagger1,sft-dagger2,sft-dagger2-verify,run6c-ckpt10,run6c-ckpt30,run6c-ckpt60,run7-ckpt60}.json`.
+Adapters on the DGX: `checkpoints/sft_camp_v3`, `sft_dagger1`, `sft_dagger2` (best), `run6c_v3`, `run7_v3`.
