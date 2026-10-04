@@ -43,7 +43,10 @@ Rules
     heuristic_v3 = rollout/baseline policy; prompts/rubric/postmortem follow cfg; bite events in prompt.
     Details: `.planning2/14_V3_BALANCE.md`.
 
-- [ ] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
+- [~] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
+  2026-10-05 (branch `w4-extraction`): preset `v3-rc2` implemented + tested; calibration 100 eps:
+  random 0%, heuristic_v3 1%, camp 33%, oracle 54% extraction. Heuristic and oracle targets missed;
+  see research_log 2026-10-05 W4 entry for what binds. Manager: accept or ask for more tuning.
   Radio at t=60 names an extraction corner (seeded); helicopter t=85-90 extracts healthy
   agents in the zone; any infected agent in the zone = extraction fails (infected win);
   small milestone bonus at t=30/60. Weights in config. Prompt shows radio info + turns left.
