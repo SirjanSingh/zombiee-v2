@@ -7,6 +7,10 @@ Rules
 - Don't touch the unrelated staged files in the main checkout (RUN_ON_*.md, notebooks, .env.example, .gitignore).
 - Run `python -m pytest -q` before every push. Don't run `docker build` anywhere.
 - When a task is done: tick it here, add a one-line result, then message the manager.
+- **Document everything** (user will build YouTube visualisations from it): every calibration/probe/eval
+  run appends one JSON line to `research_log/experiments.jsonl` (date, git sha, balance config, policy,
+  n_eps, all metrics, death causes) and a short entry to `research_log/LOG.md`. Raw per-episode results go
+  in `research_log/data/`. Never overwrite old results.
 - Plan + evidence: `.planning2/13_V3_MANAGER_PLAN.md`. Probe scripts: `tools/probes/`.
 
 ## Worker queue
@@ -26,13 +30,17 @@ Rules
   Ask the manager before changing anything about voting/infection roles (the social
   deduction part is the project's point).
 
-- [ ] **W4 — Rescue objective (plan 13, Phase A2).** Episode ends at t=90 with "rescue":
-  healthy agents alive and inside the safehouse at t=90 are rescued (big terminal reward),
-  milestone bonuses at t=30/60, infected win if they outnumber healthy at rescue. Put the
-  weights in BalanceConfig/reward config. Show the prompt text includes turns-to-rescue.
-  Recalibrate (W2 script) with rescue rate as the headline. Can be done together with W3,
-  since rebalancing should target the rescue rate. Propose weights to the manager before
-  removing any existing rubric.
+- [ ] **W4 — Radio + extraction objective (plan 13, Phase A2; replaces the rescue-at-90 idea).**
+  Radio at t=60 names an extraction corner (seeded); helicopter t=85-90 extracts healthy
+  agents in the zone; any infected agent in the zone = extraction fails (infected win);
+  small milestone bonus at t=30/60. Weights in config. Prompt shows radio info + turns left.
+  Extend the oracle planner to do the extraction run so calibration can measure it.
+  Do after W3 has a winnable survival baseline. Propose reward weights to the manager first.
+- [ ] **W5 — Replay recorder (for YouTube visuals).** `tools/record_episode.py`: runs one
+  episode under a given policy + BalanceConfig and writes `research_log/replays/<name>.json`
+  with every step: grid, agents (pos, hp, hunger, thirst, infection, inventory, action),
+  zombies, events (bites, deaths, votes, radio, extraction). Record heuristic vs oracle on the
+  same seeds, old balance vs v3.
 
 (Phase B tasks get added after W3/W4 land.)
 

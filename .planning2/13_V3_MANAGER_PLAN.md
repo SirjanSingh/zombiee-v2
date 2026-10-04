@@ -60,20 +60,22 @@ Candidate knobs (worker picks the smallest set that hits the targets, justify ea
 starvation threshold / tick rate, zombie chase radius (wander unless agent within R),
 wave sizes, safehouse size or a water source inside, food respawn delay, bite probability.
 
-### Phase A2: a strategic objective, "rescue at turn 90" (user direction, 2026-10-04)
-End goal: a model that actually survives the zombies. Make that the reward, not a side effect:
-- **Rescue arrives at t=90.** Episode ends at t=90. Every agent alive, healthy, and inside the
-  safehouse at t=90 is "rescued": large terminal reward (e.g. +5 per rescued agent to each
-  healthy agent; trained agent gets its own + team share).
-- **Milestones** at t=30 and t=60: small bonus (e.g. +0.5) per healthy agent still alive.
-  These keep the signal from being purely sparse while staying aligned with the real goal.
-- **Infected win** if they outnumber healthy agents at rescue; infected agents get the mirror
-  reward. This keeps the social-deduction layer meaningful (vote out the infected, don't let
-  a biter into the rescue).
-- Demote the 15 shaping rubrics to a small weighted term (or drop) once the terminal signal
-  works. Runs 1-3 were sunk by rubric gaming (scan-spam). Terminal survival is hard to game.
-- Prompts tell the model the objective and the turns remaining ("Rescue in 37 turns").
-- Calibration targets from Phase A apply to the rescue rate.
+### Phase A2: a strategic objective, "radio + extraction" (manager design, 2026-10-04)
+User's steer: the end goal is a model that really survives, with a strategic goal (the
+"survive 90 turns" idea was an example, not a spec). Design chosen:
+- **Radio at t=60** announces the extraction cell: one of the 4 corner regions, picked from the
+  seed. Shown in every prompt from t=60 on ("Extraction at NE corner, helicopter lands t=85").
+- **Helicopter at t=85-90.** Healthy agents standing in the extraction zone during the window
+  are extracted (leave the map, safe). Big terminal reward per extracted healthy agent, shared
+  with the team.
+- **Contamination rule:** if any infected agent is in the zone when the helicopter leaves, the
+  extraction fails for everyone (infected win). Deduction + voting now decide the outcome.
+- Strategic arc the policy has to learn: early, stock water/food and avoid zombies; mid,
+  identify and lock out the infected; late, time a cross-map run through zombies.
+- Milestone bonus for healthy agents alive at t=30/60 (small) so the signal is not all at t=90.
+- Shaping rubrics demoted to a small weighted term once the terminal signal works (runs 1-3 were
+  sunk by rubric gaming; extraction is hard to game).
+- Calibration: heuristic extraction rate ~5-20%, oracle planner >= 60%.
 
 ### Phase B: train on the states that matter (worker, after A)
 1. Mid-episode start states: prompt = state after rolling the heuristic forward to a random
