@@ -64,8 +64,9 @@ def bfs(start, goals, danger):
 # Extraction run (W4): shared by camp_action, tools/probes Camp and Oracle
 # ---------------------------------------------------------------------------
 
-EXTRACT_SLACK = 6        # spare turns budgeted on top of the path length (zombie detours, waits)
+EXTRACT_SLACK = 10       # spare turns budgeted on top of the path length (zombie detours, waits)
 EXTRACT_STOCK = 2        # water to carry before leaving for the zone
+EXTRACT_DETOUR = 2       # extra steps accepted to route around zombies on the run
 
 
 def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunger: int, thirst: int,
@@ -132,16 +133,21 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
         return "drink", {}
     if hunger >= 12 and "food" in inv:
         return "eat", {}
-    d, m = bfs(pos, zone, danger)
-    if m and d < turns_left:
-        return m, {}
-    # The safe detour arrives too late (or there is none): take the short way,
-    # as long as the next cell is not a zombie.
-    d, m = bfs(pos, zone, set())
-    if m and d < turns_left:
-        nxt = (pos[0] + MOVES[m][0], pos[1] + MOVES[m][1])
+    # Route: a zombie-free path if it is at most a small detour; else the short
+    # path when its next cell is safe; else wait while there is time; else push
+    # through (never onto a zombie).
+    d0, m0 = bfs(pos, zone, set())
+    d1, m1 = bfs(pos, zone, danger)
+    if m1 and d1 <= d0 + EXTRACT_DETOUR and d1 < turns_left:
+        return m1, {}
+    if m0:
+        nxt = (pos[0] + MOVES[m0][0], pos[1] + MOVES[m0][1])
+        if nxt not in danger:
+            return m0, {}
+        if turns_left - d0 > 2 and pos not in danger:
+            return "wait", {}
         if nxt not in set(map(tuple, zs)):
-            return m, {}
+            return m0, {}
     return _dodge(pos, danger)
 
 
