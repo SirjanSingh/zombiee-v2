@@ -191,3 +191,33 @@ Fresh env on lnmdgx1 (V100-32GB): torch 2.5.1+cu121, transformers 4.46.3, trl 0.
 Smoke test, GPU 3: model loads + one generation in 10.4 s, 6.5 GB peak (fp16), game prompt = 1298 tokens.
 Untrained Qwen's first move at t=0 (seed 7): `{"action_type": "scan", "scan_target": 2}`. The base
 model's prior already leans to scanning, the same behaviour that became scan-spam in run 1.
+
+---
+
+## 2026-10-04 17:48 — Training on the moments that matter (W6 smoke, worker session)
+
+Training prompts used to be the step-0 state every time. Now each prompt is A0's real view at a
+mid-game moment: the game is played forward by a mix of planner, heuristic and noisy-planner
+teammates, and the moment is picked for "decision density" (thirsty, hungry, hurt, outside, zombie
+near, vote, bitten, bite just happened). Calm moments are capped at 20%. A0 is always healthy in
+training. The reward replays that exact moment, plays the model's 5 actions, and lets the camp
+planner continue for 25 steps.
+
+**Dataset the DGX run will use** (200 prompts, seed 42): time histogram 0-9: 51, 10-19: 21, 20-29: 20, 30-39: 25, 40-49: 23, 50-59: 16, 60-69: 16, 70-79: 10, 80-89: 12, 90-99: 6.
+Tags: hungry 116, zombie_near 77, outside 65, vote 39, thirsty 35, hurt 17, bitten 7, bite_recent 6. Routine share 20%.
+
+**Reward smoke** (16 scenarios, real reward_fn, fake completions; mean reward):
+
+| completion | shaped window (step1_weight 1) | survival window (step1_weight 0) |
+|---|---|---|
+| planner's own 5 actions | -2.049 | +0.531 |
+| 5 x wait | -1.778 | +0.406 |
+| garbage (unparseable) | -1.878 | +0.306 |
+| planner beats / loses to wait | 3/16 / 11/16 | 1/16 / 0/16 |
+
+Finding: the shaped window return (the env's 15 rubrics summed over the window) prefers waiting to
+the planner's moves, and in a 64-state probe it ranked a random A0 (-1.15) above the camp planner
+(-2.53) although the planner kept A0 alive in 42/64 windows vs 27/64. Dying ends the per-step
+hunger/thirst penalties, so an early death reads as cheaper than surviving hungry. The survival
+window return (+1 alive / -1 dead, small HP and newly-infected terms) ranks them the right way.
+Recommendation for the first DGX run: `--window-return survival --step1-weight 0`. Data: `data/2026-10-04_w6_smoke.json`.

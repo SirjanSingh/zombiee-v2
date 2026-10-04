@@ -301,6 +301,31 @@ def parse_args():
                         "exploration window and may have pinned KL at ~0 throughout.")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--num-scenarios", type=int, default=200)
+    # ---- v3 / W6: balance, mid-episode scenarios, rollout policy --------
+    p.add_argument("--balance", default=None,
+                   help="BalanceConfig preset (survivecity_v2_env/balance.py). Default: the "
+                        "package default (v3-rc1). Use v2.2 to reproduce runs 1-4.")
+    p.add_argument("--scenario-mode", choices=["mid", "reset"], default="mid",
+                   help="'mid' (default, W6): prompts are A0's real observation at a "
+                        "decision-dense mid-episode state [SEED:N][T:t][MIX:m]. 'reset': "
+                        "the pre-W6 step-0 prompts.")
+    p.add_argument("--routine-frac", type=float, default=0.2,
+                   help="Max share of 'routine' scenarios (A0 safe in safehouse, nothing pressing).")
+    p.add_argument("--rollout-policy", choices=["camp", "heuristic_v3"], default="camp",
+                   help="Policy for A1-A4 during the model's K actions and for everyone "
+                        "afterwards. 'camp' = water-camp planner on public obs "
+                        "(training/policies.py).")
+    p.add_argument("--horizon", type=int, default=25,
+                   help="Score A0 over the window from t until K + H game steps later.")
+    p.add_argument("--window-return", choices=["shaped", "survival"], default="shaped",
+                   help="'shaped' = A0's raw rubric reward over the window (spec default). "
+                        "'survival' = outcome at window end (+1 alive/-1 dead, +0.5*hp frac, "
+                        "-0.5 if newly infected). See training/scenarios.py for why; pair "
+                        "survival with --step1-weight 0 to drop the per-step shaping too.")
+    p.add_argument("--a0-healthy", dest="a0_healthy", action="store_true", default=True,
+                   help="Training scenarios sample the 2 infected from A1-A4 only (default).")
+    p.add_argument("--natural-roles", dest="a0_healthy", action="store_false",
+                   help="Let A0 be one of the starting infected, as in the base game.")
     p.add_argument("--report-to", default="tensorboard")
     p.add_argument("--per-device-batch-size", type=int, default=1)
     p.add_argument("--grad-accum-steps", type=int, default=8,
@@ -366,42 +391,77 @@ def parse_args():
     return p.parse_args()
 
 
-def build_scenario_dataset(num_scenarios: int = 200, seed: int = 42, prefix_actions: int = 1):
-    """Build a GRPO scenario dataset from local v2 env resets.
+def build_scenario_dataset(
+    num_scenarios: int = 200,
+    seed: int = 42,
+    prefix_actions: int = 1,
+    balance=None,
+    mode: str = "mid",
+    a0_healthy: bool = True,
+    routine_frac: float = 0.2,
+    stats_path: Optional[str] = None,
+):
+    """Build the GRPO prompt dataset.
 
-    Each prompt embeds [SEED:N] so the reward function can recreate the exact
-    env state for fair within-group comparison.
+    mode="mid" (W6): decision-dense mid-episode states, prompt tagged
+    [SEED:N][T:t][MIX:m] so the reward fn can replay the exact state
+    (training/scenarios.py). mode="reset": the pre-W6 step-0 prompts, [SEED:N].
     """
+    import json as _json
     from datasets import Dataset
     from survivecity_v2_env.env import SurviveCityV2Env
     from survivecity_v2_env.prompts import build_system_prompt
+    from training.scenarios import build_scenarios, dataset_stats
 
     try:
         from tqdm.auto import tqdm
     except ImportError:
-        tqdm = lambda x, **kw: x  # noqa: E731
+        tqdm = None
 
-    rng = random.Random(seed)
     prompts = []
-    for i in tqdm(range(num_scenarios), desc="build_scenario_dataset"):
-        try:
-            ep_seed = rng.randint(0, 999999)
-            env = SurviveCityV2Env()
-            obs = env.reset(seed=ep_seed)
-            desc = obs.get("description", "")
+    if mode == "mid":
+        bar = tqdm(total=num_scenarios, desc="build_scenario_dataset") if tqdm else None
+        scen = build_scenarios(
+            num_scenarios, seed=seed, balance=balance, a0_healthy=a0_healthy,
+            routine_frac=routine_frac, prefix_k=prefix_actions,
+            progress=(lambda k: bar.update(1)) if bar else None,
+        )
+        if bar:
+            bar.close()
+        for i, sc in enumerate(scen):
             prompt = build_system_prompt(
-                0, f"[SEED:{ep_seed}]\n{desc}", prefix_actions=prefix_actions,
+                0, f"{sc['tag']}\n{sc['description']}", prefix_actions=prefix_actions,
+                balance=balance,
             )
             prompts.append({"prompt": prompt, "scenario_id": i})
-        except Exception as e:
-            logger.warning(f"Scenario {i} failed: {e}")
-    logger.info(f"Built {len(prompts)} v2 scenario prompts")
+        stats = dataset_stats(scen)
+        logger.info(f"[scenarios] mid-episode dataset: {_json.dumps(stats)}")
+        if stats_path:
+            try:
+                os.makedirs(os.path.dirname(stats_path) or ".", exist_ok=True)
+                with open(stats_path, "w", encoding="utf-8") as f:
+                    _json.dump({"stats": stats, "scenarios": [
+                        {k: v for k, v in sc.items() if k != "description"} for sc in scen]}, f, indent=1)
+            except OSError as e:
+                logger.warning(f"could not write scenario stats: {e}")
+    else:
+        rng = random.Random(seed)
+        for i in range(num_scenarios):
+            ep_seed = rng.randint(0, 999999)
+            env = SurviveCityV2Env(balance=balance, a0_healthy=a0_healthy)
+            obs = env.reset(seed=ep_seed)
+            prompt = build_system_prompt(
+                0, f"[SEED:{ep_seed}]\n{obs.get('description', '')}",
+                prefix_actions=prefix_actions, balance=balance,
+            )
+            prompts.append({"prompt": prompt, "scenario_id": i})
+    logger.info(f"Built {len(prompts)} v2 scenario prompts (mode={mode})")
     return Dataset.from_list(prompts)
 
 
 # Marker used by the kaggle notebook to detect whether the file already has
 # the v2-reward-fix applied; do not remove.
-REWARD_FN_VERSION = "v2.1-heuristic-rollout-2026-04-26"
+REWARD_FN_VERSION = "v3-w6-midepisode-window-2026-10-04"
 
 
 def create_reward_fn(
@@ -413,8 +473,23 @@ def create_reward_fn(
     metrics_logger=None,
     trainer_state_ref: Optional[dict] = None,
     gigpo_side_channel: Optional[list] = None,
+    rollout_policy: str = "camp",
+    horizon: int = 25,
+    balance=None,
+    a0_healthy: bool = True,
+    window_return: str = "shaped",
 ):
-    """GRPO reward function — v2.1 heuristic-rollout edition.
+    """GRPO reward function.
+
+    v3 / W6 (2026-10-04): the prompt's [SEED:N][T:t][MIX:m] tag is replayed to
+    the exact mid-episode state (training/scenarios.py), the model's K actions
+    run at A0's turns while A1-A4 follow `rollout_policy`, then everyone follows
+    it for `horizon` more steps. Reward = step1_weight * sum(model step raws)
+    + A0's raw reward from t to the end of the window (+/- format terms).
+    `rollout_limit` is now only a safety cap on env.step calls per completion.
+    The notes below describe the earlier v2.1 design this replaced.
+
+    v2.1 heuristic-rollout edition:
 
     What's new in v2.1 (vs v2.0 cumulative):
 
@@ -449,7 +524,8 @@ def create_reward_fn(
     from collections import Counter
     import statistics
     from survivecity_v2_env.env import SurviveCityV2Env
-    from training.inference import parse_action, parse_actions, forage_heuristic_action
+    from training.inference import parse_actions
+    from training.scenarios import ReplayCache, score_completion
     from training.metrics import build_terminal_summary
     from training.gigpo import anchor_key_for_agent0
 
@@ -463,6 +539,7 @@ def create_reward_fn(
         tqdm = lambda x, **kw: x  # noqa: E731
 
     state = {"calls": 0, "errors": 0}
+    replay_cache = ReplayCache(maxsize=256)
 
     def reward_fn(prompts, completions, **kwargs):
         state["calls"] += 1
@@ -491,39 +568,19 @@ def create_reward_fn(
         )
         for prompt, completion in iterator:
             try:
-                seed_match = re.search(r"\[SEED:(\d+)\]", prompt)
-                ep_seed = int(seed_match.group(1)) if seed_match else (
-                    abs(hash(prompt)) % 1_000_000
-                )
-                env = SurviveCityV2Env()
-                obs = env.reset(seed=ep_seed)
-                # NOTE: the GiGPO anchor is captured per model step inside the
-                # rollout loop below (at each action's pre-state), NOT here at
-                # reset. The reset state is constant across a same-seed GRPO
-                # group, so a reset-only anchor collapses every group into one
-                # cluster and reduces GiGPO to GRPO. See memory
-                # `gigpo-anchor-inert-finding`.
-
                 # parse_actions returns a list. With prefix_actions=1 it
-                # behaves like the old parse_action (single object → 1-elem
+                # behaves like the old parse_action (single object -> 1-elem
                 # list). With prefix_actions>1 the model is expected to emit
-                # a JSON array; if it emits a single object instead we still
-                # honour that as 1 action and fill the rest with wait.
+                # a JSON array; a single object is honoured as 1 action and
+                # the rest is padded with wait.
                 parsed_list = parse_actions(
                     completion, agent_id=0, max_actions=prefix_actions,
                 )
                 parse_ok = len(parsed_list) > 0
                 if parse_ok:
                     parse_ok_count += 1
-                # Pad to exactly prefix_actions with wait so the rollout loop
-                # always has K candidates to apply for agent 0.
                 while len(parsed_list) < prefix_actions:
                     parsed_list.append({"agent_id": 0, "action_type": "wait"})
-
-                # Track action types for the per-call histogram. We record
-                # all K planned model actions (or PARSE_FAIL when parse_ok=False
-                # for the K wait fillers) so the histogram reflects the full
-                # prefix the model is choosing.
                 if parse_ok:
                     for a in parsed_list:
                         action_types.append(a.get("action_type", "?"))
@@ -531,76 +588,28 @@ def create_reward_fn(
                     for _ in range(prefix_actions):
                         action_types.append("PARSE_FAIL")
 
-                # Unified rollout loop. Model acts at agent 0's turns until
-                # we exhaust the K-action prefix; after that the heuristic
-                # takes over for everyone (including agent 0).
-                rollout_rng = random.Random(ep_seed + 7)
-                steps = 0
-                model_actions_used = 0
-                model_step_raws: list[float] = []
-                # GiGPO per-step entries: one (anchor_key, step_reward) per model
-                # action, where the anchor is snapshotted at the PRE-action state
-                # of that step. This is what enables cross-time anchor-state
-                # grouping — two trajectories that act from the same state at
-                # different turns get compared. Capturing only the reset anchor
-                # (the old design) collapsed every GRPO group into one cluster.
-                model_step_entries: list[tuple] = []
-                while not obs.get("done", False) and steps < rollout_limit:
-                    aid = obs.get("metadata", {}).get("current_agent_id", 0)
-                    if aid == 0 and model_actions_used < prefix_actions:
-                        # Snapshot the anchor BEFORE applying this model action.
-                        pre_anchor = anchor_key_for_agent0(obs)
-                        act = parsed_list[model_actions_used]
-                        model_actions_used += 1
-                        obs = env.step(act)
-                        step_raw = obs.get("metadata", {}).get("raw_reward", 0.0)
-                        model_step_raws.append(step_raw)
-                        model_step_entries.append((pre_anchor, float(step_raw)))
-                        # Capture rubric breakdown of the FIRST model action only
-                        # so existing metrics dashboards stay comparable.
-                        if len(model_step_raws) == 1:
-                            rb = obs.get("metadata", {}).get("rubric_breakdown") or {}
-                            if rb:
-                                rubric_breakdowns.append(dict(rb))
-                    else:
-                        act = forage_heuristic_action(aid, obs, rng=rollout_rng)
-                        obs = env.step(act)
-                    steps += 1
-
-                # Cumulative raw reward for agent 0 across the whole rollout
-                cum0 = obs.get("metadata", {}).get(
-                    "cumulative_rewards", {}
-                ).get(0, 0.0)
-                cum_rewards_seen.append(cum0)
-                final_obs_for_terminal.append(obs)
-
-                # Final composite — signed, NOT clipped (GRPO normalises internally)
-                # step1_weight is applied to the SUM of model action raws so
-                # at prefix_actions=1 the formula matches the legacy single-
-                # action shape exactly. At prefix_actions=K, total signal is
-                # roughly Kx larger; recommend dropping --step1-weight to ~1.0.
-                # Composite reward. Inside a GRPO group, a uniform additive
-                # offset across all members cancels in the mean — so a +0.10
-                # bonus for parseable trajectories (the runs 1-4 design) gave
-                # ZERO gradient when most of the group parsed. Per the GiGPO
-                # ALFWorld recipe (use_invalid_action_penalty=True, coef=0.1),
-                # we instead subtract a penalty from UNPARSEABLE trajectories so
-                # they land below the group mean and pull a negative advantage.
-                composite = (
-                    step1_weight * sum(model_step_raws)
-                    + cum0
-                    + (format_bonus if parse_ok else -invalid_action_penalty)
+                # Replay the scenario, apply the K model actions, continue
+                # with the rollout policy for the fixed window. GiGPO anchors
+                # are snapshotted at each model action's PRE-action state
+                # (cross-time anchor grouping; see memory gigpo-anchor-inert-finding).
+                res = score_completion(
+                    prompt, parsed_list,
+                    rollout_policy=rollout_policy, horizon=horizon,
+                    balance=balance, a0_healthy=a0_healthy,
+                    step1_weight=step1_weight, parse_ok=parse_ok,
+                    invalid_action_penalty=invalid_action_penalty,
+                    format_bonus=format_bonus, max_actions=rollout_limit * 5,
+                    cache=replay_cache, anchor_fn=anchor_key_for_agent0,
+                    window_return=window_return,
                 )
-                rewards.append(float(composite))
-                rollout_lens.append(steps)
-                # GiGPO side-channel: the FULL list of this generation's
-                # (anchor, step_reward) entries — one per model action taken.
-                # The trainer pools these across all generations and clusters
-                # by (prompt, anchor) for cross-time step-level advantages
-                # (see compose_gigpo_advantages_multistep). An empty list (the
-                # model never got to act) contributes 0 step advantage.
+                if res["rubric_breakdown"]:
+                    rubric_breakdowns.append(res["rubric_breakdown"])
+                cum_rewards_seen.append(res["window_return"])
+                final_obs_for_terminal.append(res["final_obs"])
+                rewards.append(res["reward"])
+                rollout_lens.append(res["steps"])
                 if gigpo_side_channel is not None:
-                    gigpo_side_channel.append(list(model_step_entries))
+                    gigpo_side_channel.append(list(res["gigpo_entries"]))
             except Exception as e:
                 state["errors"] += 1
                 if state["errors"] <= 5 or state["errors"] % 50 == 0:
@@ -993,6 +1002,9 @@ def main():
 
     dataset = build_scenario_dataset(
         args.num_scenarios, args.seed, prefix_actions=args.prefix_actions,
+        balance=args.balance, mode=args.scenario_mode, a0_healthy=args.a0_healthy,
+        routine_frac=args.routine_frac,
+        stats_path=os.path.join(args.output_dir, "scenario_stats.json"),
     )
 
     from trl import GRPOTrainer, GRPOConfig
@@ -1260,6 +1272,11 @@ def main():
         metrics_logger=metrics_logger,
         trainer_state_ref=trainer_state_ref,
         gigpo_side_channel=gigpo_side_channel,
+        rollout_policy=args.rollout_policy,
+        horizon=args.horizon,
+        balance=args.balance,
+        a0_healthy=args.a0_healthy,
+        window_return=args.window_return,
     )
 
     if args.adv_estimator == "gigpo":

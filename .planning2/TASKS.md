@@ -88,6 +88,13 @@ Rules
   end, survival, mean reward, action histogram; vs heuristic/planner/oracle on the SAME seeds.
   Writes to research_log and optionally records replays (W5) for the first 3 episodes.
 
+- [x] **W6 — Mid-episode start states** (worker, 2026-10-04; full spec on claude/phase-2-gigpo).
+  `training/policies.py` (camp planner on public obs, exact parity with probe Camp), `training/scenarios.py`
+  (decision-density states, exact replay tested on 50 random (N,t,m), fixed-window scoring),
+  a0_healthy option, train flags `--balance --scenario-mode --rollout-policy --horizon --window-return`.
+  Finding: the shaped window return ranks random A0 above the planner; README Run 6 (v3) uses
+  `--window-return survival --step1-weight 0`. Smoke + dataset stats in research_log.
+
 ## Manager queue
 - [x] M1 — DGX infra. `~/zombiee-v3` + conda env `zombiee` (torch 2.5.1 cu121, trl 0.15.2, bnb 0.42.0 because glibc 2.17),
   Qwen2.5-3B cached, 84 tests pass, GPU smoke test OK (fp16, 6.5 GB peak, 1298-token prompt).

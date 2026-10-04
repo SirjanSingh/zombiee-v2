@@ -166,8 +166,13 @@ class EpisodeState:
 def create_episode(
     seed: Optional[int] = None,
     balance: "BalanceConfig | str | None" = None,
+    a0_healthy: bool = False,
 ) -> EpisodeState:
-    """Initialise a fresh episode. Picks the two starting infected agents."""
+    """Initialise a fresh episode. Picks the two starting infected agents.
+
+    a0_healthy=True samples the infected from A1-A4 only (training scenarios:
+    an infected A0 has a different objective). Default keeps the original draw.
+    """
     seed_int = int(seed) if seed is not None else 0
     rng = random.Random(seed_int)
     cfg = get_balance(balance)
@@ -182,7 +187,8 @@ def create_episode(
     ]
 
     # Pick 2 starting infected from 5 agents — one biter, one saboteur
-    infected_ids = rng.sample(range(len(agents)), 2)
+    pool = range(1, len(agents)) if a0_healthy else range(len(agents))
+    infected_ids = rng.sample(pool, 2)
     biter_id, saboteur_id = infected_ids[0], infected_ids[1]
     agents[biter_id].infection_state = "latent"
     agents[biter_id].infection_role = "biter"

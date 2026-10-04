@@ -712,6 +712,59 @@ docker run --rm --gpus '"device=0"' --shm-size=16g \
 - ✅ Phase 2 wins if `mean_alive_at_end ≥ 2.2` (heuristic + 0.6).
 - ❌ Continue to Phase 3 (SFT bootstrap from heuristic) if < 2.2.
 
+### Run 6 (v3) — first run on the winnable balance, mid-episode states (W6, 2026-10-04)
+
+What is different from runs 1-4:
+- **Balance `v3-rc1`** (now the default): the old game was unwinnable even for an oracle.
+  On v3-rc1 the camp planner survives 73%, the oracle 83%, the rollout heuristic 11%, random 0%
+  (`.planning2/14_V3_BALANCE.md`).
+- **Mid-episode prompts** (`training/scenarios.py`): each prompt is A0's real view at a
+  decision-dense moment `[SEED:N][T:t][MIX:m]` (thirsty, hungry, hurt, outside, zombie near,
+  vote, bitten), with calm moments capped at 20%. Before, every prompt was the step-0 state.
+- **A0 is always healthy** in training scenarios (infected drawn from A1-A4).
+- **Competent teammates**: A1-A4 and the continuation are the camp planner
+  (`training/policies.py`, public observations only), not the broken v2 heuristic.
+- **Fixed window**: the model's 5 actions are scored over the next 5 + 25 steps.
+- **Survival window return**: +1 if A0 is alive at the end of the window, -1 if dead, plus small
+  HP and newly-infected terms. The 15 shaped rubrics summed over a window ranked a random A0 above
+  the planner (research_log 2026-10-04 W6 entry), so they are off for this run
+  (`--step1-weight 0`). `--window-return shaped` restores the rubric sum.
+
+**Launch (DGX, conda env, no docker):**
+```bash
+cd ~/zombiee-v3 && git pull
+conda activate zombiee
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv   # pick a free GPU
+mkdir -p logs
+TS=$(date +%Y%m%d_%H%M%S)
+CUDA_VISIBLE_DEVICES=0 SC_STEP_LOG_EVERY=0 PYTHONUNBUFFERED=1 \
+TRANSFORMERS_VERBOSITY=error ACCELERATE_LOG_LEVEL=error \
+nohup python -m training.train \
+  --balance v3-rc1 \
+  --scenario-mode mid --num-scenarios 200 --routine-frac 0.2 \
+  --rollout-policy camp --horizon 25 \
+  --window-return survival --step1-weight 0 \
+  --adv-estimator gigpo --prefix-actions 5 --gigpo-zscore \
+  --no-4bit --optim adamw_torch \
+  --max-steps 60 --save-steps 10 --save-total-limit 4 \
+  --output-dir ./checkpoints/run6_v3 \
+  > logs/train_run6_v3_${TS}.log 2>&1 &
+tail -f logs/train_run6_v3_${TS}.log
+```
+V100 notes: the trainer picks fp16 automatically on sm_70 (no bf16), `adamw_torch` because the
+fused optimizer needs sm_80+, and `--save-total-limit 4` because the DGX disk quota is tight.
+
+**What to check in the first minutes:**
+- The startup line must show `cuda=12.x ... fp16=True` and VRAM numbers. If it says
+  `CUDA not available — training will be CPU-only`, kill the run.
+- `[scenarios] mid-episode dataset: {...}` shows the t-histogram and tags (also written to
+  `checkpoints/run6_v3/scenario_stats.json`).
+- `reward_fn #N: ... r[mean=... std=...]`: rewards live in about [-1, +1.5]. A `std` near 0 for
+  many calls in a row means the 8 completions per prompt lead to the same outcome, so there is
+  no gradient. If that happens, raise `--horizon` (40) or `--num-generations`.
+- `[gigpo]` lines: the step reward is the window outcome, z-scored inside anchor clusters.
+
 ---
 
 ## What changed vs v1

@@ -1,0 +1,2285 @@
+{
+ "date": "2026-10-04T17:48:38",
+ "git_sha": "032c4b2",
+ "dataset_stats": {
+  "n": 200,
+  "t_hist_by_10": {
+   "0-9": 51,
+   "10-19": 21,
+   "20-29": 20,
+   "30-39": 25,
+   "40-49": 23,
+   "50-59": 16,
+   "60-69": 16,
+   "70-79": 10,
+   "80-89": 12,
+   "90-99": 6
+  },
+  "tag_counts": {
+   "hungry": 116,
+   "zombie_near": 77,
+   "outside": 65,
+   "vote": 39,
+   "thirsty": 35,
+   "hurt": 17,
+   "bitten": 7,
+   "bite_recent": 6
+  },
+  "routine_frac": 0.2,
+  "mix_letter_counts": {
+   "c": 496,
+   "h": 317,
+   "e": 187
+  }
+ },
+ "dataset_scenarios": [
+  {
+   "seed": 670487,
+   "t": 50,
+   "mix": "chccc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:670487][T:50][MIX:chccc]"
+  },
+  {
+   "seed": 619176,
+   "t": 0,
+   "mix": "ccchc",
+   "tags": [],
+   "tag": "[SEED:619176][T:0][MIX:ccchc]"
+  },
+  {
+   "seed": 231148,
+   "t": 23,
+   "mix": "ccehc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:231148][T:23][MIX:ccehc]"
+  },
+  {
+   "seed": 225772,
+   "t": 34,
+   "mix": "eccce",
+   "tags": [
+    "hungry",
+    "bite_recent"
+   ],
+   "tag": "[SEED:225772][T:34][MIX:eccce]"
+  },
+  {
+   "seed": 765179,
+   "t": 64,
+   "mix": "ccecc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:765179][T:64][MIX:ccecc]"
+  },
+  {
+   "seed": 379201,
+   "t": 1,
+   "mix": "hhccc",
+   "tags": [],
+   "tag": "[SEED:379201][T:1][MIX:hhccc]"
+  },
+  {
+   "seed": 908573,
+   "t": 32,
+   "mix": "cchcc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:908573][T:32][MIX:cchcc]"
+  },
+  {
+   "seed": 982153,
+   "t": 21,
+   "mix": "hchhc",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:982153][T:21][MIX:hchhc]"
+  },
+  {
+   "seed": 970342,
+   "t": 10,
+   "mix": "hhheh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:970342][T:10][MIX:hhheh]"
+  },
+  {
+   "seed": 330776,
+   "t": 57,
+   "mix": "ccehh",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:330776][T:57][MIX:ccehh]"
+  },
+  {
+   "seed": 927657,
+   "t": 34,
+   "mix": "eccch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:927657][T:34][MIX:eccch]"
+  },
+  {
+   "seed": 941435,
+   "t": 87,
+   "mix": "hcecc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:941435][T:87][MIX:hcecc]"
+  },
+  {
+   "seed": 160265,
+   "t": 67,
+   "mix": "hhccc",
+   "tags": [
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:160265][T:67][MIX:hhccc]"
+  },
+  {
+   "seed": 580099,
+   "t": 27,
+   "mix": "echhh",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:580099][T:27][MIX:echhh]"
+  },
+  {
+   "seed": 116970,
+   "t": 66,
+   "mix": "ccchh",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:116970][T:66][MIX:ccchh]"
+  },
+  {
+   "seed": 532342,
+   "t": 0,
+   "mix": "eechh",
+   "tags": [],
+   "tag": "[SEED:532342][T:0][MIX:eechh]"
+  },
+  {
+   "seed": 565579,
+   "t": 2,
+   "mix": "eeehc",
+   "tags": [],
+   "tag": "[SEED:565579][T:2][MIX:eeehc]"
+  },
+  {
+   "seed": 921406,
+   "t": 0,
+   "mix": "eecch",
+   "tags": [],
+   "tag": "[SEED:921406][T:0][MIX:eecch]"
+  },
+  {
+   "seed": 855662,
+   "t": 32,
+   "mix": "chhcc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:855662][T:32][MIX:chhcc]"
+  },
+  {
+   "seed": 914812,
+   "t": 30,
+   "mix": "heehh",
+   "tags": [
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:914812][T:30][MIX:heehh]"
+  },
+  {
+   "seed": 704314,
+   "t": 67,
+   "mix": "hchcc",
+   "tags": [
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:704314][T:67][MIX:hchcc]"
+  },
+  {
+   "seed": 241292,
+   "t": 5,
+   "mix": "hchcc",
+   "tags": [],
+   "tag": "[SEED:241292][T:5][MIX:hchcc]"
+  },
+  {
+   "seed": 74299,
+   "t": 41,
+   "mix": "hcchh",
+   "tags": [
+    "thirsty",
+    "hurt",
+    "outside",
+    "zombie_near",
+    "bitten"
+   ],
+   "tag": "[SEED:74299][T:41][MIX:hcchh]"
+  },
+  {
+   "seed": 254801,
+   "t": 64,
+   "mix": "heccc",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:254801][T:64][MIX:heccc]"
+  },
+  {
+   "seed": 764491,
+   "t": 17,
+   "mix": "chhch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:764491][T:17][MIX:chhch]"
+  },
+  {
+   "seed": 200896,
+   "t": 37,
+   "mix": "ccccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:200896][T:37][MIX:ccccc]"
+  },
+  {
+   "seed": 903189,
+   "t": 0,
+   "mix": "echhc",
+   "tags": [],
+   "tag": "[SEED:903189][T:0][MIX:echhc]"
+  },
+  {
+   "seed": 174389,
+   "t": 0,
+   "mix": "cceec",
+   "tags": [],
+   "tag": "[SEED:174389][T:0][MIX:cceec]"
+  },
+  {
+   "seed": 278085,
+   "t": 33,
+   "mix": "ehchh",
+   "tags": [
+    "hungry",
+    "bitten"
+   ],
+   "tag": "[SEED:278085][T:33][MIX:ehchh]"
+  },
+  {
+   "seed": 510311,
+   "t": 7,
+   "mix": "ccehh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:510311][T:7][MIX:ccehh]"
+  },
+  {
+   "seed": 612554,
+   "t": 11,
+   "mix": "cehch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:612554][T:11][MIX:cehch]"
+  },
+  {
+   "seed": 71262,
+   "t": 55,
+   "mix": "hccec",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:71262][T:55][MIX:hccec]"
+  },
+  {
+   "seed": 439589,
+   "t": 29,
+   "mix": "hhcch",
+   "tags": [
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:439589][T:29][MIX:hhcch]"
+  },
+  {
+   "seed": 137235,
+   "t": 51,
+   "mix": "hcchc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "hurt",
+    "zombie_near"
+   ],
+   "tag": "[SEED:137235][T:51][MIX:hcchc]"
+  },
+  {
+   "seed": 104837,
+   "t": 43,
+   "mix": "cccee",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:104837][T:43][MIX:cccee]"
+  },
+  {
+   "seed": 165409,
+   "t": 60,
+   "mix": "chcee",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:165409][T:60][MIX:chcee]"
+  },
+  {
+   "seed": 581542,
+   "t": 0,
+   "mix": "checc",
+   "tags": [],
+   "tag": "[SEED:581542][T:0][MIX:checc]"
+  },
+  {
+   "seed": 285577,
+   "t": 34,
+   "mix": "ccche",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "bite_recent"
+   ],
+   "tag": "[SEED:285577][T:34][MIX:ccche]"
+  },
+  {
+   "seed": 952273,
+   "t": 36,
+   "mix": "ecccc",
+   "tags": [
+    "hungry",
+    "hurt",
+    "bitten",
+    "bite_recent"
+   ],
+   "tag": "[SEED:952273][T:36][MIX:ecccc]"
+  },
+  {
+   "seed": 274680,
+   "t": 74,
+   "mix": "cchhc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:274680][T:74][MIX:cchhc]"
+  },
+  {
+   "seed": 156294,
+   "t": 63,
+   "mix": "hehcc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:156294][T:63][MIX:hehcc]"
+  },
+  {
+   "seed": 834794,
+   "t": 43,
+   "mix": "ecchh",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:834794][T:43][MIX:ecchh]"
+  },
+  {
+   "seed": 917202,
+   "t": 87,
+   "mix": "chcee",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:917202][T:87][MIX:chcee]"
+  },
+  {
+   "seed": 924231,
+   "t": 64,
+   "mix": "ccehc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:924231][T:64][MIX:ccehc]"
+  },
+  {
+   "seed": 260222,
+   "t": 67,
+   "mix": "chcee",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:260222][T:67][MIX:chcee]"
+  },
+  {
+   "seed": 482662,
+   "t": 40,
+   "mix": "ceech",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:482662][T:40][MIX:ceech]"
+  },
+  {
+   "seed": 72792,
+   "t": 44,
+   "mix": "echce",
+   "tags": [
+    "hungry",
+    "hurt",
+    "bitten"
+   ],
+   "tag": "[SEED:72792][T:44][MIX:echce]"
+  },
+  {
+   "seed": 120944,
+   "t": 13,
+   "mix": "echec",
+   "tags": [
+    "hungry",
+    "outside"
+   ],
+   "tag": "[SEED:120944][T:13][MIX:echec]"
+  },
+  {
+   "seed": 824629,
+   "t": 57,
+   "mix": "chhch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:824629][T:57][MIX:chhch]"
+  },
+  {
+   "seed": 1773,
+   "t": 6,
+   "mix": "heheh",
+   "tags": [],
+   "tag": "[SEED:1773][T:6][MIX:heheh]"
+  },
+  {
+   "seed": 73372,
+   "t": 18,
+   "mix": "eehhc",
+   "tags": [
+    "hungry",
+    "outside"
+   ],
+   "tag": "[SEED:73372][T:18][MIX:eehhc]"
+  },
+  {
+   "seed": 699287,
+   "t": 79,
+   "mix": "ccccc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:699287][T:79][MIX:ccccc]"
+  },
+  {
+   "seed": 946660,
+   "t": 86,
+   "mix": "chcec",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:946660][T:86][MIX:chcec]"
+  },
+  {
+   "seed": 636130,
+   "t": 40,
+   "mix": "hcccc",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:636130][T:40][MIX:hcccc]"
+  },
+  {
+   "seed": 177934,
+   "t": 35,
+   "mix": "hchhc",
+   "tags": [
+    "outside",
+    "zombie_near",
+    "bite_recent"
+   ],
+   "tag": "[SEED:177934][T:35][MIX:hchhc]"
+  },
+  {
+   "seed": 325498,
+   "t": 11,
+   "mix": "ccccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:325498][T:11][MIX:ccccc]"
+  },
+  {
+   "seed": 434572,
+   "t": 2,
+   "mix": "ehhcc",
+   "tags": [],
+   "tag": "[SEED:434572][T:2][MIX:ehhcc]"
+  },
+  {
+   "seed": 5814,
+   "t": 35,
+   "mix": "eeehc",
+   "tags": [
+    "hungry",
+    "hurt",
+    "zombie_near"
+   ],
+   "tag": "[SEED:5814][T:35][MIX:eeehc]"
+  },
+  {
+   "seed": 487115,
+   "t": 95,
+   "mix": "ccece",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:487115][T:95][MIX:ccece]"
+  },
+  {
+   "seed": 624377,
+   "t": 91,
+   "mix": "chcee",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:624377][T:91][MIX:chcee]"
+  },
+  {
+   "seed": 467574,
+   "t": 75,
+   "mix": "ehccc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:467574][T:75][MIX:ehccc]"
+  },
+  {
+   "seed": 546622,
+   "t": 90,
+   "mix": "ccchc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:546622][T:90][MIX:ccchc]"
+  },
+  {
+   "seed": 84491,
+   "t": 60,
+   "mix": "cchhc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:84491][T:60][MIX:cchhc]"
+  },
+  {
+   "seed": 435970,
+   "t": 0,
+   "mix": "ceche",
+   "tags": [],
+   "tag": "[SEED:435970][T:0][MIX:ceche]"
+  },
+  {
+   "seed": 500149,
+   "t": 75,
+   "mix": "cchee",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:500149][T:75][MIX:cchee]"
+  },
+  {
+   "seed": 572661,
+   "t": 58,
+   "mix": "heccc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:572661][T:58][MIX:heccc]"
+  },
+  {
+   "seed": 836912,
+   "t": 0,
+   "mix": "cccch",
+   "tags": [],
+   "tag": "[SEED:836912][T:0][MIX:cccch]"
+  },
+  {
+   "seed": 620644,
+   "t": 6,
+   "mix": "hchcc",
+   "tags": [],
+   "tag": "[SEED:620644][T:6][MIX:hchcc]"
+  },
+  {
+   "seed": 343254,
+   "t": 29,
+   "mix": "cchch",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:343254][T:29][MIX:cchch]"
+  },
+  {
+   "seed": 85884,
+   "t": 0,
+   "mix": "chcec",
+   "tags": [],
+   "tag": "[SEED:85884][T:0][MIX:chcec]"
+  },
+  {
+   "seed": 790870,
+   "t": 21,
+   "mix": "ccehc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:790870][T:21][MIX:ccehc]"
+  },
+  {
+   "seed": 993795,
+   "t": 6,
+   "mix": "chhch",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:993795][T:6][MIX:chhch]"
+  },
+  {
+   "seed": 859099,
+   "t": 48,
+   "mix": "ccheh",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:859099][T:48][MIX:ccheh]"
+  },
+  {
+   "seed": 987203,
+   "t": 70,
+   "mix": "hchhc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:987203][T:70][MIX:hchhc]"
+  },
+  {
+   "seed": 629577,
+   "t": 5,
+   "mix": "ehhch",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:629577][T:5][MIX:ehhch]"
+  },
+  {
+   "seed": 678998,
+   "t": 87,
+   "mix": "ceece",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:678998][T:87][MIX:ceece]"
+  },
+  {
+   "seed": 741666,
+   "t": 85,
+   "mix": "cchhh",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:741666][T:85][MIX:cchhh]"
+  },
+  {
+   "seed": 487455,
+   "t": 0,
+   "mix": "chcee",
+   "tags": [],
+   "tag": "[SEED:487455][T:0][MIX:chcee]"
+  },
+  {
+   "seed": 255709,
+   "t": 53,
+   "mix": "hhhcc",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:255709][T:53][MIX:hhhcc]"
+  },
+  {
+   "seed": 372060,
+   "t": 1,
+   "mix": "hcehc",
+   "tags": [],
+   "tag": "[SEED:372060][T:1][MIX:hcehc]"
+  },
+  {
+   "seed": 89771,
+   "t": 48,
+   "mix": "cchcc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:89771][T:48][MIX:cchcc]"
+  },
+  {
+   "seed": 18080,
+   "t": 34,
+   "mix": "cchch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:18080][T:34][MIX:cchch]"
+  },
+  {
+   "seed": 446173,
+   "t": 55,
+   "mix": "ehccc",
+   "tags": [
+    "hungry",
+    "hurt"
+   ],
+   "tag": "[SEED:446173][T:55][MIX:ehccc]"
+  },
+  {
+   "seed": 330876,
+   "t": 77,
+   "mix": "chhcc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:330876][T:77][MIX:chhcc]"
+  },
+  {
+   "seed": 797135,
+   "t": 0,
+   "mix": "hcccc",
+   "tags": [],
+   "tag": "[SEED:797135][T:0][MIX:hcccc]"
+  },
+  {
+   "seed": 742411,
+   "t": 16,
+   "mix": "hcehh",
+   "tags": [],
+   "tag": "[SEED:742411][T:16][MIX:hcehh]"
+  },
+  {
+   "seed": 107570,
+   "t": 0,
+   "mix": "ehccc",
+   "tags": [],
+   "tag": "[SEED:107570][T:0][MIX:ehccc]"
+  },
+  {
+   "seed": 119629,
+   "t": 0,
+   "mix": "ecchc",
+   "tags": [],
+   "tag": "[SEED:119629][T:0][MIX:ecchc]"
+  },
+  {
+   "seed": 89318,
+   "t": 16,
+   "mix": "echhh",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:89318][T:16][MIX:echhh]"
+  },
+  {
+   "seed": 472398,
+   "t": 0,
+   "mix": "echch",
+   "tags": [],
+   "tag": "[SEED:472398][T:0][MIX:echch]"
+  },
+  {
+   "seed": 993620,
+   "t": 20,
+   "mix": "hhccc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:993620][T:20][MIX:hhccc]"
+  },
+  {
+   "seed": 428361,
+   "t": 37,
+   "mix": "chcch",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:428361][T:37][MIX:chcch]"
+  },
+  {
+   "seed": 720775,
+   "t": 0,
+   "mix": "cchhe",
+   "tags": [],
+   "tag": "[SEED:720775][T:0][MIX:cchhe]"
+  },
+  {
+   "seed": 571015,
+   "t": 68,
+   "mix": "ccccc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:571015][T:68][MIX:ccccc]"
+  },
+  {
+   "seed": 864278,
+   "t": 35,
+   "mix": "hcchh",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:864278][T:35][MIX:hcchh]"
+  },
+  {
+   "seed": 517781,
+   "t": 0,
+   "mix": "chehh",
+   "tags": [],
+   "tag": "[SEED:517781][T:0][MIX:chehh]"
+  },
+  {
+   "seed": 707053,
+   "t": 2,
+   "mix": "eheeh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:707053][T:2][MIX:eheeh]"
+  },
+  {
+   "seed": 793005,
+   "t": 87,
+   "mix": "chcce",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:793005][T:87][MIX:chcce]"
+  },
+  {
+   "seed": 95674,
+   "t": 39,
+   "mix": "ccccc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:95674][T:39][MIX:ccccc]"
+  },
+  {
+   "seed": 694769,
+   "t": 30,
+   "mix": "eehcc",
+   "tags": [
+    "hungry",
+    "hurt",
+    "outside",
+    "vote"
+   ],
+   "tag": "[SEED:694769][T:30][MIX:eehcc]"
+  },
+  {
+   "seed": 423808,
+   "t": 0,
+   "mix": "eecec",
+   "tags": [],
+   "tag": "[SEED:423808][T:0][MIX:eecec]"
+  },
+  {
+   "seed": 652878,
+   "t": 34,
+   "mix": "hhhch",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:652878][T:34][MIX:hhhch]"
+  },
+  {
+   "seed": 732168,
+   "t": 2,
+   "mix": "cchhh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:732168][T:2][MIX:cchhh]"
+  },
+  {
+   "seed": 427809,
+   "t": 50,
+   "mix": "ceecc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:427809][T:50][MIX:ceecc]"
+  },
+  {
+   "seed": 751413,
+   "t": 22,
+   "mix": "chccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:751413][T:22][MIX:chccc]"
+  },
+  {
+   "seed": 199869,
+   "t": 24,
+   "mix": "eheec",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:199869][T:24][MIX:eheec]"
+  },
+  {
+   "seed": 979630,
+   "t": 38,
+   "mix": "hcche",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:979630][T:38][MIX:hcche]"
+  },
+  {
+   "seed": 907291,
+   "t": 45,
+   "mix": "chchh",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:907291][T:45][MIX:chchh]"
+  },
+  {
+   "seed": 197816,
+   "t": 17,
+   "mix": "eccec",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:197816][T:17][MIX:eccec]"
+  },
+  {
+   "seed": 957800,
+   "t": 2,
+   "mix": "echee",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:957800][T:2][MIX:echee]"
+  },
+  {
+   "seed": 526690,
+   "t": 1,
+   "mix": "eccec",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:526690][T:1][MIX:eccec]"
+  },
+  {
+   "seed": 151157,
+   "t": 73,
+   "mix": "chcce",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:151157][T:73][MIX:chcce]"
+  },
+  {
+   "seed": 681403,
+   "t": 88,
+   "mix": "cchhe",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:681403][T:88][MIX:cchhe]"
+  },
+  {
+   "seed": 511650,
+   "t": 44,
+   "mix": "ecche",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:511650][T:44][MIX:ecche]"
+  },
+  {
+   "seed": 455052,
+   "t": 3,
+   "mix": "ehhcc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:455052][T:3][MIX:ehhcc]"
+  },
+  {
+   "seed": 340131,
+   "t": 54,
+   "mix": "hccch",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:340131][T:54][MIX:hccch]"
+  },
+  {
+   "seed": 178240,
+   "t": 28,
+   "mix": "chchc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:178240][T:28][MIX:chchc]"
+  },
+  {
+   "seed": 668891,
+   "t": 25,
+   "mix": "cccee",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:668891][T:25][MIX:cccee]"
+  },
+  {
+   "seed": 463187,
+   "t": 12,
+   "mix": "eeceh",
+   "tags": [
+    "hungry",
+    "outside"
+   ],
+   "tag": "[SEED:463187][T:12][MIX:eeceh]"
+  },
+  {
+   "seed": 403380,
+   "t": 1,
+   "mix": "ecccc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:403380][T:1][MIX:ecccc]"
+  },
+  {
+   "seed": 870357,
+   "t": 40,
+   "mix": "hchhh",
+   "tags": [],
+   "tag": "[SEED:870357][T:40][MIX:hchhh]"
+  },
+  {
+   "seed": 873294,
+   "t": 22,
+   "mix": "echhc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:873294][T:22][MIX:echhc]"
+  },
+  {
+   "seed": 710687,
+   "t": 11,
+   "mix": "hhhcc",
+   "tags": [
+    "hungry",
+    "outside"
+   ],
+   "tag": "[SEED:710687][T:11][MIX:hhhcc]"
+  },
+  {
+   "seed": 826918,
+   "t": 28,
+   "mix": "chhcc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:826918][T:28][MIX:chhcc]"
+  },
+  {
+   "seed": 138579,
+   "t": 16,
+   "mix": "hechc",
+   "tags": [],
+   "tag": "[SEED:138579][T:16][MIX:hechc]"
+  },
+  {
+   "seed": 845664,
+   "t": 23,
+   "mix": "ceecc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:845664][T:23][MIX:ceecc]"
+  },
+  {
+   "seed": 709176,
+   "t": 8,
+   "mix": "heeec",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:709176][T:8][MIX:heeec]"
+  },
+  {
+   "seed": 562636,
+   "t": 47,
+   "mix": "cchcc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:562636][T:47][MIX:cchcc]"
+  },
+  {
+   "seed": 707617,
+   "t": 10,
+   "mix": "ccehe",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:707617][T:10][MIX:ccehe]"
+  },
+  {
+   "seed": 863874,
+   "t": 0,
+   "mix": "chhcc",
+   "tags": [],
+   "tag": "[SEED:863874][T:0][MIX:chhcc]"
+  },
+  {
+   "seed": 121761,
+   "t": 93,
+   "mix": "cecch",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:121761][T:93][MIX:cecch]"
+  },
+  {
+   "seed": 439486,
+   "t": 72,
+   "mix": "hhehe",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:439486][T:72][MIX:hhehe]"
+  },
+  {
+   "seed": 293328,
+   "t": 0,
+   "mix": "cccee",
+   "tags": [],
+   "tag": "[SEED:293328][T:0][MIX:cccee]"
+  },
+  {
+   "seed": 570913,
+   "t": 27,
+   "mix": "ehcce",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:570913][T:27][MIX:ehcce]"
+  },
+  {
+   "seed": 96126,
+   "t": 17,
+   "mix": "hhhch",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:96126][T:17][MIX:hhhch]"
+  },
+  {
+   "seed": 592002,
+   "t": 74,
+   "mix": "cehhe",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:592002][T:74][MIX:cehhe]"
+  },
+  {
+   "seed": 826952,
+   "t": 11,
+   "mix": "ececc",
+   "tags": [
+    "hungry",
+    "outside"
+   ],
+   "tag": "[SEED:826952][T:11][MIX:ececc]"
+  },
+  {
+   "seed": 693169,
+   "t": 0,
+   "mix": "ecchh",
+   "tags": [],
+   "tag": "[SEED:693169][T:0][MIX:ecchh]"
+  },
+  {
+   "seed": 54944,
+   "t": 63,
+   "mix": "ccccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:54944][T:63][MIX:ccccc]"
+  },
+  {
+   "seed": 473962,
+   "t": 42,
+   "mix": "heche",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:473962][T:42][MIX:heche]"
+  },
+  {
+   "seed": 32663,
+   "t": 12,
+   "mix": "ccchc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:32663][T:12][MIX:ccchc]"
+  },
+  {
+   "seed": 84714,
+   "t": 44,
+   "mix": "ccchh",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:84714][T:44][MIX:ccchh]"
+  },
+  {
+   "seed": 626410,
+   "t": 37,
+   "mix": "hchch",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:626410][T:37][MIX:hchch]"
+  },
+  {
+   "seed": 806315,
+   "t": 34,
+   "mix": "hecec",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:806315][T:34][MIX:hecec]"
+  },
+  {
+   "seed": 765054,
+   "t": 11,
+   "mix": "cchcc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:765054][T:11][MIX:cchcc]"
+  },
+  {
+   "seed": 872176,
+   "t": 0,
+   "mix": "cchcc",
+   "tags": [],
+   "tag": "[SEED:872176][T:0][MIX:cchcc]"
+  },
+  {
+   "seed": 702559,
+   "t": 94,
+   "mix": "cchhe",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:702559][T:94][MIX:cchhe]"
+  },
+  {
+   "seed": 629575,
+   "t": 47,
+   "mix": "cchcc",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:629575][T:47][MIX:cchcc]"
+  },
+  {
+   "seed": 583286,
+   "t": 87,
+   "mix": "chhee",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:583286][T:87][MIX:chhee]"
+  },
+  {
+   "seed": 643378,
+   "t": 2,
+   "mix": "hhhhh",
+   "tags": [],
+   "tag": "[SEED:643378][T:2][MIX:hhhhh]"
+  },
+  {
+   "seed": 736833,
+   "t": 13,
+   "mix": "heccc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:736833][T:13][MIX:heccc]"
+  },
+  {
+   "seed": 776962,
+   "t": 35,
+   "mix": "hchcc",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:776962][T:35][MIX:hchcc]"
+  },
+  {
+   "seed": 756648,
+   "t": 10,
+   "mix": "cehec",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:756648][T:10][MIX:cehec]"
+  },
+  {
+   "seed": 85544,
+   "t": 20,
+   "mix": "chccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:85544][T:20][MIX:chccc]"
+  },
+  {
+   "seed": 450797,
+   "t": 93,
+   "mix": "chhhc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:450797][T:93][MIX:chhhc]"
+  },
+  {
+   "seed": 57443,
+   "t": 1,
+   "mix": "ccccc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:57443][T:1][MIX:ccccc]"
+  },
+  {
+   "seed": 783301,
+   "t": 27,
+   "mix": "cchch",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:783301][T:27][MIX:cchch]"
+  },
+  {
+   "seed": 416359,
+   "t": 23,
+   "mix": "eccee",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:416359][T:23][MIX:eccee]"
+  },
+  {
+   "seed": 743963,
+   "t": 55,
+   "mix": "hccec",
+   "tags": [
+    "thirsty",
+    "outside"
+   ],
+   "tag": "[SEED:743963][T:55][MIX:hccec]"
+  },
+  {
+   "seed": 723108,
+   "t": 38,
+   "mix": "ecech",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:723108][T:38][MIX:ecech]"
+  },
+  {
+   "seed": 325346,
+   "t": 22,
+   "mix": "hchch",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:325346][T:22][MIX:hchch]"
+  },
+  {
+   "seed": 813934,
+   "t": 0,
+   "mix": "cheec",
+   "tags": [],
+   "tag": "[SEED:813934][T:0][MIX:cheec]"
+  },
+  {
+   "seed": 181926,
+   "t": 51,
+   "mix": "hhhch",
+   "tags": [
+    "hungry",
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:181926][T:51][MIX:hhhch]"
+  },
+  {
+   "seed": 796788,
+   "t": 45,
+   "mix": "hhehe",
+   "tags": [
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:796788][T:45][MIX:hhehe]"
+  },
+  {
+   "seed": 331495,
+   "t": 0,
+   "mix": "ccccc",
+   "tags": [],
+   "tag": "[SEED:331495][T:0][MIX:ccccc]"
+  },
+  {
+   "seed": 325486,
+   "t": 13,
+   "mix": "cccch",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:325486][T:13][MIX:cccch]"
+  },
+  {
+   "seed": 622937,
+   "t": 47,
+   "mix": "hchhe",
+   "tags": [
+    "thirsty",
+    "hurt",
+    "outside",
+    "zombie_near",
+    "vote",
+    "bite_recent"
+   ],
+   "tag": "[SEED:622937][T:47][MIX:hchhe]"
+  },
+  {
+   "seed": 683501,
+   "t": 88,
+   "mix": "chhec",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:683501][T:88][MIX:chhec]"
+  },
+  {
+   "seed": 749014,
+   "t": 68,
+   "mix": "chche",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:749014][T:68][MIX:chche]"
+  },
+  {
+   "seed": 381574,
+   "t": 72,
+   "mix": "cccch",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:381574][T:72][MIX:cccch]"
+  },
+  {
+   "seed": 69113,
+   "t": 53,
+   "mix": "chcce",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:69113][T:53][MIX:chcce]"
+  },
+  {
+   "seed": 157677,
+   "t": 50,
+   "mix": "chcce",
+   "tags": [
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:157677][T:50][MIX:chcce]"
+  },
+  {
+   "seed": 623945,
+   "t": 1,
+   "mix": "hchhc",
+   "tags": [],
+   "tag": "[SEED:623945][T:1][MIX:hchhc]"
+  },
+  {
+   "seed": 677406,
+   "t": 58,
+   "mix": "hhcce",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:677406][T:58][MIX:hhcce]"
+  },
+  {
+   "seed": 201332,
+   "t": 88,
+   "mix": "cccec",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:201332][T:88][MIX:cccec]"
+  },
+  {
+   "seed": 926607,
+   "t": 2,
+   "mix": "hhehh",
+   "tags": [],
+   "tag": "[SEED:926607][T:2][MIX:hhehh]"
+  },
+  {
+   "seed": 871728,
+   "t": 65,
+   "mix": "hhehc",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:871728][T:65][MIX:hhehc]"
+  },
+  {
+   "seed": 465776,
+   "t": 68,
+   "mix": "hhhcc",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:465776][T:68][MIX:hhhcc]"
+  },
+  {
+   "seed": 947885,
+   "t": 15,
+   "mix": "eceec",
+   "tags": [
+    "hungry",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:947885][T:15][MIX:eceec]"
+  },
+  {
+   "seed": 553081,
+   "t": 0,
+   "mix": "ccche",
+   "tags": [],
+   "tag": "[SEED:553081][T:0][MIX:ccche]"
+  },
+  {
+   "seed": 916578,
+   "t": 0,
+   "mix": "cehhc",
+   "tags": [],
+   "tag": "[SEED:916578][T:0][MIX:cehhc]"
+  },
+  {
+   "seed": 286042,
+   "t": 39,
+   "mix": "chece",
+   "tags": [
+    "hungry",
+    "hurt",
+    "bitten"
+   ],
+   "tag": "[SEED:286042][T:39][MIX:chece]"
+  },
+  {
+   "seed": 975670,
+   "t": 5,
+   "mix": "cchce",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:975670][T:5][MIX:cchce]"
+  },
+  {
+   "seed": 976041,
+   "t": 42,
+   "mix": "chccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:976041][T:42][MIX:chccc]"
+  },
+  {
+   "seed": 871482,
+   "t": 87,
+   "mix": "chccc",
+   "tags": [
+    "thirsty",
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:871482][T:87][MIX:chccc]"
+  },
+  {
+   "seed": 575462,
+   "t": 0,
+   "mix": "ehchc",
+   "tags": [],
+   "tag": "[SEED:575462][T:0][MIX:ehchc]"
+  },
+  {
+   "seed": 440218,
+   "t": 40,
+   "mix": "hhcec",
+   "tags": [
+    "hungry",
+    "hurt",
+    "outside",
+    "zombie_near",
+    "bitten",
+    "bite_recent"
+   ],
+   "tag": "[SEED:440218][T:40][MIX:hhcec]"
+  },
+  {
+   "seed": 602980,
+   "t": 60,
+   "mix": "ccchc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:602980][T:60][MIX:ccchc]"
+  },
+  {
+   "seed": 89772,
+   "t": 9,
+   "mix": "hcehh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:89772][T:9][MIX:hcehh]"
+  },
+  {
+   "seed": 915754,
+   "t": 43,
+   "mix": "checc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:915754][T:43][MIX:checc]"
+  },
+  {
+   "seed": 768544,
+   "t": 48,
+   "mix": "hchhc",
+   "tags": [
+    "hurt",
+    "outside",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:768544][T:48][MIX:hchhc]"
+  },
+  {
+   "seed": 674020,
+   "t": 8,
+   "mix": "chchh",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:674020][T:8][MIX:chchh]"
+  },
+  {
+   "seed": 813894,
+   "t": 26,
+   "mix": "ecche",
+   "tags": [
+    "hungry",
+    "vote"
+   ],
+   "tag": "[SEED:813894][T:26][MIX:ecche]"
+  },
+  {
+   "seed": 417568,
+   "t": 47,
+   "mix": "ehchc",
+   "tags": [
+    "hungry",
+    "hurt",
+    "vote",
+    "bitten"
+   ],
+   "tag": "[SEED:417568][T:47][MIX:ehchc]"
+  },
+  {
+   "seed": 907855,
+   "t": 57,
+   "mix": "hchcc",
+   "tags": [
+    "thirsty",
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:907855][T:57][MIX:hchcc]"
+  },
+  {
+   "seed": 355505,
+   "t": 33,
+   "mix": "ecceh",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:355505][T:33][MIX:ecceh]"
+  },
+  {
+   "seed": 82760,
+   "t": 36,
+   "mix": "ceccc",
+   "tags": [
+    "hungry",
+    "zombie_near"
+   ],
+   "tag": "[SEED:82760][T:36][MIX:ceccc]"
+  },
+  {
+   "seed": 467576,
+   "t": 40,
+   "mix": "hchcc",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:467576][T:40][MIX:hchcc]"
+  },
+  {
+   "seed": 456068,
+   "t": 83,
+   "mix": "ceech",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:456068][T:83][MIX:ceech]"
+  },
+  {
+   "seed": 712413,
+   "t": 0,
+   "mix": "ccehc",
+   "tags": [],
+   "tag": "[SEED:712413][T:0][MIX:ccehc]"
+  }
+ ],
+ "smoke_scenarios": [
+  {
+   "seed": 339563,
+   "t": 28,
+   "mix": "eccec",
+   "tags": [
+    "hungry",
+    "hurt",
+    "outside",
+    "vote"
+   ],
+   "tag": "[SEED:339563][T:28][MIX:eccec]"
+  },
+  {
+   "seed": 225127,
+   "t": 19,
+   "mix": "ccccc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:225127][T:19][MIX:ccccc]"
+  },
+  {
+   "seed": 234083,
+   "t": 38,
+   "mix": "hhchc",
+   "tags": [
+    "hurt",
+    "outside",
+    "zombie_near",
+    "bitten"
+   ],
+   "tag": "[SEED:234083][T:38][MIX:hhchc]"
+  },
+  {
+   "seed": 139643,
+   "t": 0,
+   "mix": "cccce",
+   "tags": [],
+   "tag": "[SEED:139643][T:0][MIX:cccce]"
+  },
+  {
+   "seed": 390487,
+   "t": 50,
+   "mix": "chhhc",
+   "tags": [
+    "hungry",
+    "hurt",
+    "zombie_near",
+    "vote"
+   ],
+   "tag": "[SEED:390487][T:50][MIX:chhhc]"
+  },
+  {
+   "seed": 488218,
+   "t": 51,
+   "mix": "hcchh",
+   "tags": [
+    "hurt",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:488218][T:51][MIX:hcchh]"
+  },
+  {
+   "seed": 550708,
+   "t": 25,
+   "mix": "ccchc",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:550708][T:25][MIX:ccchc]"
+  },
+  {
+   "seed": 358671,
+   "t": 72,
+   "mix": "ccchh",
+   "tags": [
+    "hungry"
+   ],
+   "tag": "[SEED:358671][T:72][MIX:ccchh]"
+  },
+  {
+   "seed": 328988,
+   "t": 0,
+   "mix": "ccchc",
+   "tags": [],
+   "tag": "[SEED:328988][T:0][MIX:ccchc]"
+  },
+  {
+   "seed": 497128,
+   "t": 32,
+   "mix": "hchch",
+   "tags": [
+    "thirsty",
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:497128][T:32][MIX:hchch]"
+  },
+  {
+   "seed": 751438,
+   "t": 0,
+   "mix": "chccc",
+   "tags": [],
+   "tag": "[SEED:751438][T:0][MIX:chccc]"
+  },
+  {
+   "seed": 228807,
+   "t": 16,
+   "mix": "hccce",
+   "tags": [],
+   "tag": "[SEED:228807][T:16][MIX:hccce]"
+  },
+  {
+   "seed": 421154,
+   "t": 35,
+   "mix": "heeec",
+   "tags": [
+    "outside",
+    "zombie_near"
+   ],
+   "tag": "[SEED:421154][T:35][MIX:heeec]"
+  },
+  {
+   "seed": 927143,
+   "t": 0,
+   "mix": "cccch",
+   "tags": [],
+   "tag": "[SEED:927143][T:0][MIX:cccch]"
+  },
+  {
+   "seed": 275509,
+   "t": 0,
+   "mix": "cchhc",
+   "tags": [],
+   "tag": "[SEED:275509][T:0][MIX:cchhc]"
+  },
+  {
+   "seed": 478825,
+   "t": 6,
+   "mix": "ehehc",
+   "tags": [
+    "outside"
+   ],
+   "tag": "[SEED:478825][T:6][MIX:ehehc]"
+  }
+ ],
+ "smoke_results": {
+  "shaped": {
+   "all_wait": {
+    "rewards": [
+     -1.0,
+     -4.8438,
+     -2.4348,
+     -0.8188,
+     -2.634,
+     0.086,
+     -5.7185,
+     -2.44,
+     -0.8188,
+     -1.0215,
+     -0.8188,
+     -1.6068,
+     -0.742,
+     -0.8188,
+     -0.8188,
+     -2.0015
+    ],
+    "mean": -1.7782,
+    "gigpo_entries_per_completion": 4.5625
+   },
+   "planner_like": {
+    "rewards": [
+     -1.0,
+     -4.8438,
+     -1.0577,
+     -1.092,
+     -4.0842,
+     -0.3453,
+     -5.5315,
+     -2.6187,
+     -1.092,
+     -3.4128,
+     -1.092,
+     -1.5393,
+     -0.8263,
+     -1.092,
+     -1.092,
+     -2.0667
+    ],
+    "mean": -2.0491,
+    "gigpo_entries_per_completion": 4.75
+   },
+   "garbage": {
+    "rewards": [
+     -1.1,
+     -4.9437,
+     -2.5348,
+     -0.9188,
+     -2.734,
+     -0.014,
+     -5.8185,
+     -2.54,
+     -0.9188,
+     -1.1215,
+     -0.9188,
+     -1.7068,
+     -0.842,
+     -0.9188,
+     -0.9188,
+     -2.1015
+    ],
+    "mean": -1.8782,
+    "gigpo_entries_per_completion": 4.5625
+   }
+  },
+  "survival": {
+   "all_wait": {
+    "rewards": [
+     -1.0,
+     1.5,
+     -1.0,
+     1.5,
+     -1.0,
+     -1.0,
+     1.5,
+     -1.0,
+     1.5,
+     -1.0,
+     1.5,
+     1.5,
+     -1.0,
+     1.5,
+     1.5,
+     1.5
+    ],
+    "mean": 0.4062,
+    "gigpo_entries_per_completion": 4.5625
+   },
+   "planner_like": {
+    "rewards": [
+     -1.0,
+     1.5,
+     -1.0,
+     1.5,
+     -1.0,
+     -1.0,
+     1.5,
+     -1.0,
+     1.5,
+     1.0,
+     1.5,
+     1.5,
+     -1.0,
+     1.5,
+     1.5,
+     1.5
+    ],
+    "mean": 0.5312,
+    "gigpo_entries_per_completion": 4.75
+   },
+   "garbage": {
+    "rewards": [
+     -1.1,
+     1.4,
+     -1.1,
+     1.4,
+     -1.1,
+     -1.1,
+     1.4,
+     -1.1,
+     1.4,
+     -1.1,
+     1.4,
+     1.4,
+     -1.1,
+     1.4,
+     1.4,
+     1.4
+    ],
+    "mean": 0.3062,
+    "gigpo_entries_per_completion": 4.5625
+   }
+  }
+ },
+ "summary": {
+  "shaped": {
+   "all_wait": {
+    "mean": -1.7782,
+    "gigpo_entries": 4.5625
+   },
+   "planner_like": {
+    "mean": -2.0491,
+    "gigpo_entries": 4.75
+   },
+   "garbage": {
+    "mean": -1.8782,
+    "gigpo_entries": 4.5625
+   },
+   "step1_weight": 1.0,
+   "planner_beats_wait": "3/16",
+   "wait_beats_planner": "11/16",
+   "wait_minus_garbage": 0.1,
+   "order_ok": false
+  },
+  "survival": {
+   "all_wait": {
+    "mean": 0.4062,
+    "gigpo_entries": 4.5625
+   },
+   "planner_like": {
+    "mean": 0.5312,
+    "gigpo_entries": 4.75
+   },
+   "garbage": {
+    "mean": 0.3062,
+    "gigpo_entries": 4.5625
+   },
+   "step1_weight": 0.0,
+   "planner_beats_wait": "1/16",
+   "wait_beats_planner": "0/16",
+   "wait_minus_garbage": 0.1,
+   "order_ok": true
+  }
+ }
+}
