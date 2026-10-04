@@ -142,3 +142,31 @@ def test_reveal_steps_knob():
     for _ in range(3):
         advance_step(ep)
     assert biter.infection_state == "revealed"
+
+
+def test_zombie_move_every_knob():
+    ep = create_episode(seed=0, balance=V2_2.with_(zombie_move_every=2))
+    from survivecity_v2_env.game import advance_zombies
+    start = [(z.row, z.col) for z in ep.zombies]
+    ep.step_count = 1                      # odd step: zombies hold still
+    advance_zombies(ep)
+    assert [(z.row, z.col) for z in ep.zombies] == start
+    ep.step_count = 2
+    advance_zombies(ep)
+    assert [(z.row, z.col) for z in ep.zombies] != start
+
+
+def test_starting_infected_progression_flag():
+    for flag, expect_dead in ((True, True), (False, False)):
+        ep = create_episode(seed=0, balance=V2_2.with_(starting_infected_progression=flag))
+        biter = next(a for a in ep.agents if a.infection_role == "biter")
+        biter.hunger = biter.thirst = -10**6   # keep it fed
+        for _ in range(31):
+            advance_step(ep)
+        assert (biter.death_cause == "infection_progression") == expect_dead
+
+
+def test_hp_max_above_3_builds_observation():
+    env = SurviveCityV2Env(balance=V2_2.with_(hp_max=5))
+    obs = env.reset(seed=0)
+    assert obs["agents"][0]["hp"] == 5

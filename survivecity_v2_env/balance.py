@@ -38,6 +38,7 @@ class BalanceConfig:
 
     # Zombies
     zombie_chase_radius: Optional[int] = None   # None = chase any agent outside the safehouse
+    zombie_move_every: int = 1          # zombies move only on steps where step % k == 0 (2 = shamblers)
     zombie_contact_damage: int = 1
     wave_schedule: tuple[tuple[int, int], ...] = ((25, 2), (50, 3), (75, 3))
     max_zombies: int = 12
@@ -56,6 +57,9 @@ class BalanceConfig:
     biter_reveal_step: int = 25
     saboteur_reveal_step: int = 60
     infection_death_after: int = 30     # steps after a bite with no medicine -> death
+    # v2.2 also applied infection_death_after to the two agents infected at t=0
+    # (bite_at_step=0), so the starting biter died at t=30, 5 steps after its reveal.
+    starting_infected_progression: bool = True
 
     @property
     def waves(self) -> dict[int, int]:
@@ -91,6 +95,7 @@ V2_2 = BalanceConfig(
     safehouse_heal=1,
     scan_thirst_cost=1,
     zombie_chase_radius=None,
+    zombie_move_every=1,
     zombie_contact_damage=1,
     wave_schedule=((25, 2), (50, 3), (75, 3)),
     max_zombies=12,
@@ -105,10 +110,25 @@ V2_2 = BalanceConfig(
     biter_reveal_step=25,
     saboteur_reveal_step=60,
     infection_death_after=30,
+    starting_infected_progression=True,
+)
+
+# W3 candidate (not the default yet): slower clocks set the planners' supply
+# horizon, shamblers + chase radius 4 make zombies avoidable, starting infected
+# no longer die of infection_progression at t=30/60. 100 eps, seed 42:
+# oracle 83%, camp 73%, random 0%, current heuristic 0% (bug-fixed + zombie-
+# avoiding prototype: 13%). See research_log 2026-10-04 W3 entry.
+V3_RC1 = V2_2.with_(
+    hunger_rate=0.6,
+    thirst_rate=0.6,
+    zombie_move_every=2,
+    zombie_chase_radius=4,
+    starting_infected_progression=False,
 )
 
 PRESETS: dict[str, BalanceConfig] = {
     "v2.2": V2_2,
+    "v3-rc1": V3_RC1,
 }
 
 DEFAULT_PRESET = "v2.2"

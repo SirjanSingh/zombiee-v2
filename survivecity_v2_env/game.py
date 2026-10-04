@@ -715,9 +715,10 @@ def advance_zombies(state: EpisodeState) -> None:
     If noise > threshold, zombies get a free extra step toward agents.
     """
     extra_step = state.noise_meter > state.noise_threshold
+    moves = (2 if extra_step else 1) if state.step_count % state.balance.zombie_move_every == 0 else 0
 
     for zombie in state.zombies:
-        for _ in range(2 if extra_step else 1):
+        for _ in range(moves):
             target = _find_nearest_agent_for_zombie(zombie, state)
             if target is not None:
                 _move_zombie_toward(zombie, target, state)
@@ -870,6 +871,8 @@ def _check_reveals(state: EpisodeState) -> None:
         if not a.is_alive:
             continue
         if a.infection_state == "revealed" and a.bite_at_step is not None:
+            if a.bite_at_step == 0 and not cfg.starting_infected_progression:
+                continue
             duration = state.step_count - a.bite_at_step
             if duration >= cfg.infection_death_after and a.medicine_used == 0:
                 a.hp = 0
