@@ -60,6 +60,117 @@ def bfs(start, goals, danger):
     return None, None
 
 
+# ---------------------------------------------------------------------------
+# Extraction run (W4): shared by camp_action, tools/probes Camp and Oracle
+# ---------------------------------------------------------------------------
+
+EXTRACT_SLACK = 6        # spare turns budgeted on top of the path length (zombie detours, waits)
+EXTRACT_STOCK = 2        # water to carry before leaving for the zone
+
+
+def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunger: int, thirst: int,
+                      food, drink_at: int = 13, slack: int = EXTRACT_SLACK,
+                      avoid=()) -> Optional[tuple]:
+    """Next move of a timed extraction run, or None while it is not yet time to leave.
+
+    Leaves the safehouse when the turns left before the helicopter drop to
+    path length + `slack`, eats/drinks on the way (starvation is lethal outside
+    the safehouse), avoids cells next to zombies, then holds inside the zone,
+    sidestepping zombies. `avoid` = extra cells to keep off (e.g. next to a
+    known infected agent). Returns (action_type, kwargs).
+    """
+    if not zone:
+        return None
+    zone = set(map(tuple, zone))
+    turns_left = extraction_step - step
+    danger = {(zr + dr, zc + dc) for zr, zc in zs for dr in (-1, 0, 1) for dc in (-1, 0, 1)
+              if abs(dr) + abs(dc) <= 1} | set(avoid)
+    zmin = min((_mdist(pos, z) for z in zs), default=99)
+    nw = inv.count("water")
+
+    if pos in zone:
+        if thirst >= drink_at and nw:
+            return "drink", {}
+        if pos in food and hunger >= 4 and zmin > 1:
+            return "eat", {}
+        if hunger >= 12 and "food" in inv:
+            return "eat", {}
+        if pos in danger:
+            for m, (dr, dc) in MOVES.items():
+                n = (pos[0] + dr, pos[1] + dc)
+                if n in zone and n not in danger and _walk(*n):
+                    return m, {}
+        return "wait", {}
+
+    d_est, _ = bfs(pos, zone, set())
+    if d_est is None:
+        return None
+    if turns_left > d_est + slack:
+        return None
+
+    # On the way: refuel when standing on a supply, detour for food/water when low.
+    if pos in WATER_CELLS and thirst >= 3 and zmin > 1:
+        return "drink", {}
+    if pos in food and hunger >= 4 and zmin > 1:
+        return "eat", {}
+    if pos in WATER_CELLS and nw < EXTRACT_STOCK and len(inv) < 3 and zmin > 2:
+        return "pickup", {"item_type": "water"}
+    if hunger >= 9 and "food" not in inv and food:
+        d, m = bfs(pos, set(food), danger)
+        if m and d <= 3 and d + d_est <= turns_left:
+            return m, {}
+    if thirst >= 9 and nw == 0:
+        d, m = bfs(pos, set(WATER_CELLS), danger)
+        if m and d <= 3 and d + d_est <= turns_left:
+            return m, {}
+    if thirst >= drink_at and nw:
+        return "drink", {}
+    if hunger >= 12 and "food" in inv:
+        return "eat", {}
+    d, m = bfs(pos, zone, danger)
+    if m:
+        return m, {}
+    return "wait", {}
+
+
+FED_EAT_AT = 12          # eat carried food before starvation damage starts (15)
+FED_SORTIE_MAX = 12      # only leave the safehouse for food while not starving
+
+
+def keep_fed_action(pos, inv, hunger: int, zs, food, insafe: bool, zclear: int = 4) -> Optional[tuple]:
+    """Hunger management for the extraction game, or None.
+
+    The plain camp planner never eats: inside the safehouse healing cancels
+    starvation damage, so it hides at hunger >= 15 forever. That makes any
+    late trip outside lethal (-1 HP per turn), so with extraction on the camp
+    planner carries one food item and eats it before starvation starts.
+    """
+    zmin = min((_mdist(pos, z) for z in zs), default=99)
+    danger = {(zr + dr, zc + dc) for zr, zc in zs for dr in (-1, 0, 1) for dc in (-1, 0, 1)
+              if abs(dr) + abs(dc) <= 1}
+    has_food = "food" in inv
+    if has_food and hunger >= FED_EAT_AT:
+        return "eat", {}
+    if insafe:
+        if not has_food and len(inv) < 3 and hunger < FED_SORTIE_MAX:
+            tgt = [f for f in food if min((_mdist(f, z) for z in zs), default=99) > zclear]
+            if tgt:
+                d, m = bfs(pos, set(tgt), danger)
+                if m and d <= 4:
+                    return m, {}
+        return None
+    if pos in food and zmin > 1:
+        if hunger >= 4:
+            return "eat", {}
+        if not has_food and len(inv) < 3:
+            return "pickup", {"item_type": "food"}
+    if not has_food and len(inv) < 3 and zmin > 2:
+        d, m = bfs(pos, set(food), danger)
+        if m and d <= 3:
+            return m, {}
+    return None
+
+
 def _me(obs: dict, agent_id: int) -> Optional[dict]:
     return next((a for a in obs.get("agents", [])
                  if a.get("agent_id") == agent_id and a.get("is_alive", True)), None)
@@ -92,12 +203,23 @@ def camp_action(agent_id: int, obs: dict, rng=None, drink_at: int = 13, stock: i
                   if b["biter_id"] in alive and b["biter_id"] != agent_id]
         if vote and biters:
             return A("vote_lockout", vote_target=biters[0])
+    zone = meta.get("extraction_zone") or []
+    if zone:
+        ext = extraction_action(pos, s, zone, meta["extraction"]["extraction_step"], zs, inv,
+                                hunger, thirst, food, drink_at=drink_at)
+        if ext is not None:
+            return A(ext[0], **ext[1])
+    if "extraction" in meta:          # extraction game: stay fed, leave a slot for food
+        stock = min(stock, EXTRACT_STOCK)
+        fed = keep_fed_action(pos, inv, hunger, zs, food, insafe, zclear)
+        if fed is not None:
+            return A(fed[0], **fed[1])
     if insafe:
         if thirst >= drink_at and nw:
             return A("drink")
         if thirst >= 14 and hunger >= 14 and "food" in inv:
             return A("eat")
-        if nw < (1 if s > 10 else stock) and s < 92:
+        if nw < (1 if s > 10 else stock) + (EXTRACT_STOCK - 1 if zone else 0) and s < 92:
             tgt = [w for w in WATER_CELLS if min((_mdist(w, z) for z in zs), default=99) > zclear]
             if tgt:
                 d, m = bfs(pos, set(tgt), danger)

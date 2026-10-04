@@ -1,6 +1,12 @@
 import sys; import os; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0,os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..'))
 from planner2 import *
 class Oracle(Camp):
+    def avoid_cells(self, aid):
+        # healthy agents keep off cells next to a known infected agent (bites) on the extraction run
+        ep=self.env._episode
+        if ep.agents[aid].infection_state!="none": return ()
+        return {(a.row+dr,a.col+dc) for a in ep.agents if a.is_alive and a.infection_state!="none"
+                for dr,dc in [(0,0),(1,0),(-1,0),(0,1),(0,-1)]}
     def __call__(self, aid, obs, rng=None):
         ep=self.env._episode; me=ep.agents[aid]; s=ep.step_count
         A=lambda t,**k: dict(agent_id=aid, action_type=t, **k)

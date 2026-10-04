@@ -170,6 +170,14 @@ def rule_fields(balance=None) -> dict:
     if not cfg.starting_infected_progression:
         extra.append(f"Agents bitten during the game die {cfg.infection_death_after} steps after the bite "
                      "unless injected with medicine.")
+    if cfg.extraction_enabled:
+        side = 2 * cfg.extraction_zone_radius + 1
+        extra.append(
+            f"EXTRACTION: at step {cfg.radio_step} a radio message names one corner zone "
+            f"({side}x{side} cells at a grid corner). At step {cfg.extraction_step} a helicopter takes every "
+            f"agent standing in that zone and the game ends. If anyone infected is aboard, the flight fails "
+            f"for everyone. Healthy agents win by being extracted; infected agents win if the flight fails "
+            f"or nobody healthy gets out.")
     return {
         "heal": cfg.safehouse_heal, "clock_line": clock, "biter_reveal": cfg.biter_reveal_step,
         "sab_reveal": cfg.saboteur_reveal_step, "p_bite": round(cfg.p_bite * 100),
@@ -223,6 +231,26 @@ def build_system_prompt(
 SYSTEM_PROMPT_TEMPLATE = SYSTEM_PROMPT_TEMPLATE_SINGLE
 
 
+def extraction_line(info: dict) -> str:
+    """One prompt line for the radio/extraction state (see env.extraction_info)."""
+    res = info.get("result")
+    if res is not None:
+        if not res["flew"]:
+            return "HELICOPTER: nobody healthy was left to extract."
+        if res["failed_flight"]:
+            inf = ", ".join(f"A{i}" for i in res["infected_aboard"])
+            return f"HELICOPTER: flight FAILED, infected aboard ({inf})."
+        if res["extracted"]:
+            return "HELICOPTER: extracted " + ", ".join(f"A{i}" for i in res["extracted"]) + "."
+        return "HELICOPTER: left with nobody aboard."
+    if info.get("zone_name") is None:
+        return f"Survive; a radio message will come at t={info['radio_step']}."
+    from survivecity_v2_env.extraction import describe_zone
+    return (f"RADIO: extraction at {describe_zone(info['zone_name'], info['zone_radius'])}, "
+            f"helicopter loads at t={info['extraction_step']}, {info['turns_left']} turns left. "
+            "Anyone infected aboard dooms the flight.")
+
+
 def format_observation_description(
     agent_id: int,
     state_dict: dict,
@@ -239,10 +267,12 @@ def format_observation_description(
     noise_threshold: int,
     balance=None,
     bite_history: list[dict] | None = None,
+    extraction: dict | None = None,
 ) -> str:
     """Format the observation into an LLM-readable description.
 
     At night, far-away agents/zombies are filtered out (Manhattan > 5).
+    `extraction` (env.extraction_info) adds the radio line; None = objective off.
     """
     agents = state_dict.get("agents", [])
     zombies = state_dict.get("zombies", [])
@@ -266,6 +296,8 @@ def format_observation_description(
     )
     lines.append(f"Inventory: {own_inventory if own_inventory else 'empty'} (cap=3)")
     lines.append(f"Noise meter: {noise_meter}/{noise_threshold} (decays every 10 steps)")
+    if extraction is not None:
+        lines.append(extraction_line(extraction))
 
     # Self infection state
     if own_infection_state == "latent":
@@ -355,7 +387,7 @@ def format_observation_description(
         lines.append("⚠ Sun setting. Wave at step 25.")
     elif step == 49:
         lines.append("⚠ Day breaking. Vote phase 2 + wave at step 50.")
-    elif step == 89:
+    elif step == 89 and cfg.max_steps > 90:
         lines.append("⚠ Final vote at step 90.")
 
     return "\n".join(lines)

@@ -123,6 +123,22 @@ def episode_record(env: SurviveCityV2Env, seed: int) -> dict:
         "bites": len(ep.bite_history),
         "lockouts": [t for t in ep.lockout_results.values() if t is not None],
         "zombies_end": len(ep.zombies),
+        **extraction_record(ep),
+    }
+
+
+def extraction_record(ep) -> dict:
+    """W4 extraction outcome; empty when the objective is off (v2.2 / v3-rc1)."""
+    if not ep.balance.extraction_enabled:
+        return {}
+    res = ep.extraction_result or {}
+    return {
+        "extracted": bool(res.get("success")),          # >=1 healthy extracted, flight not failed
+        "failed_flight": bool(res.get("failed_flight")),
+        "n_extracted": int(res.get("n_extracted", 0)),
+        "n_aboard": len(res.get("aboard", [])),
+        "infected_aboard": list(res.get("infected_aboard", [])),
+        "extraction_zone": res.get("zone"),
     }
 
 
@@ -143,6 +159,11 @@ def summarize(records: list[dict]) -> dict:
             "alive_end": round(S.mean(r["alive_end"] for r in records), 3),
             "bites": round(S.mean(r["bites"] for r in records), 2),
             "lockouts": round(S.mean(len(r["lockouts"]) for r in records), 2),
+            **({"extraction": round(sum(r["extracted"] for r in records) / n, 4),
+                "failed_flight": round(sum(r["failed_flight"] for r in records) / n, 4),
+                "n_extracted": round(S.mean(r["n_extracted"] for r in records), 3),
+                "n_aboard": round(S.mean(r["n_aboard"] for r in records), 3)}
+               if records and "extracted" in records[0] else {}),
         },
         "death_causes": dict(causes.most_common()),
         "healthy_death_causes": dict(healthy_causes.most_common()),
@@ -176,14 +197,22 @@ COLS = [("survival", "surv", "{:.0%}"), ("reached_max", "reach_T", "{:.0%}"),
         ("bites", "bites", "{:.2f}")]
 
 
+# Extra columns when the extraction objective is on (headline metric = extraction rate).
+EXTRACTION_COLS = [("extraction", "extract", "{:.0%}"), ("failed_flight", "failed_flight", "{:.0%}"),
+                   ("n_extracted", "n_extr", "{:.2f}")]
+
+
 def format_table(results: dict[str, dict]) -> str:
-    head = "| policy | " + " | ".join(c[1] for c in COLS) + " | top death causes (all agents) |"
-    sep = "|" + "---|" * (len(COLS) + 2)
+    cols = COLS
+    if any("extraction" in r["metrics"] for r in results.values()):
+        cols = EXTRACTION_COLS + COLS
+    head = "| policy | " + " | ".join(c[1] for c in cols) + " | top death causes (all agents) |"
+    sep = "|" + "---|" * (len(cols) + 2)
     lines = [head, sep]
     for p, r in results.items():
         m = r["metrics"]
         causes = ", ".join(f"{k} {v}" for k, v in list(r["death_causes"].items())[:4]) or "-"
-        lines.append(f"| {p} | " + " | ".join(f.format(m[k]) for k, _, f in COLS) + f" | {causes} |")
+        lines.append(f"| {p} | " + " | ".join(f.format(m[k]) for k, _, f in cols) + f" | {causes} |")
     return "\n".join(lines)
 
 
@@ -239,7 +268,10 @@ def write_research_log(results: dict[str, dict], balance: BalanceConfig, balance
             f"(balance `{balance_name}`, overrides: {ov})\n\n"
             + (f"{note}\n\n" if note else "")
             + f"{n} episodes, seed {seed}, git `{sha}`, all 5 agents scripted by the policy. "
-              f"surv = >=1 healthy agent alive at t={balance.max_steps}.\n\n"
+              f"surv = >=1 healthy agent alive at t={balance.max_steps}."
+            + (" extract = >=1 healthy agent extracted and no infected aboard; failed_flight = an infected "
+               "agent boarded; n_extr = mean healthy agents extracted." if balance.extraction_enabled else "")
+            + "\n\n"
             + format_table(results)
             + f"\n\nData: `{rel_data}`, `experiments.jsonl` rows with `tag={tag}`.\n"
         )
