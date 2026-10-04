@@ -54,9 +54,11 @@ class SurviveCityV2Env:
         self,
         seed: Optional[int] = None,
         balance: "BalanceConfig | str | None" = None,
+        a0_healthy: bool = False,
     ):
         self._seed = seed
         self._balance = get_balance(balance)
+        self._a0_healthy = a0_healthy
         self._episode: Optional[EpisodeState] = None
         self._episode_id: int = 0
         self._cumulative_rewards: dict[int, float] = {}
@@ -69,7 +71,7 @@ class SurviveCityV2Env:
         actual_seed = seed if seed is not None else self._seed
         if actual_seed is None:
             actual_seed = 0
-        self._episode = create_episode(actual_seed, balance=self._balance)
+        self._episode = create_episode(actual_seed, balance=self._balance, a0_healthy=self._a0_healthy)
         self._episode_id += 1
         self._cumulative_rewards = {i: 0.0 for i in range(N_AGENTS)}
 
