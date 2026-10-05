@@ -685,3 +685,17 @@ because the student dies early.
 **Hypothesis for next run:** 5-action blind plans (K=5) are fine for "sit in the safehouse" (rc1) but drift
 during rc2's trips around zombies. Next: rc2 DAgger with K=3 (re-plan more often), 300 rollout episodes per
 round, 3 rounds.
+
+---
+
+## 2026-10-05 11:46 — eval `v22-unwinnable` (closed loop, balance `v2.2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 4 seeds for every row; A0 healthy = True; git `c1ffdfb`; 2 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| camp | 0% | 56.0 | 0% | 0.00 | - | thirst 1, hunger 3 |
+| heuristic_v3 | 0% | 12.0 | 0% | 0.00 | - | zombie_attack 4 |
+| wait | 0% | 15.0 | 0% | 0.00 | - | thirst 4 |
+
+Data: `data/2026-10-05_eval_v22-unwinnable.json`.
