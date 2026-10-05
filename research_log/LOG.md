@@ -582,3 +582,106 @@ needs a better survival core, not a better extraction rule; or accept ~1% as the
 - **Queued on GPU 5 after run 8's gagpo chain:** v3-rc2 imitation pipeline: camp-teacher SFT (2000 states) ->
   2 DAgger rounds -> eval on 60 fresh seeds vs camp/heuristic_v3/wait/random, recording 4 replays per row.
   Then run 8 (closed-loop RL) on v3-rc2 from that model: the experiment where RL has room to matter.
+
+## 2026-10-05 04:17 — eval `run8-grpo` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 177 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-60) | 0% | 98.5 | 67% | 0.77 | 100% | thirst 30 |
+
+Data: `data/2026-10-05_eval_run8-grpo.json`.
+
+---
+
+## 2026-10-05 04:23 — eval `run8-gagpo` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 181 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-60) | 0% | 97.0 | 63% | 0.73 | 100% | thirst 30 |
+
+Data: `data/2026-10-05_eval_run8-gagpo.json`.
+
+---
+
+## 2026-10-05 04:49 — eval `rc2-sft` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 65 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_camp_rc2) | 23% | 0% | 7% | 0% | 17.9 | 33% | 0.47 | 100% | zombie_attack 26, hunger 4 |
+
+Data: `data/2026-10-05_eval_rc2-sft.json`.
+
+---
+
+## 2026-10-05 06:08 — eval `rc2-dagger2` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 60 seeds for every row; A0 healthy = True; git `d9cdbc6`; 204 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_dagger_rc2_r2) | 18% | 0% | 5% | 0% | 31.0 | 30% | 0.35 | 100% | hunger 38, zombie_attack 21, thirst 1 |
+| camp | 28% | 13% | 7% | 22% | 82.1 | 38% | 0.55 | - | zombie_attack 23, alive 20, thirst 14, infection_progression 1, hunger 2 |
+| heuristic_v3 | 37% | 0% | 8% | 2% | 56.2 | 58% | 0.75 | - | hunger 22, thirst 29, zombie_attack 7, alive 2 |
+| wait | 18% | 0% | 12% | 0% | 24.0 | 33% | 0.45 | - | thirst 60 |
+| random | 22% | 0% | 5% | 0% | 23.6 | 32% | 0.45 | - | hunger 44, zombie_attack 5, thirst 11 |
+
+Data: `data/2026-10-05_eval_rc2-dagger2.json`.
+
+---
+
+## 2026-10-05 06:27 — eval `run8-gigpo` (closed loop, balance `v3-rc1`)
+
+A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 176 s.
+
+| A0 policy | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|
+| model(checkpoint-60) | 0% | 99.0 | 67% | 0.77 | 100% | thirst 30 |
+
+Data: `data/2026-10-05_eval_run8-gigpo.json`.
+
+---
+
+## 2026-10-05 12:00 — Results: run 8 (RL on v3-rc1) did not help; imitation on v3-rc2 not working yet (manager)
+
+**Run 8, closed-loop RL from DAgger-2 on v3-rc1** (60 steps each, eval 30 eps seed 1234):
+
+| model | A0 lifetime | A0 alive at t=100 |
+|---|---|---|
+| DAgger-2 (start) | 99.7 | 70% |
+| + GRPO | 98.5 | 0% |
+| + GiGPO (z-score) | 99.0 | 0% |
+| + GAGPO (gamma 0.95, lambda 0.8) | 97.0 | 0% |
+
+Training-window return drifted down (grpo 0.68 -> 0.45, gigpo 0.68 -> 0.56, gagpo 0.71 -> 0.49, first vs last 10
+steps; start states differ per step, so this is noisy), KL stayed <= 0.007. The alive-at-t100 drop is the same
+one-turn cliff seen before (all three die of thirst at t=99 again). Verdict: on a near-solved game RL had
+nothing to find and lost the lucky timing. No evidence yet that any estimator beats another here.
+
+**v3-rc2 (extraction) imitation pipeline** (camp teacher; headline must be A0's own outcome, because the
+team extraction column is carried by the camp teammates whatever A0 does: wait 18%, random 22%):
+
+| A0 played by | A0 extracted | A0 lifetime | eval |
+|---|---|---|---|
+| SFT on 1792 camp states | 0% | 17.9 | 30 eps |
+| DAgger round 1 (as rollout policy) | 0% | 22.4 | 200 eps, T=0.7 |
+| DAgger round 1 | 0% | 26.3 | 200 eps rollouts of r2 |
+| DAgger round 2 | 0% | 31.0 | 60 eps, seed 4321 |
+| camp planner (teacher) | 13% | 82.1 | 60 eps, seed 4321 |
+| heuristic_v3 | 0% | 56.2 | same |
+
+Replays (4 matched seeds): the teacher camps (~50 waits), carries 1 food, eats it once, dies to zombies on the
+t~80 extraction run in 3/4 games. The student spends 25-45 turns outside (move_down x20 in one game), picks
+food up but eats it 0-1 times, and starves outside at t=24-44. The prompt does show inventory and hunger
+(checked), so it is an imitation failure: compounding error, the same drift-outside failure as rc1 SFT.
+DAgger is improving it each round (17.9 -> 22.4 -> 26.3 -> 31.0) but rounds collect fewer states (920, 1067)
+because the student dies early.
+
+**Hypothesis for next run:** 5-action blind plans (K=5) are fine for "sit in the safehouse" (rc1) but drift
+during rc2's trips around zombies. Next: rc2 DAgger with K=3 (re-plan more often), 300 rollout episodes per
+round, 3 rounds.
