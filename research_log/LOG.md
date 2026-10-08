@@ -749,3 +749,28 @@ A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns)
 | heuristic_v3 | 37% | 0% | 8% | 2% | 56.2 | 58% | 0.75 | - | hunger 22, thirst 29, zombie_attack 7, alive 2 |
 
 Data: `data/2026-10-06_eval_rc2-k3-final.json`.
+
+---
+
+## 2026-10-08 16:45 — Why K=3 DAgger stalls at lifetime 80: the late game was never labelled (manager)
+
+**What the r3 student actually does.** In all 60 final-eval episodes `sft_rc2_k3_r3` never eats (0 `eat`
+actions; camp: 73). Its moves are exactly 3 left / 3 right / 2 up / 2 down per episode: it replays camp's
+15-turn opening (fetch 2 water + 1 food, walk into the safehouse), then waits and drinks. Turn by turn it is
+identical to camp (seed 58523) until t=55, where it drinks one turn early; by t=78 it has no water left,
+`drink` is a no-op, and it dies of thirst at t=80. Camp at that point eats (t=67), votes, and goes out.
+
+**Why.** Round R labels the states reached by student R-1. Student r2 died around t=27, so the data r3
+was trained on stops there. 85% of the 9,694 aggregated rows are t<30; only 491 are t>=60, where the
+eat / water-refill / helicopter decisions live. Lifetime went 24 -> 29 -> 80 and each round pushes the
+labelled horizon out, which is normal DAgger progress, not a capacity limit.
+
+**Teacher ceiling.** The oracle (54% team extraction) reads hidden infection state, so it can't be the
+teacher. Camp is the best public-observation teacher: A0 lifetime 82, A0 extracted 13%. Imitation aims
+to match camp; RL (GAGPO) is for beating it afterwards.
+
+**Decision.** Continue DAgger rounds 4-5 from `sft_rc2_k3_r3` (not GAGPO yet; RL gave nothing on rc1).
+One change: each round trains on all t>=30 rows + a 2,500-row sample of t<30 rows (the openings are
+near-duplicates), so SFT time stays flat. Script `~/rc2_k3_cont.sh`, log `logs/rc2_k3_cont.log`, GPU 2
+(shared with a 2 GB job, so the waiter's util cap went 25% -> 60%). Started 16:44 IST, ~3.5 h per round.
+Watch: `eat` appearing in A0's actions, A0 lifetime > 82, A0 extracted > 0.
