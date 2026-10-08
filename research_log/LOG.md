@@ -699,3 +699,53 @@ A0 driven by each policy for the whole episode (model re-plans every 5 A0 turns)
 | wait | 0% | 15.0 | 0% | 0.00 | - | thirst 4 |
 
 Data: `data/2026-10-05_eval_v22-unwinnable.json`.
+
+---
+
+## 2026-10-05 19:22 — eval `rc2-k3-r1` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 121 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r1) | 27% | 0% | 20% | 0% | 24.2 | 53% | 0.63 | 100% | hunger 25, zombie_attack 5 |
+
+Data: `data/2026-10-05_eval_rc2-k3-r1.json`.
+
+---
+
+## 2026-10-05 21:31 — eval `rc2-k3-r2` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 145 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r2) | 30% | 0% | 13% | 0% | 27.1 | 47% | 0.53 | 100% | hunger 23, zombie_attack 1, thirst 6 |
+
+Data: `data/2026-10-05_eval_rc2-k3-r2.json`.
+
+---
+
+## 2026-10-06 00:34 — eval `rc2-k3-r3` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `d9cdbc6`; 331 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r3) | 37% | 0% | 13% | 0% | 80.7 | 67% | 0.77 | 100% | thirst 29, alive 1 |
+
+Data: `data/2026-10-06_eval_rc2-k3-r3.json`.
+
+---
+
+## 2026-10-06 00:45 — eval `rc2-k3-final` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 60 seeds for every row; A0 healthy = True; git `d9cdbc6`; 675 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r3) | 27% | 0% | 5% | 0% | 80.0 | 37% | 0.43 | 100% | thirst 54, alive 3, hunger 1, infection_progression 2 |
+| camp | 28% | 13% | 7% | 22% | 82.1 | 38% | 0.55 | - | zombie_attack 23, alive 20, thirst 14, infection_progression 1, hunger 2 |
+| heuristic_v3 | 37% | 0% | 8% | 2% | 56.2 | 58% | 0.75 | - | hunger 22, thirst 29, zombie_attack 7, alive 2 |
+
+Data: `data/2026-10-06_eval_rc2-k3-final.json`.
