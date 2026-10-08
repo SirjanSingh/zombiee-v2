@@ -805,3 +805,37 @@ not publicly seen biting.
 Zombie deaths go to 0. Most survivors still miss the helicopter (62% alive, 24% out): the alive bonus likely makes
 it too cautious, and the camp_v2 continuation eats badly. +-4.3 pts SE at N=100: suggestive, not yet conclusive.
 Next: tune score/M, confirm on 300 seeds, then use it as the DAgger teacher. Cost ~12 s/episode on 11 CPU cores.
+
+---
+
+## 2026-10-09 03:30 — Model-size comparison begins: tiny CNN (552k) DAgger vs camp; Laya queued (manager)
+
+Sirjan's idea: put a small, fast decision model next to Qwen 3B (Qwen stays). Two entries added:
+
+**Tiny CNN** (`training/tiny_policy.py`, 551,882 params): public observation as an 11-channel 15x15 grid
+(walls, food, water, safehouse, zombies, extraction zone, A0, teammates, known biters, zombie halo,
+distance-to-A0) + 12 scalars -> 10 actions, every turn, illegal actions masked. DAgger vs `camp`
+(round 0 = cloning camp rollouts), retrained-in-place each round, 8 epochs, CPU only. Eval: 200 seeds
+(`random.Random(999)`), teammates camp.
+
+| round | states | train acc | A0 lifetime | A0 alive end | A0 extracted |
+|---|---|---|---|---|---|
+| 0 | 16,327 | 89.3% | 44.7 | 1.5% | 0% |
+| 1 | 25,948 | 95.0% | 71.4 | 8% | 0% |
+| 2 | 40,001 | 97.9% | 75.2 | 10.5% | 0.5% |
+| 3 | 54,876 | 99.1% | 74.3 | 13% | 2.5% |
+| 4 | 69,993 | 99.2% | 74.7 | 13% | 1% |
+| 5 | 84,843 | 99.3% | 78.3 | 20% | **3%** |
+
+~10 min per round on a laptop CPU. First trained policy with A0 extracted > 0 (Qwen K=3 r4: 0%, lifetime 77.8).
+Still far under camp (17.5%, ~37% alive); train acc 99% vs weak eval = compounding small errors on the run.
+Data: `data/2026-10-09_tiny_camp.jsonl`. Checkpoint `checkpoints/tiny_camp.pt` (local, git-ignored).
+
+**Laya** (`training/laya_policy.py`, convaiinnovations/laya-typed-decisions, 421M ModernBERT, Apache-2.0):
+one typed `choice` question over the same 10 actions per turn. State = env description (what Qwen reads)
++ compact MAP section (nearest water/food, safehouse/zone distance, per-move blocked/next-to-zombie),
+~400 tokens (Laya context 1,024). Pipeline `tools/laya_dagger.sh`: zero-shot baseline, round 0 cloning
+(300 camp eps), rounds 1-3 DAgger (150 eps), waits subsampled to 1/3 of rows, `laya.train.finetune` from
+the base each round (3 epochs, fp16 AMP). Runs from `/tmp/23ucs715_laya` on the DGX (venv with
+transformers 4.57.6 over the zombiee env's torch 2.5.1; home quota is full). Queued 03:18: every GPU had
+26-32 GB in use (smoke fine-tune OOM'd at 5 GB free); waits for a GPU with >= 12 GB free.

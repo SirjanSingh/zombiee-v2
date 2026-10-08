@@ -19,7 +19,7 @@ def score(env) -> float:
     res = ep.extraction_result or {}
     ext = 0 in list(res.get("extracted", []))
     life = a0.death_step if a0.death_step is not None else ep.step_count
-    return 1.0 * ext + 0.1 * a0.is_alive + 0.002 * life
+    return 1.0 * ext + ALIVE_W * a0.is_alive + 0.002 * life
 
 
 def finish(env, obs, base, mate, rng):
@@ -65,6 +65,8 @@ def resample_hidden(ep, rng):
 
 
 FAIR = False
+import os
+ALIVE_W = float(os.environ.get("ALIVE_W", "0.1"))
 
 
 def choose(env, obs, base, mate, M, seed_key):
