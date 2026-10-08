@@ -71,7 +71,7 @@ EXTRACT_DETOUR = 2       # extra steps accepted to route around zombies on the r
 
 def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunger: int, thirst: int,
                       food, drink_at: int = 13, slack: Optional[int] = None,
-                      avoid=()) -> Optional[tuple]:
+                      avoid=(), water_detour: bool = False) -> Optional[tuple]:
     """Next move of a timed extraction run, or None while it is not yet time to leave.
 
     Leaves the safehouse when the turns left before the helicopter drop to
@@ -79,6 +79,11 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
     the safehouse), avoids cells next to zombies, then holds inside the zone,
     sidestepping zombies. `avoid` = extra cells to keep off (e.g. next to a
     known infected agent). Returns (action_type, kwargs).
+
+    water_detour (camp_v2): with no water carried, budget and take the run via
+    the water cell that minimises pos->water->zone. Plain camp often drinks its
+    last water around t56, cannot restock (zombies near the depots) and leaves
+    dry at t70; that is ~1/3 of its A0 deaths (thirst on the run).
     """
     if not zone:
         return None
@@ -109,18 +114,35 @@ def extraction_action(pos, step: int, zone, extraction_step: int, zs, inv, hunge
     out_of_water = thirst >= drink_at and nw == 0
     if slack is None:
         slack = EXTRACT_SLACK
-    if turns_left > d_est + slack and not out_of_water:
+    via = None                                # (route length, water cell) for the water detour
+    if water_detour and nw == 0 and pos not in WATER_CELLS:
+        for w in WATER_CELLS:
+            d1, _ = bfs(pos, {w}, set())
+            d2, _ = bfs(w, zone, set())
+            if d1 is not None and d2 is not None and (via is None or d1 + d2 < via[0]):
+                via = (d1 + d2, w)
+    budget = via[0] + 2 if via else d_est     # +2: pickup and drink at the depot
+    if turns_left > budget + slack and not out_of_water:
         return None
     if "food" in inv and hunger >= 6:     # the meal reserved for the run
         return "eat", {}
 
     # On the way: refuel when standing on a supply, detour for food/water when low.
-    if pos in WATER_CELLS and thirst >= 3 and zmin > 1:
-        return "drink", {}
+    if pos in WATER_CELLS and thirst >= 3 and (zmin > 1 or (water_detour and thirst >= 11 and zmin >= 1)):
+        return "drink", {}               # camp_v2: a zombie hit (1 of 3 HP) beats dying of thirst
     if pos in food and hunger >= 4 and zmin > 1:
         return "eat", {}
-    if pos in WATER_CELLS and nw < EXTRACT_STOCK and len(inv) < 3 and zmin > 2:
+    if pos in WATER_CELLS and nw < EXTRACT_STOCK and len(inv) < 3 and zmin > (1 if water_detour else 2):
         return "pickup", {"item_type": "water"}
+    if via and turns_left > via[0] + 1:
+        w = via[1]
+        d, m = bfs(pos, {w}, danger)
+        if m is None:
+            d, m = bfs(pos, {w}, set())
+            if m and (pos[0] + MOVES[m][0], pos[1] + MOVES[m][1]) in set(map(tuple, zs)):
+                m = None
+        if m:
+            return m, {}
     if hunger >= 9 and "food" not in inv and food:
         d, m = bfs(pos, set(food), danger)
         if m and d <= 3 and d + d_est <= turns_left:
@@ -237,7 +259,7 @@ def _me(obs: dict, agent_id: int) -> Optional[dict]:
 
 
 def camp_action(agent_id: int, obs: dict, rng=None, drink_at: int = 13, stock: int = 3,
-                zclear: int = 4, vote: bool = True) -> dict:
+                zclear: int = 4, vote: bool = True, water_detour: bool = False) -> dict:
     """Water-camp planner on public observations. Parameters match planner2.Camp defaults."""
     me = _me(obs, agent_id)
     A = lambda t, **k: {"agent_id": agent_id, "action_type": t, **k}  # noqa: E731
@@ -266,7 +288,7 @@ def camp_action(agent_id: int, obs: dict, rng=None, drink_at: int = 13, stock: i
     zone = meta.get("extraction_zone") or []
     if zone:
         ext = extraction_action(pos, s, zone, meta["extraction"]["extraction_step"], zs, inv,
-                                hunger, thirst, food, drink_at=drink_at)
+                                hunger, thirst, food, drink_at=drink_at, water_detour=water_detour)
         if ext is not None:
             return A(ext[0], **ext[1])
     if "extraction" in meta:          # extraction game: stay fed, leave a slot for food
@@ -311,8 +333,14 @@ def random_policy(agent_id: int, obs: dict, rng=None) -> dict:
     return random_action(agent_id, obs, rng=rng)
 
 
+def camp_v2_action(agent_id: int, obs: dict, rng=None) -> dict:
+    """camp + water detour on the extraction run (see extraction_action)."""
+    return camp_action(agent_id, obs, rng=rng, water_detour=True)
+
+
 POLICIES: dict[str, Policy] = {
     "camp": camp_action,
+    "camp_v2": camp_v2_action,
     "heuristic_v3": heuristic_v3_action,
     "random": random_policy,
 }

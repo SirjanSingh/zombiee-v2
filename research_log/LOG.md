@@ -774,3 +774,34 @@ One change: each round trains on all t>=30 rows + a 2,500-row sample of t<30 row
 near-duplicates), so SFT time stays flat. Script `~/rc2_k3_cont.sh`, log `logs/rc2_k3_cont.log`, GPU 2
 (shared with a 2 GB job, so the waiter's util cap went 25% -> 60%). Started 16:44 IST, ~3.5 h per round.
 Watch: `eat` appearing in A0's actions, A0 lifetime > 82, A0 extracted > 0.
+
+---
+
+## 2026-10-09 01:50 — Better teacher: camp's A0 dies on the extraction run; a fair lookahead beats it (manager)
+
+CPU, v3-rc2, A0 healthy, teammates `camp`, seeds `random.Random(999)`.
+
+**Where camp's A0 dies (200 eps):** 65 zombie_attack + 34 thirst, all on the extraction run (t70-88). Typical thirst
+death: drinks its last water ~t56, can't restock (zombies near the depots), leaves at t70 dry at thirst ~8.
+Departure slack sweep (10/15/20/25/30): 10 is best; leaving earlier trades zombie deaths for thirst/hunger.
+
+**camp_v2** (`training/policies.py`, `water_detour=True`): with no water, budget and route the run via the best
+water cell; at a water cell drink at thirst >= 11 even next to a zombie (a hit costs 1 of 3 HP). 200 eps:
+A0 extracted 18.5% (camp 17.5%), thirst deaths 34 -> 27 but zombie deaths 68 -> 85. Rules alone hit a ceiling.
+
+**Lookahead teacher** (`tools/probes/lookahead.py`): from t60, for each legal A0 action, play the rest of the
+episode M=4 times with camp_v2 (A0) + camp (teammates) on a deep copy and take the best mean score
+(1.0 extracted + 0.1 alive + 0.002 lifetime). `fair` redraws what A0 can't see in each rollout: episode_seed
+(drives hash-deterministic bites/cues/scans, and the zone before the t60 radio) and the infection of teammates
+not publicly seen biting.
+
+| A0 policy | N | A0 extracted | A0 alive at end | A0 deaths |
+|---|---|---|---|---|
+| camp | 200 | 17.5% | ~37% | zombie 68, thirst 34, hunger 12 |
+| camp_v2 | 200 | 18.5% | - | zombie 85, thirst 27, hunger 15 |
+| lookahead fair | 100 | **24%** | 62% | hunger 19, thirst 13, infection 6 |
+| lookahead unfair (sees hidden state) | 100 | 31% | 69% | hunger 20, thirst 6, infection 5 |
+
+Zombie deaths go to 0. Most survivors still miss the helicopter (62% alive, 24% out): the alive bonus likely makes
+it too cautious, and the camp_v2 continuation eats badly. +-4.3 pts SE at N=100: suggestive, not yet conclusive.
+Next: tune score/M, confirm on 300 seeds, then use it as the DAgger teacher. Cost ~12 s/episode on 11 CPU cores.
