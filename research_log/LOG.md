@@ -911,3 +911,13 @@ helicopter) but not the outcome: r5 final, 60 seeds 4321, A0 extracted 0% / life
 cloning, ~2 h) is at 13.5%. Recommendation: stop Qwen DAgger on camp labels here; the comparison video has Qwen r5
 as the "big LLM" entry. If Qwen gets another try it should be per-turn (K=1) with the same MAP state section Laya
 uses, to separate model size from interface.
+
+---
+
+## 2026-10-09 13:30 — Tiny CNN vs lookahead teacher, round 0 (DGX CPUs) (manager)
+
+Rerun on the DGX's 80 CPU cores (24 workers; the laptop run was reaped for low memory). Init from the camp-trained
+net (r5: 3% extracted, 20% alive), teacher `lookahead:60:4` (camp_v2 before t60). Round 0 clones the teacher's own
+rollouts: 17,103 states, train acc 93.9%, eval (200 seeds) **1.5% extracted, 8.5% alive, life 73.3** - worse than
+its camp-trained start, as expected when cloning only teacher-visited states (DAgger rounds 1-5 next). 917 s/round.
+Laya r1 (DAgger vs camp): 13.0% extracted / 33.5% alive / life 82.3, flat vs r0 13.5%; r2 fine-tune running on GPU 2.

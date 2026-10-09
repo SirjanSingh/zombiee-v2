@@ -1,0 +1,1 @@
+{"round": 0, "teacher": "lookahead:60:4", "n_states": 17103, "loss": 0.18368358135882062, "acc": 0.9394258317254283, "a0_extracted": 0.015, "a0_alive": 0.085, "a0_life": 73.35, "causes": {"hunger": 35, "zombie_attack": 66, "thirst": 70, "infection_progression": 8, "alive": 17, "infected_attack": 4}}
