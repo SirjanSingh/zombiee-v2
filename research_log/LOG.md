@@ -976,3 +976,22 @@ Laya plateaus at 12-13% from the first round; DAgger against camp adds nothing b
 ~2.4 pt SE). It matches camp on survival but not on the helicopter run. The lookahead teacher (30%) is the only
 route above camp found so far, but its raw labels did not transfer to the tiny CNN (see 14:30); denoise them
 before training Laya on them.
+
+---
+
+## 2026-10-10 01:50 — Lookahead-improved labels: great teacher, worse Laya (manager)
+
+**Labels** (`tools/probes/lookahead_labels.py`, DGX CPUs, 64 workers, 29 min): 600 episodes driven by camp_v2 with
+the lookahead overriding only when its best action beats camp_v2's own by > 0.05 (M=16 fair rollouts, from t55),
+5% random actions. 45,194 rows, 3,169 overrides (7%). The driving policy itself scored **31.8% A0 extracted, 43.8%
+alive** - the best public-information policy so far (camp 17.5% / ~37%). (A first try at 20% random actions killed
+A0 before t55 in most episodes; restarted at 5%.) Raw soft labels were abandoned: before ~t60 every action's value
+ties at ~0.1, so argmax/softmax labels there are rollout noise - the likely reason the tiny CNN learned nothing.
+
+**Laya** continued from `laya_r3` on these labels (waits subsampled, 2 epochs, lr 1.5e-5/6e-5): **6.0% A0
+extracted, 18% alive, life 70.2, hunger 91/200** (r3: 12.5% / 30% / 80.5, hunger 10). A regression, dominated by
+starvation. Not diagnosed yet. Suspects: (1) the new set has no DAgger rows from Laya's own states, so the
+continued fine-tune overwrote what r1-r3 taught about recovering from its own mistakes; (2) the eat decision: the
+override that most often fires is eat-vs-pickup, and camp_v2's eat timing plus subsampled waits may have shifted
+eating late. Next: mix these labels with the r0-r3 aggregate instead of replacing it, and check eat timing in
+replays. Data: `data/2026-10-09_laya_dagger.jsonl` (last row).
