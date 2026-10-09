@@ -952,3 +952,27 @@ on Laya. Data: `data/2026-10-09_tiny_lookahead.jsonl`.
 200 seeds: r0 13.5% / 34.5% alive, r1 13.0% / 33.5%, **r2 11.5% / 38.0% / life 82.5** (thirst 87, zombie 20).
 Within noise (SE ~2.4 pts) of each other and just under camp (17.5% / ~37%). Survival matches the teacher; the gap
 is the helicopter run. r3 started 15:18 on GPU 2.
+
+---
+
+## 2026-10-09 18:20 — Final: three students vs camp on v3-rc2 (manager)
+
+200 seeds `Random(999)`, A0 healthy, teammates camp. Teacher for all students: camp.
+
+| A0 policy | params | training | A0 extracted | A0 alive | A0 life | ms/decision |
+|---|---|---|---|---|---|---|
+| camp (teacher) | - | rules | 17.5% | ~37% | 82.0 | <1 |
+| **Laya r0** (cloning) | 421M | ~2 h V100 | **13.5%** | 34.5% | 82.2 | ~71 |
+| Laya r1 (DAgger) | 421M | | 13.0% | 33.5% | 82.3 | 68 |
+| Laya r2 | 421M | | 11.5% | **38.0%** | 82.5 | |
+| Laya r3 | 421M | ~11 h total | 12.5% | 30.0% | 80.5 | 53 |
+| tiny CNN r5 (DAgger) | 552k | ~1 h laptop CPU | 3% | 20% | 78.3 | ~1-2 |
+| Qwen 3B K=3 r5 (DAgger)* | 3B | ~25 h V100 | 0% | 0-7% | 77.5 | ~1000 |
+| Laya zero-shot (30 eps) | 421M | none | 0% | 0% | 24.0 | 59 |
+
+*Qwen numbers are its own eval (60 seeds 4321; camp on those seeds: 13%).
+
+Laya plateaus at 12-13% from the first round; DAgger against camp adds nothing beyond cloning (r0-r3 within the
+~2.4 pt SE). It matches camp on survival but not on the helicopter run. The lookahead teacher (30%) is the only
+route above camp found so far, but its raw labels did not transfer to the tiny CNN (see 14:30); denoise them
+before training Laya on them.
