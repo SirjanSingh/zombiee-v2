@@ -198,7 +198,8 @@ def rollout(seed: int, a0_policy, teacher=None, balance="v3-rc2", teammate="camp
         if aid == 0:
             label = None
             if teacher is not None:
-                t_act = teacher(0, obs, rng=rng)
+                t_act = (teacher(0, obs, rng=rng, env=env) if getattr(teacher, "uses_env", False)
+                         else teacher(0, obs, rng=rng))
                 label = action_label(t_act)
                 if label is not None:
                     g, s = featurize(obs)
@@ -214,6 +215,49 @@ def rollout(seed: int, a0_policy, teacher=None, balance="v3-rc2", teammate="camp
            "a0_alive": a0.is_alive, "life": a0.death_step if a0.death_step is not None else ep.step_count,
            "cause": a0.death_cause if not a0.is_alive else "alive"}
     return rec, data
+
+
+def make_teacher(name: str):
+    """A policy name, or `lookahead[:START[:M]]` = the fair rollout teacher (tools/probes/lookahead.py):
+    camp_v2 before t=START, from then on the best action over M belief-sampled rollouts each."""
+    if not name.startswith("lookahead"):
+        return get_policy(name)
+    import os
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools", "probes"))
+    import lookahead as LA
+    LA.FAIR, LA.ALIVE_W = True, 0.0
+    parts = name.split(":")
+    start = int(parts[1]) if len(parts) > 1 else 60
+    m = int(parts[2]) if len(parts) > 2 else 4
+    base, mate = get_policy("camp_v2"), get_policy("camp")
+
+    def teacher(agent_id, obs, rng=None, env=None):
+        if obs.get("step_count", 0) < start or env is None:
+            return base(agent_id, obs, rng=rng)
+        return LA.choose(env, obs, base, mate, m, f"teach|{obs['step_count']}|{rng.random() if rng else 0}")
+    teacher.uses_env = True
+    return teacher
+
+
+def _collect(job):
+    """Worker: one DAgger episode with the net (from a state_dict) acting and the teacher labelling."""
+    seed, state, width, teacher_name, beta, key, greedy = job
+    torch.set_num_threads(1)
+    net = TinyNet(width)
+    if state is not None:
+        net.load_state_dict(state)
+    net.eval()
+    teacher = make_teacher(teacher_name) if teacher_name else None
+    return rollout(seed, net_policy(net, greedy=greedy), teacher, beta=beta, rng_key=key)
+
+
+def run_parallel(jobs, workers: int):
+    if workers <= 1:
+        return [_collect(j) for j in jobs]
+    import multiprocessing as mp
+    with mp.get_context("spawn").Pool(workers) as pool:
+        return pool.map(_collect, jobs, chunksize=1)
 
 
 def train(net, data, epochs: int, lr: float = 1e-3, bs: int = 256, seed: int = 0):
@@ -264,6 +308,8 @@ def main(argv=None):
     p.add_argument("--out", default="checkpoints/tiny_camp.pt")
     p.add_argument("--eval", default=None, help="only evaluate this checkpoint")
     p.add_argument("--log", default=None, help="append a JSON line per round here")
+    p.add_argument("--workers", type=int, default=1, help="parallel rollout processes")
+    p.add_argument("--init", default=None, help="start from this checkpoint (e.g. the camp-trained net)")
     args = p.parse_args(argv)
     torch.manual_seed(0)
     n_threads = torch.get_num_threads()
@@ -280,25 +326,28 @@ def main(argv=None):
         dt = time.time() - t
         print(f"tiny ({n_params:,} params) eval N={len(recs)} seed {args.eval_seed}: {summarize(recs)}  ({dt:.0f}s)")
         return
-    teacher = get_policy(args.teacher)
     print(f"tiny net: {n_params:,} params; teacher {args.teacher}")
+    if args.init:
+        net.load_state_dict(torch.load(args.init))
     data: list = []
     rng = random.Random(4242)
     for r in range(args.rounds):
         t = time.time()
         beta = 1.0 if r == 0 else 0.0                 # round 0 = behaviour cloning on teacher rollouts
         net.eval()
-        new = []
-        for _ in range(args.eps_per_round):
-            _, d = rollout(rng.randint(0, 999999), net_policy(net, greedy=False), teacher, beta=beta, rng_key=f"r{r}")
-            new.extend(d)
+        state = {k: v.clone() for k, v in net.state_dict().items()}
+        jobs = [(rng.randint(0, 999999), state, args.width, args.teacher, beta, f"r{r}", False)
+                for _ in range(args.eps_per_round)]
+        new = [x for _, d in run_parallel(jobs, args.workers) for x in d]
         data.extend(new)
         net.train()
         torch.set_num_threads(n_threads)
         loss, acc = train(net, data, args.epochs, seed=r)
         torch.set_num_threads(1)
         net.eval()
-        recs = [rollout(s, net_policy(net))[0] for s in seeds_eval]
+        state = {k: v.clone() for k, v in net.state_dict().items()}
+        recs = [rec for rec, _ in run_parallel([(s, state, args.width, None, 0.0, "eval", True) for s in seeds_eval],
+                                               args.workers)]
         line = f"round {r}: +{len(new)} states (agg {len(data)}), loss {loss:.3f} acc {acc:.1%} | {summarize(recs)}  ({time.time() - t:.0f}s)"
         print(line, flush=True)
         if args.log:
