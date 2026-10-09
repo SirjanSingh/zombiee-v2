@@ -1,0 +1,8975 @@
+{
+ "date": "2026-10-09T12:00:31",
+ "git_sha": "367947e",
+ "experiment": "eval_v3",
+ "tag": "rc2-k3-r5-final",
+ "balance": "v3-rc2",
+ "teammates": "camp",
+ "a0_healthy": true,
+ "prefix_actions": 3,
+ "lora_path": "checkpoints/sft_rc2_k3_r5",
+ "mock_model": false,
+ "temperature": 0.0,
+ "n_eps": 60,
+ "seed": 4321,
+ "seeds": [
+  266632,
+  58523,
+  427313,
+  837427,
+  66623,
+  990521,
+  185555,
+  672240,
+  383178,
+  118991,
+  949152,
+  707155,
+  44459,
+  895725,
+  194931,
+  615019,
+  55602,
+  510129,
+  304922,
+  430689,
+  632114,
+  242871,
+  420650,
+  688833,
+  988568,
+  869075,
+  455232,
+  467325,
+  960785,
+  179155,
+  472036,
+  7062,
+  119457,
+  557659,
+  161555,
+  459167,
+  245635,
+  785922,
+  896632,
+  679460,
+  275526,
+  617276,
+  656180,
+  857211,
+  221058,
+  588651,
+  354008,
+  455735,
+  673543,
+  230291,
+  889111,
+  627630,
+  498775,
+  203857,
+  310674,
+  245547,
+  918331,
+  829951,
+  367221,
+  445151
+ ],
+ "results": {
+  "model(sft_rc2_k3_r5)": {
+   "metrics": {
+    "a0_survived": 0.0,
+    "a0_life": 77.48,
+    "team_survival": 0.3833,
+    "healthy_end": 0.467,
+    "ep_len": 84.97,
+    "parse_rate": 1.0,
+    "model_calls": 1590,
+    "extraction": 0.3,
+    "failed_flight": 0.0667,
+    "n_extracted": 0.317,
+    "a0_extracted": 0.0
+   },
+   "a0_outcome": {
+    "zombie_attack": 33,
+    "thirst": 22,
+    "alive": 3,
+    "infection_progression": 2
+   },
+   "a0_actions": {
+    "wait": 3035,
+    "drink": 306,
+    "move_down": 297,
+    "move_right": 289,
+    "move_left": 274,
+    "move_up": 243,
+    "pickup": 186,
+    "eat": 58,
+    "vote_lockout": 16
+   },
+   "episodes": [
+    {
+     "seed": 266632,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 77,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 5,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 77
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 58523,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 10,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 427313,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 9,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 837427,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 81
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 66623,
+     "T": 72,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 24,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 4,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 55
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 990521,
+     "T": 73,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 72
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 53
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 185555,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 75,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 75
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 672240,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 9,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 62
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 383178,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 62,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 21,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 42,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 62
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 118991,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 8,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 949152,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 4,
+      "drink": 6,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 87
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 707155,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 8,
+      "move_down": 9,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 88
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 56
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 44459,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 75,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 75
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 895725,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 75,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 75
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 194931,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 13,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 70
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 55
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 615019,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 13,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 55602,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 9,
+      "move_down": 6,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 510129,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 77
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 304922,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 7,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 85
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 430689,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 9,
+      "move_down": 8,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 632114,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 5,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 53
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 85
+      },
+      {
+       "agent": 4,
+       "cause": "infection_progression",
+       "step": 73
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 242871,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 72
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 420650,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 83
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 688833,
+     "T": 71,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 71,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 24,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 988568,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 68,
+     "a0_death_cause": "infection_progression",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 23,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 49,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "infection_progression",
+       "step": 68
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 53
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infection_progression",
+       "step": 64
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 869075,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 13,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 455232,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 12,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 467325,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 14,
+      "move_left": 7,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 6,
+      "move_down": 2,
+      "wait": 42,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 72
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 960785,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 12,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 79
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 79
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 179155,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 7,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 63
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 61
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 472036,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 75,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 2,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 75
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 86
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 56
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 7062,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 13,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 119457,
+     "T": 88,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 87
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 557659,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 61,
+     "a0_death_cause": "infection_progression",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 21,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 42,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "infection_progression",
+       "step": 61
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 61
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infection_progression",
+       "step": 64
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 161555,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 4,
+      "drink": 6,
+      "move_right": 4,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 459167,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 86,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 29,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 8,
+      "move_left": 6,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 8,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245635,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 11,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 785922,
+     "T": 87,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 7,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 86
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 896632,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 10,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 679460,
+     "T": 88,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 11,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 73
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 275526,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 73,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 2,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 73
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 81
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 58
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 617276,
+     "T": 80,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 8,
+      "move_down": 6,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infected_attack",
+       "step": 68
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 656180,
+     "T": 88,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 11,
+      "move_down": 7,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 69
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 85
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 857211,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 10,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 221058,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 73,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 6,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 73
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 74
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 588651,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 72
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 73
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 76
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 354008,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 11,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 62
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 455735,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 75,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 26,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 75
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 673543,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 11,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 230291,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 10,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 889111,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 11,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 81
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 78
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 88
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 627630,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 87
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 498775,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 7,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 203857,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 9,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 310674,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 12,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245547,
+     "T": 78,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 74,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 25,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 77
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 36
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 918331,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 14,
+      "move_down": 2,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 58
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 36
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 829951,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 27,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 2,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 86
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 88
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 367221,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 12,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 71
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 445151,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 28,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 13,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 32
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 69
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    }
+   ]
+  },
+  "camp": {
+   "metrics": {
+    "a0_survived": 0.2167,
+    "a0_life": 82.07,
+    "team_survival": 0.3833,
+    "healthy_end": 0.55,
+    "ep_len": 85.13,
+    "parse_rate": null,
+    "model_calls": 0,
+    "extraction": 0.2833,
+    "failed_flight": 0.0667,
+    "n_extracted": 0.417,
+    "a0_extracted": 0.1333
+   },
+   "a0_outcome": {
+    "zombie_attack": 23,
+    "alive": 20,
+    "thirst": 14,
+    "infection_progression": 1,
+    "hunger": 2
+   },
+   "a0_actions": {
+    "wait": 2993,
+    "move_down": 358,
+    "move_right": 353,
+    "drink": 335,
+    "move_up": 312,
+    "move_left": 308,
+    "pickup": 210,
+    "eat": 73,
+    "vote_lockout": 21
+   },
+   "episodes": [
+    {
+     "seed": 266632,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 5,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 58523,
+     "T": 72,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 4,
+      "wait": 49,
+      "eat": 1,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 427313,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 8,
+      "move_down": 7,
+      "wait": 49,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 837427,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 8,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 3,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 66623,
+     "T": 72,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 55
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 990521,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 4,
+      "wait": 54,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 61
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 79
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 74
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 53
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 185555,
+     "T": 88,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 4,
+      "wait": 54,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 81
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 672240,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 7,
+      "move_left": 6,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 12,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 62
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": true,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 383178,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 7,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 3,
+      "move_down": 10,
+      "wait": 54,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 83
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": true,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 118991,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 5,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 949152,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 8,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 3,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 79
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 707155,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 11,
+      "move_down": 12,
+      "wait": 45,
+      "vote_lockout": 2,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 56
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": true,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 44459,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 7,
+      "wait": 51,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 895725,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 79,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 51,
+      "eat": 1,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 194931,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 84,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 8,
+      "pickup": 6,
+      "drink": 7,
+      "move_right": 4,
+      "move_down": 9,
+      "wait": 44,
+      "vote_lockout": 1,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 70
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 55
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 615019,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 9,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 80
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 55602,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 7,
+      "wait": 49,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 510129,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 3,
+      "wait": 55,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 78
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 304922,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 9,
+      "pickup": 4,
+      "drink": 7,
+      "move_right": 5,
+      "move_down": 12,
+      "wait": 46,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 79
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 85
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": true,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 430689,
+     "T": 87,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 4,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 8,
+      "move_down": 7,
+      "wait": 49,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 86
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 632114,
+     "T": 71,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 71,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 6,
+      "wait": 44,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 53
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 242871,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 72
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 420650,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 7,
+      "move_left": 10,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 10,
+      "wait": 39,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 79
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 87
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 688833,
+     "T": 71,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 71,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 51,
+      "eat": 1,
+      "vote_lockout": 1
+     },
+     "deaths": [],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 988568,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 68,
+     "a0_death_cause": "infection_progression",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 49,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "infection_progression",
+       "step": 68
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 53
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infection_progression",
+       "step": 64
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 869075,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 4,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 455232,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 7,
+      "move_down": 2,
+      "wait": 54,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 467325,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 11,
+      "move_left": 6,
+      "pickup": 4,
+      "drink": 7,
+      "move_right": 12,
+      "move_down": 6,
+      "wait": 42,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 85
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 960785,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 88,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 5,
+      "move_down": 11,
+      "wait": 52,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 88
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 84
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 179155,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 5,
+      "wait": 50,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 63
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 61
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 472036,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 9,
+      "move_down": 5,
+      "wait": 49,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 56
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 7062,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 8,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 4,
+      "move_down": 12,
+      "wait": 47,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 81
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 86
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": true,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 119457,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 4,
+      "wait": 52,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 83
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 557659,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 60,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 2,
+      "wait": 40,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 60
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 61
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infection_progression",
+       "step": 64
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 161555,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 8,
+      "move_down": 3,
+      "wait": 53,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 85
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 459167,
+     "T": 86,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 85,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 6,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 12,
+      "move_down": 4,
+      "wait": 42,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 85
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245635,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 4,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 785922,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 9,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 4,
+      "move_down": 7,
+      "wait": 43,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 86
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 896632,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 88,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 5,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 10,
+      "move_down": 12,
+      "wait": 43,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 77
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 679460,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 88,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 10,
+      "move_down": 11,
+      "wait": 45,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 87
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 73
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 275526,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 77,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 3,
+      "wait": 50,
+      "vote_lockout": 2,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 77
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 77
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 58
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 617276,
+     "T": 87,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 87,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 9,
+      "move_down": 10,
+      "wait": 52,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infected_attack",
+       "step": 68
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 656180,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 3,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 9,
+      "move_down": 11,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 69
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 3,
+     "a0_extracted": true,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 857211,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 7,
+      "wait": 54,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 221058,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 8,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 6,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 74
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 588651,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 10,
+      "move_down": 5,
+      "wait": 52,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 33
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 74
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 354008,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 7,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 8,
+      "move_down": 4,
+      "wait": 51,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 62
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 455735,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 89,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 10,
+      "move_left": 10,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 6,
+      "move_down": 5,
+      "wait": 44,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 77
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 673543,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 3,
+      "move_left": 6,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 9,
+      "move_down": 10,
+      "wait": 49,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 230291,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 7,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 7,
+      "move_down": 3,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 889111,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 11,
+      "move_left": 10,
+      "pickup": 5,
+      "drink": 7,
+      "move_right": 6,
+      "move_down": 5,
+      "wait": 44,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 79
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 627630,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 2,
+      "move_left": 7,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 3,
+      "move_down": 9,
+      "wait": 57,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 74
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 87
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": true,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 498775,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 5,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 203857,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 6,
+      "move_left": 5,
+      "pickup": 5,
+      "drink": 6,
+      "move_right": 12,
+      "move_down": 13,
+      "wait": 41,
+      "eat": 2
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 86
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 86
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": true,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 310674,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 76,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 4,
+      "move_down": 2,
+      "wait": 54,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245547,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 3,
+      "move_down": 8,
+      "wait": 51,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 71
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 36
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 918331,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 9,
+      "move_left": 3,
+      "pickup": 3,
+      "drink": 5,
+      "move_right": 6,
+      "move_down": 3,
+      "wait": 53,
+      "vote_lockout": 1,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 58
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 36
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 829951,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 5,
+      "move_left": 5,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 3,
+      "move_down": 3,
+      "wait": 55,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "infected_attack",
+       "step": 75
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 367221,
+     "T": 82,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 81,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 3,
+      "drink": 6,
+      "move_right": 4,
+      "move_down": 3,
+      "wait": 55,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 81
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 71
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 445151,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 86,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "move_up": 4,
+      "move_left": 6,
+      "pickup": 4,
+      "drink": 7,
+      "move_right": 3,
+      "move_down": 9,
+      "wait": 53,
+      "eat": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 32
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 69
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    }
+   ]
+  },
+  "heuristic_v3": {
+   "metrics": {
+    "a0_survived": 0.0167,
+    "a0_life": 56.18,
+    "team_survival": 0.5833,
+    "healthy_end": 0.75,
+    "ep_len": 84.33,
+    "parse_rate": null,
+    "model_calls": 0,
+    "extraction": 0.3667,
+    "failed_flight": 0.0833,
+    "n_extracted": 0.467,
+    "a0_extracted": 0.0
+   },
+   "a0_outcome": {
+    "hunger": 22,
+    "thirst": 29,
+    "zombie_attack": 7,
+    "alive": 2
+   },
+   "a0_actions": {
+    "wait": 860,
+    "move_up": 611,
+    "move_down": 556,
+    "move_left": 497,
+    "move_right": 391,
+    "drink": 247,
+    "eat": 175,
+    "vote_lockout": 92
+   },
+   "episodes": [
+    {
+     "seed": 266632,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 48,
+     "a0_death_cause": "hunger",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 12,
+      "move_left": 6,
+      "move_up": 7,
+      "drink": 6,
+      "move_right": 4,
+      "eat": 2,
+      "move_down": 11,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 48
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 58523,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 62,
+     "a0_death_cause": "hunger",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 6,
+      "move_up": 11,
+      "drink": 5,
+      "move_right": 12,
+      "eat": 3,
+      "move_down": 8,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 62
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 427313,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 85,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 10,
+      "move_up": 12,
+      "drink": 7,
+      "move_right": 16,
+      "eat": 5,
+      "move_down": 17,
+      "vote_lockout": 3
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 85
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 837427,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 63,
+     "a0_death_cause": "hunger",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 9,
+      "move_up": 12,
+      "drink": 5,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 78
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 66623,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 60,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 20,
+      "move_left": 8,
+      "move_up": 6,
+      "drink": 3,
+      "move_right": 7,
+      "eat": 4,
+      "move_down": 11,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 60
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 57
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 990521,
+     "T": 74,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 60,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 8,
+      "move_up": 13,
+      "drink": 3,
+      "move_right": 7,
+      "eat": 4,
+      "move_down": 9,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 60
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 25
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 185555,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 52,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 22,
+      "move_left": 6,
+      "move_up": 6,
+      "drink": 3,
+      "move_right": 6,
+      "eat": 2,
+      "move_down": 6,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 52
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 62
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 62
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 74
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 672240,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 73,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 19,
+      "move_left": 10,
+      "move_up": 16,
+      "drink": 4,
+      "move_right": 8,
+      "eat": 4,
+      "move_down": 11,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 73
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 69
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 53
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 383178,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 38,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 4,
+      "move_up": 5,
+      "drink": 6,
+      "move_right": 2,
+      "eat": 1,
+      "move_down": 8
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 38
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "infected_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 118991,
+     "T": 71,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 63,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 9,
+      "move_up": 12,
+      "drink": 5,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 71
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 55
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 70
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 949152,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 8,
+      "move_up": 9,
+      "drink": 2,
+      "move_right": 4,
+      "eat": 2,
+      "move_down": 6,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 707155,
+     "T": 74,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 73
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 73
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 44459,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 82,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 21,
+      "move_left": 7,
+      "move_up": 17,
+      "drink": 5,
+      "move_right": 14,
+      "eat": 6,
+      "move_down": 12,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 895725,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 88
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 85
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 194931,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 64
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 615019,
+     "T": 86,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 38,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 4,
+      "move_up": 5,
+      "drink": 6,
+      "move_right": 2,
+      "eat": 1,
+      "move_down": 8
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 38
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 60
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 85
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 61
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 55602,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 88
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 510129,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 68,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 8,
+      "move_left": 14,
+      "move_up": 12,
+      "drink": 5,
+      "move_right": 12,
+      "eat": 5,
+      "move_down": 11,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 68
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 72
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 78
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 304922,
+     "T": 71,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 63,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 9,
+      "move_up": 12,
+      "drink": 5,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 63
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 67
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 56
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 70
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 430689,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 46,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 10,
+      "move_left": 6,
+      "move_up": 7,
+      "drink": 4,
+      "move_right": 5,
+      "eat": 3,
+      "move_down": 11,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 46
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 632114,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 83,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 9,
+      "move_up": 14,
+      "drink": 11,
+      "move_right": 13,
+      "eat": 4,
+      "move_down": 18,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 83
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 242871,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 38,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 4,
+      "move_up": 5,
+      "drink": 6,
+      "move_right": 2,
+      "eat": 1,
+      "move_down": 8
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 38
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 65
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 420650,
+     "T": 73,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 72,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 12,
+      "move_left": 11,
+      "move_up": 11,
+      "drink": 9,
+      "move_right": 9,
+      "eat": 4,
+      "move_down": 15,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 72
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 59
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 45
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 25
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 688833,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 80,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 14,
+      "move_up": 15,
+      "drink": 5,
+      "move_right": 13,
+      "eat": 5,
+      "move_down": 10,
+      "vote_lockout": 3
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 89
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 988568,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 54,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 10,
+      "move_left": 9,
+      "move_up": 9,
+      "drink": 5,
+      "move_right": 9,
+      "eat": 3,
+      "move_down": 8,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 54
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 869075,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 7,
+      "drink": 2,
+      "move_right": 2,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 81
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 455232,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 60
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 76
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 467325,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 48,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 12,
+      "move_left": 6,
+      "move_up": 7,
+      "drink": 6,
+      "move_right": 4,
+      "eat": 2,
+      "move_down": 11,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 48
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 86
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 960785,
+     "T": 77,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 7,
+      "move_up": 7,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 9,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 57
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 45
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 179155,
+     "T": 89,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 68,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 12,
+      "move_up": 13,
+      "drink": 4,
+      "move_right": 8,
+      "eat": 4,
+      "move_down": 11,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 68
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 88
+      },
+      {
+       "agent": 3,
+       "cause": "infection_progression",
+       "step": 62
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 55
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 472036,
+     "T": 66,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 65,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 19,
+      "move_left": 11,
+      "move_up": 9,
+      "drink": 4,
+      "move_right": 8,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 65
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 64
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 53
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 54
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 7062,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 87,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 10,
+      "move_left": 22,
+      "move_up": 9,
+      "drink": 7,
+      "move_right": 17,
+      "eat": 5,
+      "move_down": 15,
+      "vote_lockout": 3
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 87
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 74
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 119457,
+     "T": 47,
+     "reached_max": false,
+     "a0_alive_end": true,
+     "a0_survived": false,
+     "a0_life": 47,
+     "a0_death_cause": null,
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 6,
+      "move_left": 8,
+      "move_up": 8,
+      "drink": 4,
+      "move_right": 10,
+      "eat": 3,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": null
+    },
+    {
+     "seed": 557659,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 161555,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 38,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 4,
+      "move_up": 5,
+      "drink": 6,
+      "move_right": 2,
+      "eat": 1,
+      "move_down": 8
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 38
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 63
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 459167,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 78,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 19,
+      "move_left": 9,
+      "move_up": 17,
+      "drink": 4,
+      "move_right": 12,
+      "eat": 4,
+      "move_down": 11,
+      "vote_lockout": 3
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 78
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245635,
+     "T": 81,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 48,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 12,
+      "move_left": 6,
+      "move_up": 7,
+      "drink": 6,
+      "move_right": 4,
+      "eat": 2,
+      "move_down": 11,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 48
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 79
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 785922,
+     "T": 74,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 58,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 8,
+      "move_up": 13,
+      "drink": 3,
+      "move_right": 7,
+      "eat": 4,
+      "move_down": 9,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 58
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 896632,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": true,
+     "a0_survived": true,
+     "a0_life": 90,
+     "a0_death_cause": null,
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 14,
+      "move_up": 14,
+      "drink": 9,
+      "move_right": 16,
+      "eat": 5,
+      "move_down": 13,
+      "vote_lockout": 3
+     },
+     "deaths": [
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 89
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 77
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 679460,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 68
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 86
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 275526,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 69,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 20,
+      "move_left": 8,
+      "move_up": 15,
+      "drink": 3,
+      "move_right": 7,
+      "eat": 4,
+      "move_down": 11,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 69
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 70
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 86
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 617276,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 52,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 11,
+      "move_left": 8,
+      "move_up": 10,
+      "drink": 4,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 8,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 52
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 80
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 656180,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 68,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 11,
+      "move_left": 10,
+      "move_up": 14,
+      "drink": 4,
+      "move_right": 9,
+      "eat": 6,
+      "move_down": 13,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 68
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 857211,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 48,
+     "a0_death_cause": "hunger",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 8,
+      "move_up": 8,
+      "drink": 4,
+      "move_right": 6,
+      "eat": 2,
+      "move_down": 4,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 48
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 221058,
+     "T": 79,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 64,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 21,
+      "move_left": 9,
+      "move_up": 9,
+      "drink": 3,
+      "move_right": 9,
+      "eat": 3,
+      "move_down": 9,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 64
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 78
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 25
+      },
+      {
+       "agent": 4,
+       "cause": "hunger",
+       "step": 77
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 588651,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 52,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 9,
+      "move_left": 10,
+      "move_up": 8,
+      "drink": 8,
+      "move_right": 8,
+      "eat": 3,
+      "move_down": 5,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 52
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 76
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 354008,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 71
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 455735,
+     "T": 83,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 38,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 6,
+      "move_up": 7,
+      "drink": 2,
+      "move_right": 2,
+      "eat": 1,
+      "move_down": 6,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 38
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "thirst",
+       "step": 80
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 82
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 673543,
+     "T": 67,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 66
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 66
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 230291,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 52,
+     "a0_death_cause": "hunger",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 7,
+      "move_up": 11,
+      "drink": 4,
+      "move_right": 5,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 52
+      },
+      {
+       "agent": 2,
+       "cause": "thirst",
+       "step": 82
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 78
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 889111,
+     "T": 66,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 65,
+     "a0_death_cause": "hunger",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 17,
+      "move_left": 9,
+      "move_up": 13,
+      "drink": 5,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 10,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "hunger",
+       "step": 65
+      },
+      {
+       "agent": 1,
+       "cause": "infection_progression",
+       "step": 57
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 35
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 25
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 627630,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 52,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 10,
+      "move_left": 9,
+      "move_up": 12,
+      "drink": 3,
+      "move_right": 7,
+      "eat": 3,
+      "move_down": 7,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 52
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 57
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 498775,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 13,
+      "move_left": 7,
+      "move_up": 6,
+      "drink": 2,
+      "move_right": 2,
+      "eat": 3,
+      "move_down": 12,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": false,
+     "failed_flight": true,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 203857,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 60
+      },
+      {
+       "agent": 2,
+       "cause": "hunger",
+       "step": 65
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SE"
+    },
+    {
+     "seed": 310674,
+     "T": 84,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 7,
+      "move_up": 8,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 8,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "thirst",
+       "step": 83
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "thirst",
+       "step": 80
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 245547,
+     "T": 61,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 60,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 16,
+      "move_left": 10,
+      "move_up": 11,
+      "drink": 4,
+      "move_right": 6,
+      "eat": 3,
+      "move_down": 9,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 60
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 57
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 918331,
+     "T": 85,
+     "reached_max": false,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 58,
+     "a0_death_cause": "thirst",
+     "healthy_end": 0,
+     "survived": false,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 12,
+      "drink": 3,
+      "move_right": 10,
+      "eat": 3,
+      "move_down": 8,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 58
+      },
+      {
+       "agent": 1,
+       "cause": "zombie_attack",
+       "step": 83
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 84
+      }
+     ],
+     "extracted": false,
+     "failed_flight": false,
+     "n_extracted": 0,
+     "a0_extracted": false,
+     "extraction_zone": "NE"
+    },
+    {
+     "seed": 829951,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 7,
+      "move_up": 10,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    },
+    {
+     "seed": 367221,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 45,
+     "a0_death_cause": "thirst",
+     "healthy_end": 2,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 15,
+      "move_left": 7,
+      "move_up": 9,
+      "drink": 2,
+      "move_right": 3,
+      "eat": 2,
+      "move_down": 7,
+      "vote_lockout": 1
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "thirst",
+       "step": 45
+      },
+      {
+       "agent": 3,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 4,
+       "cause": "zombie_attack",
+       "step": 74
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 2,
+     "a0_extracted": false,
+     "extraction_zone": "SW"
+    },
+    {
+     "seed": 445151,
+     "T": 90,
+     "reached_max": true,
+     "a0_alive_end": false,
+     "a0_survived": false,
+     "a0_life": 73,
+     "a0_death_cause": "zombie_attack",
+     "healthy_end": 1,
+     "survived": true,
+     "model_calls": 0,
+     "parse_fail": 0,
+     "a0_actions": {
+      "wait": 14,
+      "move_left": 13,
+      "move_up": 16,
+      "drink": 5,
+      "move_right": 8,
+      "eat": 4,
+      "move_down": 12,
+      "vote_lockout": 2
+     },
+     "deaths": [
+      {
+       "agent": 0,
+       "cause": "zombie_attack",
+       "step": 73
+      },
+      {
+       "agent": 1,
+       "cause": "hunger",
+       "step": 17
+      },
+      {
+       "agent": 2,
+       "cause": "zombie_attack",
+       "step": 84
+      },
+      {
+       "agent": 3,
+       "cause": "zombie_attack",
+       "step": 80
+      }
+     ],
+     "extracted": true,
+     "failed_flight": false,
+     "n_extracted": 1,
+     "a0_extracted": false,
+     "extraction_zone": "NW"
+    }
+   ]
+  }
+ }
+}

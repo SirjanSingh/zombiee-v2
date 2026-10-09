@@ -862,3 +862,52 @@ nearest supplies) that the CNN must infer from pixels and Qwen from coordinates,
 a calibrated proper-scoring loss. Remaining failure is thirst (92/200). DAgger round 1 (12,481 new states from
 Laya's own rollouts, 22,214 train items) started 10:03 on GPU 3.
 Data: `data/2026-10-09_laya_dagger.jsonl`.
+
+---
+
+## 2026-10-08 23:28 — eval `rc2-k3-r4` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `367947e`; 199 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r4) | 27% | 0% | 7% | 0% | 77.8 | 43% | 0.57 | 100% | zombie_attack 23, thirst 7 |
+
+Data: `data/2026-10-08_eval_rc2-k3-r4.json`.
+
+---
+
+## 2026-10-09 11:47 — eval `rc2-k3-r5` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 30 seeds for every row; A0 healthy = True; git `367947e`; 397 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r5) | 27% | 0% | 13% | 0% | 78.2 | 43% | 0.50 | 100% | thirst 12, zombie_attack 16, alive 2 |
+
+Data: `data/2026-10-09_eval_rc2-k3-r5.json`.
+
+---
+
+## 2026-10-09 12:00 — eval `rc2-k3-r5-final` (closed loop, balance `v3-rc2`)
+
+A0 driven by each policy for the whole episode (model re-plans every 3 A0 turns); A1-A4 = `camp`; same 60 seeds for every row; A0 healthy = True; git `367947e`; 798 s.
+
+| A0 policy | extraction | A0 extracted | failed flight | A0 survives to end | A0 lifetime | team survival | healthy at end | parse | A0 outcome |
+|---|---|---|---|---|---|---|---|---|---|
+| model(sft_rc2_k3_r5) | 30% | 0% | 7% | 0% | 77.5 | 38% | 0.47 | 100% | zombie_attack 33, thirst 22, alive 3, infection_progression 2 |
+| camp | 28% | 13% | 7% | 22% | 82.1 | 38% | 0.55 | - | zombie_attack 23, alive 20, thirst 14, infection_progression 1, hunger 2 |
+| heuristic_v3 | 37% | 0% | 8% | 2% | 56.2 | 58% | 0.75 | - | hunger 22, thirst 29, zombie_attack 7, alive 2 |
+
+Data: `data/2026-10-09_eval_rc2-k3-r5-final.json`.
+
+---
+
+## 2026-10-09 12:30 — Qwen K=3 DAgger r4-r5: flat at 0% A0 extracted; Laya (421M) is far ahead (manager)
+
+Rounds 4-5 (late-game rows up-weighted, see 2026-10-08 16:45) changed Qwen's behaviour (it eats, leaves for the
+helicopter) but not the outcome: r5 final, 60 seeds 4321, A0 extracted 0% / lifetime 77.5 / zombie 33, thirst 22
+(camp on the same seeds: 13% / 82.1). Each round costs ~4-5 h of shared V100. On the 200-seed table Laya r0 (pure
+cloning, ~2 h) is at 13.5%. Recommendation: stop Qwen DAgger on camp labels here; the comparison video has Qwen r5
+as the "big LLM" entry. If Qwen gets another try it should be per-turn (K=1) with the same MAP state section Laya
+uses, to separate model size from interface.
