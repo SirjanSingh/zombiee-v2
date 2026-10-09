@@ -921,3 +921,26 @@ net (r5: 3% extracted, 20% alive), teacher `lookahead:60:4` (camp_v2 before t60)
 rollouts: 17,103 states, train acc 93.9%, eval (200 seeds) **1.5% extracted, 8.5% alive, life 73.3** - worse than
 its camp-trained start, as expected when cloning only teacher-visited states (DAgger rounds 1-5 next). 917 s/round.
 Laya r1 (DAgger vs camp): 13.0% extracted / 33.5% alive / life 82.3, flat vs r0 13.5%; r2 fine-tune running on GPU 2.
+
+---
+
+## 2026-10-09 14:30 — Tiny CNN fails to learn from the lookahead teacher (manager)
+
+Rerun after the worker fix (20d826c), DGX CPUs, ~4-5 min/round, init from the camp-trained net. 200 eval seeds:
+
+| round | states | train acc | A0 extracted | A0 alive | life | hunger deaths |
+|---|---|---|---|---|---|---|
+| 0 | 17,103 | 93.9% | 1.5% | 8.5% | 73.3 | 35 |
+| 1 | 31,364 | 98.6% | 0% | 6.5% | 72.5 | 36 |
+| 2 | 45,709 | 98.9% | 0.5% | 8% | 73.8 | 30 |
+| 3 | 60,249 | 99.1% | 0% | 5.5% | 73.5 | 37 |
+| 4 | 75,324 | 99.1% | 0% | 8.5% | 76.0 | 36 |
+| 5 | 90,366 | 99.0% | 0.5% | 8% | 75.7 | 44 |
+
+Worse than the same net taught by camp (r5: 3% / 20% alive / 78.3) and flat across DAgger. Train accuracy 99% with
+no eval gain = it memorises labels that don't form a learnable policy. Likely: the lookahead's choice depends on
+4 noisy rollouts (similar states get different labels from call to call), and its advantage is reacting to exact
+zombie positions by simulation, which a reactive net can't reproduce from one frame. Hunger deaths roughly tripled
+(camp_v2 continuation eats badly; the net copies that). Not a dead end for the teacher: next try (proposal) is
+denoising labels (M=16, or label with the lookahead's action *distribution* as a soft target) before spending it
+on Laya. Data: `data/2026-10-09_tiny_lookahead.jsonl`.
