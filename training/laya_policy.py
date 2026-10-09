@@ -136,6 +136,7 @@ def rollout(seed: int, a0_policy, teacher=None, teammate: str = "camp", balance:
     mate = get_policy(teammate)
     rng = random.Random(f"laya|{seed}")
     rows = []
+    a0_log = []
     while not obs.get("done"):
         aid = obs["metadata"]["current_agent_id"]
         if aid == 0:
@@ -144,6 +145,7 @@ def rollout(seed: int, a0_policy, teacher=None, teammate: str = "camp", balance:
                 if lab is not None:
                     rows.append(row(obs, lab))
             act = a0_policy(0, obs, rng=rng)
+            a0_log.append(act)
         else:
             act = mate(aid, obs, rng=rng)
         obs = env.step(act)
@@ -152,7 +154,7 @@ def rollout(seed: int, a0_policy, teacher=None, teammate: str = "camp", balance:
     res = ep.extraction_result or {}
     rec = {"seed": seed, "a0_ext": 0 in list(res.get("extracted", [])), "team": bool(res.get("success")),
            "a0_alive": a0.is_alive, "life": a0.death_step if a0.death_step is not None else ep.step_count,
-           "cause": a0.death_cause if not a0.is_alive else "alive"}
+           "cause": a0.death_cause if not a0.is_alive else "alive", "a0_actions": a0_log}
     return rec, rows
 
 
@@ -170,7 +172,7 @@ def seeds(n: int, seed: int) -> list[int]:
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("cmd", choices=["rows", "eval", "show"])
+    p.add_argument("cmd", choices=["rows", "eval", "show", "record"])
     p.add_argument("--teacher", default="camp")
     p.add_argument("--student", default=None, help="Laya checkpoint; omit in `rows` to roll out the teacher")
     p.add_argument("--episodes", type=int, default=300)
@@ -207,8 +209,21 @@ def main(argv=None):
               f" -> {args.out}; rollout policy {summarize(recs)} ({time.time() - t:.0f}s)")
         return
 
+    if args.cmd == "record":     # Laya plays; A0 actions saved so CPU workers can replay + label exactly
+        t = time.time()
+        recs = []
+        with open(args.out, "w", encoding="utf-8") as f:
+            for s in seeds(args.episodes, args.seed):
+                rec, _ = rollout(s, student)
+                recs.append(rec)
+                f.write(json.dumps(rec) + "\n")
+        print(f"record: {len(recs)} episodes -> {args.out}; {summarize(recs)} ({time.time() - t:.0f}s)")
+        return
+
     t = time.time()
     recs = [rollout(s, student)[0] for s in seeds(args.n_eval, args.eval_seed)]
+    for r in recs:
+        r.pop("a0_actions", None)
     out = summarize(recs)
     out.update({"student": args.student, "eval_seed": args.eval_seed,
                 "ms_per_decision": round(1000 * student.secs / max(1, student.calls), 1)})

@@ -16,7 +16,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 
 def episode(args):
-    seed, m, start, eps, tau, delta = args
+    seed, m, start, eps, tau, delta = args[:6]
+    replay = args[6] if len(args) > 6 else None     # recorded A0 actions: follow them, only label
     import lookahead as LA
     LA.FAIR, LA.ALIVE_W = True, 0.0
     from survivecity_v2_env.balance import get_balance
@@ -27,8 +28,10 @@ def episode(args):
     base, mate = get_policy("camp_v2"), get_policy("camp")
     env = SurviveCityV2Env(balance=get_balance("v3-rc2"), a0_healthy=True)
     obs = env.reset(seed=seed)
-    rng = random.Random(f"lal|{seed}")
+    rng = random.Random(f"laya|{seed}" if replay is not None else f"lal|{seed}")   # replay: same mate rng as the recording
+    lrng = random.Random(f"lal-label|{seed}")
     rows = []
+    turn = 0
     while not obs.get("done"):
         aid = obs["metadata"]["current_agent_id"]
         if aid != 0:
@@ -36,14 +39,14 @@ def episode(args):
             continue
         t = obs["step_count"]
         if t < start:
-            teach = base(0, obs, rng=rng)
+            teach = base(0, obs, rng=lrng)
             lab = action_label(teach)
             if lab is not None:
                 rows.append({"state": state_text(obs), "questions": QUESTION, "expected": {QID: ACTIONS[lab]}, "t": t})
         else:
             vals = LA.action_values(env, obs, base, mate, m, f"lal|{seed}|{t}")
             vmap = {ACTIONS[action_label({"action_type": a, **k})]: v for a, k, v in vals}
-            b = base(0, obs, rng=rng)
+            b = base(0, obs, rng=lrng)
             b_lab = action_label(b)
             best = max(vals, key=lambda x: x[2])
             best_lab = ACTIONS[action_label({"action_type": best[0], **best[1]})]
@@ -53,9 +56,12 @@ def episode(args):
             rows.append({"state": state_text(obs), "questions": QUESTION, "expected": {QID: label}, "t": t,
                          "override": override, "base": b_name, "values": {k: round(v, 4) for k, v in vmap.items()}})
             teach = to_action(ACTIONS.index(label), obs)
-        if rng.random() < eps:
+        if replay is not None:
+            act = dict(replay[turn]) if turn < len(replay) else {"agent_id": 0, "action_type": "wait"}
+            turn += 1
+        elif lrng.random() < eps:
             mask = legal_mask(obs)
-            act = to_action(rng.choice([i for i in range(len(ACTIONS)) if mask[i]]), obs)
+            act = to_action(lrng.choice([i for i in range(len(ACTIONS)) if mask[i]]), obs)
         else:
             act = teach
         obs = env.step(act)
@@ -70,10 +76,15 @@ if __name__ == "__main__":
     p.add_argument("--m", type=int, default=16); p.add_argument("--start", type=int, default=55)
     p.add_argument("--eps", type=float, default=0.2); p.add_argument("--tau", type=float, default=0.05)
     p.add_argument("--delta", type=float, default=0.05)
-    p.add_argument("--workers", type=int, default=60); p.add_argument("--seed", type=int, default=7070)
+    p.add_argument("--workers", type=int, default=60)
+    p.add_argument("--replay", default=None, help="JSONL from `laya_policy record`: label those episodes"); p.add_argument("--seed", type=int, default=7070)
     a = p.parse_args()
     r = random.Random(a.seed)
-    jobs = [(r.randint(0, 999999), a.m, a.start, a.eps, a.tau, a.delta) for _ in range(a.n)]
+    if a.replay:
+        recs_in = [json.loads(l) for l in open(a.replay)]
+        jobs = [(x["seed"], a.m, a.start, 0.0, a.tau, a.delta, x["a0_actions"]) for x in recs_in][:a.n]
+    else:
+        jobs = [(r.randint(0, 999999), a.m, a.start, a.eps, a.tau, a.delta) for _ in range(a.n)]
     t0 = time.time(); n_rows = n_soft = 0; recs = []
     with mp.get_context("spawn").Pool(a.workers) as pool, open(a.out, "w", encoding="utf-8") as f:
         for i, (rows, rec) in enumerate(pool.imap_unordered(episode, jobs), 1):
@@ -83,5 +94,5 @@ if __name__ == "__main__":
                 n_rows += 1; n_soft += bool(row.get("override"))
             if i % 25 == 0:
                 print(f"{i}/{a.n} episodes, {n_rows} rows ({n_soft} overrides), {time.time()-t0:.0f}s", flush=True)
-    print(f"done: {n_rows} rows ({n_soft} overrides) from {a.n} episodes; driver A0 extracted "
+    print(f"done: {n_rows} rows ({n_soft} overrides) from {len(jobs)} episodes; driver A0 extracted "
           f"{sum(x['a0_ext'] for x in recs)/len(recs):.1%} alive {sum(x['alive'] for x in recs)/len(recs):.1%} ({time.time()-t0:.0f}s)")
