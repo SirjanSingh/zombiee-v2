@@ -944,3 +944,11 @@ zombie positions by simulation, which a reactive net can't reproduce from one fr
 (camp_v2 continuation eats badly; the net copies that). Not a dead end for the teacher: next try (proposal) is
 denoising labels (M=16, or label with the lookahead's action *distribution* as a soft target) before spending it
 on Laya. Data: `data/2026-10-09_tiny_lookahead.jsonl`.
+
+---
+
+## 2026-10-09 15:30 — Laya r2: 11.5% extracted, 38% alive (DAgger vs camp plateau) (manager)
+
+200 seeds: r0 13.5% / 34.5% alive, r1 13.0% / 33.5%, **r2 11.5% / 38.0% / life 82.5** (thirst 87, zombie 20).
+Within noise (SE ~2.4 pts) of each other and just under camp (17.5% / ~37%). Survival matches the teacher; the gap
+is the helicopter run. r3 started 15:18 on GPU 2.
