@@ -246,15 +246,19 @@ def _collect(job):
     torch.set_num_threads(1)
     net = TinyNet(width)
     if state is not None:
-        net.load_state_dict(state)
+        net.load_state_dict({k: torch.as_tensor(v) for k, v in state.items()})
     net.eval()
     teacher = make_teacher(teacher_name) if teacher_name else None
-    return rollout(seed, net_policy(net, greedy=greedy), teacher, beta=beta, rng_key=key)
+    rec, data = rollout(seed, net_policy(net, greedy=greedy), teacher, beta=beta, rng_key=key)
+    # numpy, not torch: torch pickles each tensor as its own shared-memory fd, and thousands of
+    # small states per episode exhaust the mmap limit (hung the DGX run on 2026-10-09)
+    return rec, [(g.numpy(), s.numpy(), y) for g, s, y in data]
 
 
 def run_parallel(jobs, workers: int):
     if workers <= 1:
         return [_collect(j) for j in jobs]
+    jobs = [(j[0], {k: v.numpy() for k, v in j[1].items()} if j[1] is not None else None) + tuple(j[2:]) for j in jobs]
     import multiprocessing as mp
     with mp.get_context("spawn").Pool(workers) as pool:
         return pool.map(_collect, jobs, chunksize=1)
@@ -338,7 +342,8 @@ def main(argv=None):
         state = {k: v.clone() for k, v in net.state_dict().items()}
         jobs = [(rng.randint(0, 999999), state, args.width, args.teacher, beta, f"r{r}", False)
                 for _ in range(args.eps_per_round)]
-        new = [x for _, d in run_parallel(jobs, args.workers) for x in d]
+        new = [(torch.as_tensor(g), torch.as_tensor(s_), y)
+               for _, d in run_parallel(jobs, args.workers) for g, s_, y in d]
         data.extend(new)
         net.train()
         torch.set_num_threads(n_threads)
