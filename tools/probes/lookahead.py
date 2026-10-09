@@ -69,6 +69,22 @@ import os
 ALIVE_W = float(os.environ.get("ALIVE_W", "0.1"))
 
 
+def action_values(env, obs, base, mate, M, seed_key):
+    """[(action_type, kwargs, mean score)] over the legal candidates, M rollouts each (common random numbers)."""
+    out = []
+    for t, k in candidates(obs):
+        v = 0.0
+        for j in range(M):
+            e = copy.deepcopy(env)
+            e._episode.rng = random.Random(f"{seed_key}|{j}")
+            if FAIR:
+                resample_hidden(e._episode, random.Random(f"{seed_key}|{j}|h"))
+            o = e.step({"agent_id": 0, "action_type": t, **k})
+            v += finish(e, o, base, mate, random.Random(f"{seed_key}|{j}|p"))
+        out.append((t, k, v / M))
+    return out
+
+
 def choose(env, obs, base, mate, M, seed_key):
     best, best_v = None, -1e9
     for i, (t, k) in enumerate(candidates(obs)):
