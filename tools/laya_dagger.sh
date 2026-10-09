@@ -7,7 +7,7 @@ L=/tmp/23ucs715_laya; cd ~/zombiee-v3
 export HF_HOME=$L/hf PYTHONUNBUFFERED=1 LAYA_CUDA_AMP=fp16 TRANSFORMERS_VERBOSITY=error
 PY=$L/env/bin/python
 BASE=$(ls -d $L/hf/hub/models--convaiinnovations--laya-typed-decisions/snapshots/*)
-pick() { nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv,noheader,nounits | awk -F', ' '$2<20000 && !f {print $1; f=1}' || true; }
+pick() { nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv,noheader,nounits | awk -F', ' '$2<16000 && !f {print $1; f=1}' || true; }
 gpu() { while true; do G1=$(pick); sleep 30; G2=$(pick); [ -n "$G1" ] && [ "$G1" = "$G2" ] && break; done; export CUDA_VISIBLE_DEVICES=$G1; echo "GPU $G1 $(date)"; }
 LOG=research_log/data/2026-10-09_laya_dagger.jsonl
 
@@ -22,20 +22,31 @@ with open(sys.argv[2], "w") as f:
 print("balance:", len(rows), "->", len(keep), dict(collections.Counter(r["expected"]["action"] for r in keep).most_common()))
 PYEOF
 }
-ft() {  # $1 = data, $2 = out
+ft_once() {  # $1 = data, $2 = out
 $PY - "$1" "$2" "$BASE" <<'PYEOF'
 import sys, json
 from laya.train import TrainConfig, finetune
-cfg = TrainConfig(epochs=3, micro_batch=8, grad_accum=4, log_every=200)
+cfg = TrainConfig(epochs=3, micro_batch=4, grad_accum=8, log_every=200)
 print(json.dumps(finetune(sys.argv[1], sys.argv[3], sys.argv[2], cfg), default=str)[:1500])
 PYEOF
 }
 
+ft() {  # retry on OOM (GPUs are shared and other jobs grow): wait for a GPU again each time
+  for TRY in 1 2 3 4 5; do
+    rm -rf "$2"
+    if ft_once "$1" "$2"; then return 0; fi
+    echo "fine-tune attempt $TRY failed $(date); waiting for a GPU"; gpu
+  done
+  return 1
+}
+
 echo "=== laya DAgger start $(date)"
-gpu
-$PY -m training.laya_policy eval --student $BASE --n-eval 30 --log $LOG          # zero-shot baseline
-$PY -m training.laya_policy rows --teacher camp --episodes 300 --seed 5150 --out $L/data/r0.jsonl
-cp $L/data/r0.jsonl $L/data/agg.jsonl
+if [ ! -f $L/data/r0.jsonl ]; then          # resume: zero-shot eval + round-0 rows already done
+  gpu
+  $PY -m training.laya_policy eval --student $BASE --n-eval 30 --log $LOG          # zero-shot baseline
+  $PY -m training.laya_policy rows --teacher camp --episodes 300 --seed 5150 --out $L/data/r0.jsonl
+  cp $L/data/r0.jsonl $L/data/agg.jsonl
+fi
 STUDENT=""
 for R in 0 1 2 3; do
   echo "=== round $R $(date)"

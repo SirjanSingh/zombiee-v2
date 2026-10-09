@@ -839,3 +839,26 @@ one typed `choice` question over the same 10 actions per turn. State = env descr
 the base each round (3 epochs, fp16 AMP). Runs from `/tmp/23ucs715_laya` on the DGX (venv with
 transformers 4.57.6 over the zombiee env's torch 2.5.1; home quota is full). Queued 03:18: every GPU had
 26-32 GB in use (smoke fine-tune OOM'd at 5 GB free); waits for a GPU with >= 12 GB free.
+
+---
+
+## 2026-10-09 11:00 — Laya round 0 (pure cloning of camp) reaches 13.5% A0 extracted (manager, overnight)
+
+Laya-typed-decisions (421M) fine-tuned once on 14,738 camp-labelled states (300 camp episodes, waits subsampled),
+3 epochs, `laya.train.finetune`, fp16 on a shared V100 (attempts 1-2 OOM'd when neighbours' jobs grew; attempt 3 on
+GPU 6 at ~8.8 GB, 07:46-09:29). Eval: same 200 seeds (`Random(999)`), teammates camp, greedy masked argmax.
+
+| A0 policy | params | A0 extracted | A0 alive end | A0 lifetime | A0 deaths | ms/decision |
+|---|---|---|---|---|---|---|
+| camp (teacher) | - | 17.5% | ~37% | 82.0 | zombie 68, thirst 34, hunger 12 | <1 |
+| Laya zero-shot (30 eps) | 421M | 0% | 0% | 24.0 | hunger 26, thirst 4 | 58.7 |
+| **Laya r0 (cloning)** | 421M | **13.5%** | **34.5%** | **82.2** | thirst 92, zombie 18, hunger 10 | ~71 |
+| tiny CNN r5 (DAgger) | 552k | 3% | 20% | 78.3 | zombie 70, thirst 65, hunger 14 | ~1-2 |
+| Qwen 3B K=3 r4 (DAgger) | 3B | 0% | 0% | 77.8 | zombie 23, thirst 7 (30 eps) | ~1000 |
+
+Laya after plain behaviour cloning is within 4 pts of its teacher and far ahead of both other students. Likely
+reasons, untested: a per-turn decision (no K=3 open-loop plans), the MAP section (per-move zombie adjacency,
+nearest supplies) that the CNN must infer from pixels and Qwen from coordinates, and a classifier head trained with
+a calibrated proper-scoring loss. Remaining failure is thirst (92/200). DAgger round 1 (12,481 new states from
+Laya's own rollouts, 22,214 train items) started 10:03 on GPU 3.
+Data: `data/2026-10-09_laya_dagger.jsonl`.
