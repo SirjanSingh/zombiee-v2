@@ -995,3 +995,15 @@ continued fine-tune overwrote what r1-r3 taught about recovering from its own mi
 override that most often fires is eat-vs-pickup, and camp_v2's eat timing plus subsampled waits may have shifted
 eating late. Next: mix these labels with the r0-r3 aggregate instead of replacing it, and check eat timing in
 replays. Data: `data/2026-10-09_laya_dagger.jsonl` (last row).
+
+---
+
+## 2026-10-10 04:30 — Laya mix stage A: starvation fixed, back to r3 level (manager)
+
+Diagnosis of the 01:50 regression: camp eats at hunger ~41 (inside the safehouse healing cancels starvation, so it
+eats right before leaving), the improved teacher eats at ~15; trained on the new labels alone Laya learned neither
+and starved on the run. Stage A of `tools/laya_mix.sh`: fine-tune from `laya_r3` for 1 epoch on the r0-r3 camp
+aggregate (37,279 rows after wait-capping) + the improved-teacher labels (39,468).
+200 seeds: **11.5% A0 extracted, 30% alive, life 81.3, hunger 18** (was 6% / 18% / 70.2 / hunger 91; r3 12.5%).
+Stage B (Laya plays 150 recorded episodes, seeds 6161) scored 20% extracted / 42% alive on its own seeds; the
+gap to the 200-seed eval is mostly seed-set variance (SE ~3 pts each). Stage C (CPU replay labelling) running.
