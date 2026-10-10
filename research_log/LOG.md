@@ -1007,3 +1007,27 @@ aggregate (37,279 rows after wait-capping) + the improved-teacher labels (39,468
 200 seeds: **11.5% A0 extracted, 30% alive, life 81.3, hunger 18** (was 6% / 18% / 70.2 / hunger 91; r3 12.5%).
 Stage B (Laya plays 150 recorded episodes, seeds 6161) scored 20% extracted / 42% alive on its own seeds; the
 gap to the 200-seed eval is mostly seed-set variance (SE ~3 pts each). Stage C (CPU replay labelling) running.
+
+---
+
+## 2026-10-10 06:35 — Laya mix stage D: 13.0% — imitation plateau regardless of teacher (manager)
+
+Stage C relabelled Laya's 150 recorded episodes with the improved teacher (12,517 rows, 1,729 overrides = 14%);
+stage D fine-tuned `laya_mix` for 1 epoch on camp aggregate + improved labels + these DAgger rows (85,109 rows).
+200 seeds: **13.0% A0 extracted, 36.5% alive, life 81.9** (thirst 72, zombie 35, hunger 8).
+
+| Laya variant | teacher | A0 extracted | A0 alive |
+|---|---|---|---|
+| r0 (cloning) | camp | 13.5% | 34.5% |
+| r1-r3 (DAgger) | camp | 11.5-13.0% | 30-38% |
+| `laya_la` (improved labels only) | camp_v2 + lookahead | 6.0% | 18% |
+| `laya_mix` (stage A) | both | 11.5% | 30% |
+| **`laya_mix2` (stage D, + DAgger)** | both | **13.0%** | **36.5%** |
+| camp / improved teacher | - | 17.5% / 31.8% | ~37% / 43.8% |
+
+Every Laya variant lands at 11.5-13.5% whatever the teacher. Laya reproduces the routine (survival matches camp)
+but not the decisions that make the improved teacher good: those are the 7-14% override states, decided by
+simulating exact zombie moves 16 times per action, which a one-shot classifier reading a text summary can't
+recover. Imitation looks capped near 13% for this state text; getting more needs either richer per-move features
+(e.g. each move's zombie distance next turn) or letting Laya act with search (System 1 proposes, lookahead checks
+only its top-2 when the call is close).
