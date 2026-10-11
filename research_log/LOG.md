@@ -1122,3 +1122,12 @@ v1 analogue without DAgger rows, stage A, was 11.5%). Not a clean text-only comp
 data from Laya's own states, v2 has none), but the richer text gives no visible gain, and the remaining failure is
 again thirst on the run. Conclusion so far: the bottleneck is decision quality on contested states, not missing
 state information - consistent with the label-noise result. v2 + search (margin 0.5) eval running.
+
+---
+
+## 2026-10-11 19:40 — Laya v2 + search (margin 0.5): 16.0% (manager)
+
+v2-text Laya with System 2 at margin 0.5: **16.0% extracted, 37% alive** (444 checks). Search adds +7.5 pts here
+too (v2 alone 8.5%), but v1 Laya + search at the same margin was 19.5% / 45.5%. Keep v1 (`laya_mix2`) as the
+Laya checkpoint; richer state text is shelved. Best overall stays v1 Laya + search margin 1.0: 22% / 52%.
+Replay recorder now stores the extraction zone and who boarded (`meta.extraction`), for Ep2 footage.
