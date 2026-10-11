@@ -188,6 +188,7 @@ class LayaSearchPolicy(LayaPolicy):
         self.base, self.mate = get_policy("camp_v2"), get_policy("camp")
         self.checks = 0
         self.flips = 0
+        self.trace: list[dict] = []    # per A0 turn: Laya's top-2 + the lookahead's verdict (video overlay)
 
     def __call__(self, agent_id: int, obs: dict, rng=None, env=None) -> dict:
         p = self.probs(obs)
@@ -195,6 +196,8 @@ class LayaSearchPolicy(LayaPolicy):
         legal = sorted((i for i in range(len(ACTIONS)) if mask[i]), key=lambda i: -p[i])
         if not legal:
             return to_action(ACTIONS.index("wait"), obs)
+        row = {"t": obs.get("step_count", 0), "top": [[ACTIONS[i], round(p[i], 4)] for i in legal[:2]]}
+        self.trace.append(row)
         if (env is None or len(legal) < 2 or obs.get("step_count", 0) < self.start
                 or p[legal[0]] - p[legal[1]] >= self.margin):
             return to_action(legal[0], obs)
@@ -205,6 +208,7 @@ class LayaSearchPolicy(LayaPolicy):
         self.checks += 1
         best = max(range(len(vals)), key=lambda j: vals[j][2])
         self.flips += best != 0
+        row.update(values=[round(v[2], 4) for v in vals], pick=best)
         return top2[best]
 
 

@@ -69,6 +69,9 @@ def main():
         ep = env._episode
         a0 = ep.agents[0]
         res = ep.extraction_result or {}
+        if getattr(pol, "trace", None) is not None:      # laya-search: per-turn top-2 + lookahead verdicts
+            rec.meta["decisions"] = pol.trace
+            pol.trace = []
         path = rec.save(os.path.join(a.out_dir, f"{a.tag}_seed{seed}.json"))
         print(json.dumps({"seed": seed, "a0_extracted": 0 in list(res.get("extracted", [])), "a0_alive": a0.is_alive,
                           "life": a0.death_step if a0.death_step is not None else ep.step_count,
