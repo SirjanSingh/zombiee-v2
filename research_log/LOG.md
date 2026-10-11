@@ -1131,3 +1131,32 @@ v2-text Laya with System 2 at margin 0.5: **16.0% extracted, 37% alive** (444 ch
 too (v2 alone 8.5%), but v1 Laya + search at the same margin was 19.5% / 45.5%. Keep v1 (`laya_mix2`) as the
 Laya checkpoint; richer state text is shelved. Best overall stays v1 Laya + search margin 1.0: 22% / 52%.
 Replay recorder now stores the extraction zone and who boarded (`meta.extraction`), for Ep2 footage.
+
+---
+
+## 2026-10-11 20:15 — Comparison replays re-recorded with extraction meta; Laya + search at margin 1.0 (manager)
+
+All `cmp-*` replays now carry `meta.extraction` (zone, zone cells, who boarded). `cmp-laya-search` is now margin 1.0
+(the best setting), so it replaces the margin-0.5 files listed at 17:05. A0 outcome, 12 shared seeds, teammates camp:
+
+| seed | zone | camp | Qwen 3B r5 | tiny CNN | Laya | Laya + search (1.0) |
+|---|---|---|---|---|---|---|
+| **427313** | SE | zombie t80 | zombie t80 | thirst t37 | thirst t83 (in the zone) | **OUT** |
+| 837427 | SW | zombie t80 | zombie t74 | alive | thirst t83 | **OUT** |
+| 266632 | NE | zombie t80 | zombie t77 | zombie t85 | **OUT** | hunger t88 |
+| 58523 | SE | alive | thirst t82 | alive | **OUT** | hunger t64 |
+| 595367 | SE | **OUT** | - | thirst t83 | alive | alive |
+| 601625 | NE | thirst t83 | - | thirst t82 | alive | **OUT** |
+| 83954 | NE | zombie t84 | - | thirst t81 | alive | **OUT** |
+| 711783 / 819301 | NW | zombie | - | zombie / thirst | thirst | thirst / zombie |
+| 914874 / 940000 / 559626 | | | - | | | |
+
+Totals on these 12: camp 1 out, tiny 0, Laya 2, Laya + search 4, Qwen 0 of 4. Search is not better on every seed
+(266632 and 58523 flip the other way), consistent with 22% vs 13% over 200.
+
+**New footage pick: seed 427313** (all five policies, Qwen included, on the same map). Laya alone leaves at t68, walks
+over the water at (9,10) at t74 with thirst 10 without drinking, reaches the SE landing zone at t81 and dies of thirst
+there at t83, seven turns before the helicopter. Laya + search (same checkpoint) diverges at t64, waits inside the
+safehouse until t77, walks to the same water cell, drinks at t80 (thirst 13 -> 0), reaches the zone at t86 and boards at
+t90 with teammate A2. It also stepped outside at t64 at hunger 39 and dropped to 1 HP before eating: the lookahead
+tolerated a risky move that happened to work.
