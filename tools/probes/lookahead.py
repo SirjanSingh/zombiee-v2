@@ -69,10 +69,10 @@ import os
 ALIVE_W = float(os.environ.get("ALIVE_W", "0.1"))
 
 
-def action_values(env, obs, base, mate, M, seed_key):
-    """[(action_type, kwargs, mean score)] over the legal candidates, M rollouts each (common random numbers)."""
+def action_values(env, obs, base, mate, M, seed_key, only=None):
+    """[(action_type, kwargs, mean score)] over the legal candidates (or `only`), M rollouts each (common random numbers)."""
     out = []
-    for t, k in candidates(obs):
+    for t, k in (only if only is not None else candidates(obs)):
         v = 0.0
         for j in range(M):
             e = copy.deepcopy(env)

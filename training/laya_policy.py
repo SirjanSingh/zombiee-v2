@@ -130,6 +130,43 @@ class LayaPolicy:
         return to_action(best, obs)
 
 
+class LayaSearchPolicy(LayaPolicy):
+    """System 1 + System 2: Laya picks; when its top-2 legal actions are within `margin` probability and
+    t >= `start`, a fair lookahead (tools/probes/lookahead.py, camp_v2 continuation, M rollouts) compares
+    only those two and takes the better one."""
+    uses_env = True
+
+    def __init__(self, ckpt: str, margin: float = 0.15, start: int = 55, m: int = 8):
+        super().__init__(ckpt)
+        import os
+        import sys
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools", "probes"))
+        import lookahead as LA
+        LA.FAIR, LA.ALIVE_W = True, 0.0
+        self.LA, self.margin, self.start, self.m = LA, margin, start, m
+        self.base, self.mate = get_policy("camp_v2"), get_policy("camp")
+        self.checks = 0
+        self.flips = 0
+
+    def __call__(self, agent_id: int, obs: dict, rng=None, env=None) -> dict:
+        p = self.probs(obs)
+        mask = legal_mask(obs)
+        legal = sorted((i for i in range(len(ACTIONS)) if mask[i]), key=lambda i: -p[i])
+        if not legal:
+            return to_action(ACTIONS.index("wait"), obs)
+        if (env is None or len(legal) < 2 or obs.get("step_count", 0) < self.start
+                or p[legal[0]] - p[legal[1]] >= self.margin):
+            return to_action(legal[0], obs)
+        top2 = [to_action(i, obs) for i in legal[:2]]
+        only = [(a["action_type"], {k: v for k, v in a.items() if k not in ("agent_id", "action_type")}) for a in top2]
+        vals = self.LA.action_values(env, obs, self.base, self.mate, self.m,
+                                     f"sys2|{obs['step_count']}|{len(env._episode.bite_history)}", only=only)
+        self.checks += 1
+        best = max(range(len(vals)), key=lambda j: vals[j][2])
+        self.flips += best != 0
+        return top2[best]
+
+
 def rollout(seed: int, a0_policy, teacher=None, teammate: str = "camp", balance: str = "v3-rc2"):
     env = SurviveCityV2Env(balance=get_balance(balance), a0_healthy=True)
     obs = env.reset(seed=seed)
@@ -144,7 +181,8 @@ def rollout(seed: int, a0_policy, teacher=None, teammate: str = "camp", balance:
                 lab = action_label(teacher(0, obs, rng=rng))
                 if lab is not None:
                     rows.append(row(obs, lab))
-            act = a0_policy(0, obs, rng=rng)
+            act = (a0_policy(0, obs, rng=rng, env=env) if getattr(a0_policy, "uses_env", False)
+                   else a0_policy(0, obs, rng=rng))
             a0_log.append(act)
         else:
             act = mate(aid, obs, rng=rng)
@@ -181,6 +219,8 @@ def main(argv=None):
     p.add_argument("--eval-seed", type=int, default=999)
     p.add_argument("--out", default="data/laya_rows.jsonl")
     p.add_argument("--log", default=None)
+    p.add_argument("--search-margin", type=float, default=None,
+                   help="eval/record with System 2: lookahead between Laya's top-2 when closer than this")
     args = p.parse_args(argv)
 
     if args.cmd == "show":
@@ -194,7 +234,10 @@ def main(argv=None):
         return
 
     teacher = get_policy(args.teacher)
-    student = LayaPolicy(args.student) if args.student else None
+    if args.student and args.search_margin is not None:
+        student = LayaSearchPolicy(args.student, margin=args.search_margin)
+    else:
+        student = LayaPolicy(args.student) if args.student else None
     if args.cmd == "rows":
         t = time.time()
         recs, n = [], 0
@@ -225,6 +268,8 @@ def main(argv=None):
     for r in recs:
         r.pop("a0_actions", None)
     out = summarize(recs)
+    if hasattr(student, "checks"):
+        out.update({"search_margin": args.search_margin, "sys2_checks": student.checks, "sys2_flips": student.flips})
     out.update({"student": args.student, "eval_seed": args.eval_seed,
                 "ms_per_decision": round(1000 * student.secs / max(1, student.calls), 1)})
     print(json.dumps(out), f"({time.time() - t:.0f}s)")
