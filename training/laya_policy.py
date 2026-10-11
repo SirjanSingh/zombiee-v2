@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import collections
 import json
+import os
 import random
 import time
 from typing import Optional
@@ -99,7 +100,47 @@ def state_text(obs: dict) -> str:
         else:
             moves.append(f"{m} safe")
     lines.append("  moves: " + ", ".join(moves))
+    if STATE_VERSION >= 2:
+        lines += _state_v2_lines(obs, me, pos, meta, zs, zone, depleted)
     return desc + "\n" + "\n".join(lines)
+
+
+# v2 adds what Laya's close calls hinge on (all public): time-to-deadly for thirst/hunger, helicopter slack,
+# and per move the destination's distance to the nearest zombie / water / food / zone. Old checkpoints were
+# trained on v1 text, so the version is opt-in (LAYA_STATE=2).
+STATE_VERSION = int(os.environ.get("LAYA_STATE", "1"))
+RATE = 0.6          # v3-rc2 hunger/thirst rate per turn (balance preset)
+LIMIT = 15          # starve / dehydrate threshold
+
+
+def _state_v2_lines(obs, me, pos, meta, zs, zone, depleted):
+    inv = me.get("inventory", []) or []
+
+    def turns_to(v):
+        return max(0, int((LIMIT - v) / RATE))
+    th, hu = me.get("thirst", 0), me.get("hunger", 0)
+    out = ["SURVIVAL:",
+           f"  thirst {th}/{LIMIT}: deadly outside in {turns_to(th)} turns; water carried {inv.count('water')}",
+           f"  hunger {hu}/{LIMIT}: deadly outside in {turns_to(hu)} turns; food carried {inv.count('food')}"]
+    ext = meta.get("extraction") or {}
+    if zone and ext.get("extraction_step"):
+        left = max(0, ext["extraction_step"] - obs.get("step_count", 0))
+        dz, _ = bfs(pos, zone, set())
+        out.append(f"  helicopter: {left} turns left, zone {dz} steps away, slack {left - (dz or 0)} turns")
+    targets = (("water", set(WATER_CELLS)), ("food", {c for c in FOOD_CELLS if c not in depleted}),
+               ("zone", zone), ("safehouse", set(SAFEHOUSE_CELLS)))
+    out.append("MOVE OUTCOMES (from the destination cell):")
+    for m, (dr, dc) in MOVES.items():
+        n = (pos[0] + dr, pos[1] + dc)
+        if not _walk(*n):
+            continue
+        parts = [f"zombie {min((abs(n[0] - z[0]) + abs(n[1] - z[1]) for z in zs), default=99)}"]
+        for name, cells in targets:
+            if cells:
+                d, _ = bfs(n, cells, set())
+                parts.append(f"{name} {d}")
+        out.append(f"  {m}: " + ", ".join(parts))
+    return out
 
 
 def row(obs: dict, label_idx: int) -> dict:
