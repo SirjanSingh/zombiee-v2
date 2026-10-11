@@ -1031,3 +1031,23 @@ simulating exact zombie moves 16 times per action, which a one-shot classifier r
 recover. Imitation looks capped near 13% for this state text; getting more needs either richer per-move features
 (e.g. each move's zombie distance next turn) or letting Laya act with search (System 1 proposes, lookahead checks
 only its top-2 when the call is close).
+
+---
+
+## 2026-10-11 14:10 — System 1 + System 2: Laya + a small lookahead matches camp, beats it on survival (manager)
+
+`LayaSearchPolicy` (training/laya_policy.py): Laya (`laya_mix2`) picks every turn; from t55, when its top-2 legal
+actions are within `margin` probability, a fair lookahead (camp_v2 continuation, M=8) compares only those two.
+200 seeds `Random(999)`:
+
+| A0 policy | A0 extracted | A0 alive | life | checks / flips | 
+|---|---|---|---|---|
+| Laya alone (`laya_mix2`) | 13.0% | 36.5% | 81.9 | - |
+| + search, margin 0.15 | 15.5% | 41.0% | 82.5 | 569 / 212 (2.8 checks per game) |
+| **+ search, margin 0.30** | **18.0%** | **45.0%** | 82.9 | 695 / 247 (3.5 per game) |
+| camp | 17.5% | ~37% | 82.0 | - |
+| improved teacher (full lookahead overrides) | 31.8% | 43.8% | - | every turn from t55 |
+
+A handful of close-call checks per game, a third of which flip Laya's choice, turns the 13% plateau into
+camp-level extraction and the best survival of any learned policy. Wider margins next (0.5, 1.0 = always check
+top-2 after t55).
