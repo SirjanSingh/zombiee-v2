@@ -1110,3 +1110,15 @@ on the first four seeds. A0 outcome (replays don't log extraction as an event; o
 
 Footage pick: **seed 266632** - every other model dies to zombies, both Laya variants reach the helicopter.
 Remaining Laya failure on these seeds is thirst at t81-83 (out of water on the run).
+
+---
+
+## 2026-10-11 19:27 — Laya v2 state text, trained from base: 8.5% (worse) (manager)
+
+`LAYA_STATE=2` text (survival clocks, helicopter slack, per-move zombie/water/food/zone/safehouse distances),
+trained from the base checkpoint for 2 epochs on 300 camp episodes + 600 improved-teacher episodes (no DAgger rows).
+200 seeds: **8.5% A0 extracted, 28% alive, life 81.7, thirst 97**. Below v1 Laya (`laya_mix2` 13.0%; the closest
+v1 analogue without DAgger rows, stage A, was 11.5%). Not a clean text-only comparison (v1 models had r0-r3 DAgger
+data from Laya's own states, v2 has none), but the richer text gives no visible gain, and the remaining failure is
+again thirst on the run. Conclusion so far: the bottleneck is decision quality on contested states, not missing
+state information - consistent with the label-noise result. v2 + search (margin 0.5) eval running.

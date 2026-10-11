@@ -1,0 +1,1 @@
+{"n": 200, "a0_extracted": 0.085, "team": 0.36, "a0_alive": 0.28, "a0_life": 81.69, "causes": {"thirst": 97, "alive": 56, "zombie_attack": 30, "infection_progression": 11, "hunger": 5, "infected_attack": 1}, "student": "/tmp/23ucs715_laya/ckpt/laya_v2", "eval_seed": 999, "ms_per_decision": 55.1}
