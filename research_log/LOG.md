@@ -1090,3 +1090,23 @@ choosing the top-2 and the lookahead deciding between only those two beats the l
 survival, i.e. Laya's prior prunes bad options. Extraction is still below the full teacher (22 vs 31.8): with only
 the top-2 considered, the "leave for the helicopter" move is sometimes not among them. Deaths shift from thirst to
 hunger (40). Cost: ~30 two-action checks per game (~0.7 s each), CPU-bound.
+
+---
+
+## 2026-10-11 17:05 — Comparison replays for the video: 12 shared seeds x 5 policies (manager)
+
+`tools/record_comparison.py`, teammates camp, v3-rc2. Files `replays/cmp-{camp,tiny,laya,laya-search}_seed<S>.json`
+(laya = `laya_mix2`, laya-search = margin 0.5) plus Qwen's own `rc2-k3-r5-final_model_sft_rc2_k3_r5__seed<S>.json`
+on the first four seeds. A0 outcome (replays don't log extraction as an event; outcomes from the recorder's output):
+
+| seed | camp | Qwen 3B r5 | tiny CNN | Laya | Laya + search |
+|---|---|---|---|---|---|
+| **266632** | dead zombie | dead zombie | dead zombie | **OUT** | **OUT** |
+| 58523 | alive | dead thirst | alive | **OUT** | alive |
+| 595367 | **OUT** | - | dead thirst | alive | **OUT** |
+| 427313 | dead zombie | dead zombie | dead thirst | dead thirst | dead thirst |
+| 837427 | dead zombie | dead zombie | alive | dead thirst | dead thirst |
+| 83954 / 914874 | dead zombie | - | dead thirst | alive | alive |
+
+Footage pick: **seed 266632** - every other model dies to zombies, both Laya variants reach the helicopter.
+Remaining Laya failure on these seeds is thirst at t81-83 (out of water on the run).
