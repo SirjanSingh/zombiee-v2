@@ -1163,3 +1163,20 @@ there at t83, seven turns before the helicopter. Laya + search (same checkpoint)
 safehouse until t77, walks to the same water cell, drinks at t80 (thirst 13 -> 0), reaches the zone at t86 and boards at
 t90 with teammate A2. It also stepped outside at t64 at hunger 39 and dropped to 1 HP before eating: the lookahead
 tolerated a risky move that happened to work.
+
+---
+
+## 2026-10-11 21:00 — Correction + decision trace for seed 427313 (manager)
+
+**Correction to 16:27:** "the best survival of any policy, teacher included" is wrong. Laya + search's 52% alive beats
+camp (~37%) and the improved teacher (43.8%), but the plain fair lookahead (M=4, alive bonus 0.1) reached 62% alive
+(01:50 on 10-09, 100 eps). Say "beats camp and the improved teacher", not "best".
+
+**Decision trace** (`cmp-laya-search-trace_seed427313.json`, `meta.decisions`; the re-run reproduces the recorded
+trajectory exactly, 90/90 A0 actions): 35 lookahead checks, 6 overrules (t64, t66, t67, t72, t73, t75). Laya's top-1
+probability is ~0.86-0.95 at nearly every check, so the overrules go against a confident System 1. Values decode to
+escaping rollouts out of 8 (score = extracted + 0.002 x life): t75 move_right 0/8 vs move_up (back inside) 3/8;
+t73 move_down 0/8 vs move_up 2/8; t72 move_down 2/8 vs move_right 4/8. The drink at t80 was Laya's own top-1 (0.93;
+lookahead agreed 7/8 vs 0/8). So System 2 changed *when* A0 left; leaving later brought it to the water at thirst 13,
+where Laya drinks. Laya alone crossed the same water at t74 with thirst 10 and no zombie within 3 cells and did not
+drink, although its teacher's run rule (policies.py:131) drinks there.
