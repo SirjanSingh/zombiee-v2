@@ -1,0 +1,1 @@
+{"states": 1133, "m": 16, "argmax_agreement": 0.664, "override_rule_agreement": 0.79, "states_overridden_by_either": 548, "both_override": 310, "top2_gap_p25_p50_p75": [0.0, 0.003, 0.066]}

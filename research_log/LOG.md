@@ -1051,3 +1051,22 @@ actions are within `margin` probability, a fair lookahead (camp_v2 continuation,
 A handful of close-call checks per game, a third of which flip Laya's choice, turns the 13% plateau into
 camp-level extraction and the best survival of any learned policy. Wider margins next (0.5, 1.0 = always check
 top-2 after t55).
+
+---
+
+## 2026-10-11 15:05 — Margin 0.5: 19.5%; the lookahead's labels are measurably noisy (manager)
+
+**System 1 + 2, margin 0.5** (200 seeds): **19.5% A0 extracted, 45.5% alive**, life 83.2, 753 checks (3.8/game).
+Trend 0.15 -> 15.5%, 0.30 -> 18.0%, 0.5 -> 19.5% (camp 17.5%); margin 1.0 running.
+
+**Label noise** (`tools/probes/label_noise.py`, research-agent suggestion): 1,133 states (t>=55) from 40 of Laya's
+recorded episodes, fair action values computed twice with independent rollout seeds, M=16 each. Argmax agreement
+**66.4%**; delta-rule (override camp_v2 if best beats it by > 0.05) agreement 79.0%; top-2 value gap p25/p50/p75 =
+0.000 / 0.003 / 0.066. So a third of argmax labels flip on a rerun and half the states are effective ties: a
+student imitating them is fitting noise, which fits the ~13% imitation plateau. The delta rule helps but 21% of
+override decisions still flip. Implication: labels should be consensus/denoised (only keep overrides both runs agree
+on, or larger M on contested states), or the search should run at play time, which is what System 2 does.
+
+**v2 data ready**: `LAYA_STATE=2` text (survival clocks, helicopter slack, per-move outcomes); 300 camp episodes +
+600 improved-teacher episodes (45,032 rows, 3,276 overrides; driver 29.5% extracted / 42.7% alive).
+Data: `data/2026-10-11_laya_sys2.jsonl`, `data/2026-10-11_label_noise.json`.
