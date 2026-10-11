@@ -1070,3 +1070,23 @@ on, or larger M on contested states), or the search should run at play time, whi
 **v2 data ready**: `LAYA_STATE=2` text (survival clocks, helicopter slack, per-move outcomes); 300 camp episodes +
 600 improved-teacher episodes (45,032 rows, 3,276 overrides; driver 29.5% extracted / 42.7% alive).
 Data: `data/2026-10-11_laya_sys2.jsonl`, `data/2026-10-11_label_noise.json`.
+
+---
+
+## 2026-10-11 16:27 — System 1 + 2, margin 1.0 (always compare top-2 after t55): 22% extracted, 52% alive (manager)
+
+| A0 policy (200 seeds) | A0 extracted | A0 alive | life | lookahead checks / flips |
+|---|---|---|---|---|
+| Laya alone (`laya_mix2`) | 13.0% | 36.5% | 81.9 | 0 |
+| + search, margin 0.15 | 15.5% | 41.0% | 82.5 | 569 / 212 |
+| + search, margin 0.30 | 18.0% | 45.0% | 82.9 | 695 / 247 |
+| + search, margin 0.5 | 19.5% | 45.5% | 83.2 | 753 / 267 |
+| **+ search, margin 1.0** | **22.0%** | **52.0%** | 84.3 | 5,942 / 1,451 (~30 per game) |
+| camp | 17.5% | ~37% | 82.0 | - |
+| improved teacher (full lookahead over all actions) | 31.8% | 43.8% | - | every turn from t55, all actions |
+
+Best learned-policy result so far and the best survival of any policy, teacher included (52% vs 43.8%). Laya
+choosing the top-2 and the lookahead deciding between only those two beats the lookahead over all actions on
+survival, i.e. Laya's prior prunes bad options. Extraction is still below the full teacher (22 vs 31.8): with only
+the top-2 considered, the "leave for the helicopter" move is sometimes not among them. Deaths shift from thirst to
+hunger (40). Cost: ~30 two-action checks per game (~0.7 s each), CPU-bound.
