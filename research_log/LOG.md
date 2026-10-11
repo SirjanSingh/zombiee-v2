@@ -1148,8 +1148,11 @@ All `cmp-*` replays now carry `meta.extraction` (zone, zone cells, who boarded).
 | 595367 | SE | **OUT** | - | thirst t83 | alive | alive |
 | 601625 | NE | thirst t83 | - | thirst t82 | alive | **OUT** |
 | 83954 | NE | zombie t84 | - | thirst t81 | alive | **OUT** |
-| 711783 / 819301 | NW | zombie | - | zombie / thirst | thirst | thirst / zombie |
-| 914874 / 940000 / 559626 | | | - | | | |
+| 711783 | NW | zombie t82 | - | zombie t81 | thirst t82 | thirst t83 |
+| 819301 | NW | zombie t82 | - | thirst t83 | thirst t81 | zombie t76 |
+| 914874 | SW | zombie t80 | - | thirst t59 | alive | hunger t88 |
+| 940000 | SE | zombie t80 | - | alive | thirst t83 | alive |
+| 559626 | SW | alive | - | alive | alive | infection t74 |
 
 Totals on these 12: camp 1 out, tiny 0, Laya 2, Laya + search 4, Qwen 0 of 4. Search is not better on every seed
 (266632 and 58523 flip the other way), consistent with 22% vs 13% over 200.
