@@ -110,6 +110,18 @@ class ReplayRecorder:
             "a0_death_cause": a0.death_cause,
             "healthy_alive": sum(1 for a in ep.agents if a.is_alive and a.infection_state == "none"),
         }
+        if ep.balance.extraction_enabled:      # v3-rc2: zone (announced at radio_step) + who boarded
+            res = ep.extraction_result or {}
+            self.meta["extraction"] = {
+                "radio_step": ep.balance.radio_step,
+                "extraction_step": ep.balance.extraction_step,
+                "zone": ep.extraction_zone_name,
+                "zone_cells": [list(c) for c in ep.extraction_zone],
+                "success": bool(res.get("success")),
+                "failed_flight": bool(res.get("failed_flight")),
+                "extracted": list(res.get("extracted", [])),
+                "a0_extracted": 0 in list(res.get("extracted", [])),
+            }
         return {"meta": self.meta, "layout": layout_dict(), "frames": self.frames}
 
     def save(self, path: str) -> str:
